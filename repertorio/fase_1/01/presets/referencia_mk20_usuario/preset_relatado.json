@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "record_type": "user_reported_reference_not_importable",
+  "device": "MK20",
+  "song": "Papa Roach — Infest",
+  "guitar": "Konig Stratocaster SSS",
+  "source": "Configuração fornecida pelo usuário nesta conversa",
+  "auditory_status": "approved_by_user_on_mk20",
+  "hardware_verified": false,
+  "firmware": null,
+  "pickup_position": null,
+  "guitar_volume": null,
+  "guitar_tone": null,
+  "role": null,
+  "blocks": [
+    {
+      "block": "NS",
+      "model_display": "AI Gate",
+      "enabled": true,
+      "values": {
+        "Gate": 40,
+        "Bias": 50
+      }
+    },
+    {
+      "block": "DS",
+      "model_display": "22TS-9",
+      "enabled": true,
+      "values": {
+        "Gain": 10,
+        "Level": 80,
+        "Bass": 42,
+        "Middle": 58,
+        "Treble": 52,
+        "Reso": 0,
+        "Pres": 50,
+        "Bright": 60
+      }
+    },
+    {
+      "block": "AMP",
+      "model_display": "70OD2_meas",
+      "enabled": true,
+      "values": {
+        "Gain": 56,
+        "Level": 60,
+        "Bass": 58,
+        "Middle": 50,
+        "Treble": 60,
+        "Reso": 35,
+        "Pres": 58,
+        "Bright": 45
+      }
+    },
+    {
+      "block": "CAB",
+      "model_display": "54 MbSOSS4t412",
+      "enabled": true,
+      "values": {
+        "Level": 80,
+        "Low Cut": 80,
+        "High Cut": "7.5k"
+      }
+    },
+    {
+      "block": "EQ",
+      "model_display": "Guitar EQ 6",
+      "enabled": true,
+      "bands_db": {
+        "100": 2,
+        "200": 0,
+        "400": -1.5,
+        "800": 2,
+        "1600": 2.5,
+        "3200": 0.5
+      }
+    },
+    {
+      "block": "MOD",
+      "enabled": false
+    },
+    {
+      "block": "DLY",
+      "enabled": false
+    },
+    {
+      "block": "REV",
+      "enabled": false
+    },
+    {
+      "block": "VOL",
+      "values": {
+        "Level": 60
+      }
+    }
+  ],
+  "scale_status": "Valores exibidos transcritos; conversão para bytes e unidades físicas não verificada",
+  "mk300_mapping_status": "NEEDS_DEVICE_DATA",
+  "limitations": [
+    "Não é arquivo de importação do app ou do M-EFCS.",
+    "Prefixos numéricos não são tratados como índices de transporte.",
+    "Aprovação no MK20 não valida equivalência na MK300.",
+    "Não foi confirmada uma captura deste preset MK20."
+  ]
+}
