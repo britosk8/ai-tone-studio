@@ -9,7 +9,7 @@
     "solo_destaque"
   ],
   "other_tracks": "material_preparado_em_espera",
-  "current_step": "validar_baseline_e_capturas_mk300",
+  "current_step": "comparacao_manual_candidatos_r2_mk300",
   "candidate_ids": [
     "01_base_01",
     "01_base_02",
@@ -18,10 +18,9 @@
   ],
   "pending": [
     "confirmar_metadados_das_capturas",
-    "avaliar_guitarra_separada",
-    "obter_preset_anterior_satisfatorio_se_disponivel",
-    "validar_schema_no_equipamento",
-    "comparar_candidatos_por_escuta",
+    "conferir_escalas_exibidas_cab_eq_mk300",
+    "comparar_A_B_e_A_C_com_Konig",
+    "selecionar_candidato_por_escuta",
     "validar_reamp",
     "calibrar_resposta_antes_da_otimizacao"
   ],
@@ -34,5 +33,6 @@
   "preset_import_file": "repertorio/fase_1/01/presets/piloto_r1/Infest_MK300_Piloto_R1.json",
   "architecture_plan": "docs/architecture/EVOLUCAO_MOTOR_MK300.md",
   "preset_round_status": "r1_testado_usuario_relatou_distorcoes_ruins",
-  "capture_report": "repertorio/laboratorio/relatorios/mk300_capturas_r1.json"
+  "capture_report": "repertorio/laboratorio/relatorios/mk300_capturas_r1.json",
+  "manual_candidate_manifest": "repertorio/fase_1/01/presets/piloto_r2_manual/candidatos.json"
 }

@@ -1,0 +1,283 @@
+{
+  "schema_version": 1,
+  "record_type": "manual_experiment_not_app_import",
+  "device": "MK300",
+  "guitar": "Konig Stratocaster SSS",
+  "role": "rhythm_first",
+  "reference_window_seconds": [
+    50,
+    70
+  ],
+  "reference_file": "repertorio/fase_1/01/presets/referencia_mk20_usuario/preset_relatado.json",
+  "common_display_settings_from_mk20": [
+    {
+      "block": "NS",
+      "model_display": "AI Gate",
+      "enabled": true,
+      "values": {
+        "Gate": 40,
+        "Bias": 50
+      }
+    },
+    {
+      "block": "DS",
+      "model_display": "22TS-9",
+      "enabled": true,
+      "values": {
+        "Gain": 10,
+        "Level": 80,
+        "Bass": 42,
+        "Middle": 58,
+        "Treble": 52,
+        "Reso": 0,
+        "Pres": 50,
+        "Bright": 60
+      }
+    },
+    {
+      "block": "AMP",
+      "model_display": "70OD2_meas",
+      "enabled": true,
+      "values": {
+        "Gain": 56,
+        "Level": 60,
+        "Bass": 58,
+        "Middle": 50,
+        "Treble": 60,
+        "Reso": 35,
+        "Pres": 58,
+        "Bright": 45
+      }
+    },
+    {
+      "block": "CAB",
+      "model_display": "54 MbSOSS4t412",
+      "enabled": true,
+      "values": {
+        "Level": 80,
+        "Low Cut": 80,
+        "High Cut": "7.5k"
+      }
+    },
+    {
+      "block": "EQ",
+      "model_display": "Guitar EQ 6",
+      "enabled": true,
+      "bands_db": {
+        "100": 2,
+        "200": 0,
+        "400": -1.5,
+        "800": 2,
+        "1600": 2.5,
+        "3200": 0.5
+      }
+    },
+    {
+      "block": "MOD",
+      "enabled": false
+    },
+    {
+      "block": "DLY",
+      "enabled": false
+    },
+    {
+      "block": "REV",
+      "enabled": false
+    },
+    {
+      "block": "VOL",
+      "values": {
+        "Level": 60
+      }
+    }
+  ],
+  "settings_policy": "Valores exibidos são ponto inicial de teste, não conversão física demonstrada. Se indisponíveis no editor, registrar o valor real e interromper a comparação até uniformizar os candidatos.",
+  "candidates": [
+    {
+      "candidate": "A",
+      "name": "Infest R2 A",
+      "models": {
+        "DS": {
+          "name": "22TS-9",
+          "transport_id": 21,
+          "knobs": [
+            "Gain",
+            "Level",
+            "Bass",
+            "Middle",
+            "Treble",
+            "Reso",
+            "Pres",
+            "Bright"
+          ]
+        },
+        "AMP": {
+          "name": "98MES_CH2_AMP",
+          "transport_id": 97,
+          "knobs": [
+            "Gain",
+            "Level",
+            "Bass",
+            "Middle",
+            "Treble",
+            "Reso",
+            "Pres",
+            "Bright"
+          ]
+        },
+        "CAB": {
+          "name": "11MESA_412_57",
+          "transport_id": 10,
+          "knobs": [
+            "Level",
+            "Low Cut",
+            "High Cut"
+          ]
+        },
+        "EQ": {
+          "name": "Guitar EQ 6",
+          "transport_id": 0,
+          "knobs": [
+            "100Hz",
+            "200Hz",
+            "400Hz",
+            "800Hz",
+            "1.6kHz",
+            "3.2kHz"
+          ]
+        }
+      },
+      "reason": "Primeiro candidato; hipótese pelos nomes, sem equivalência confirmada.",
+      "auditory_status": "pending",
+      "importable": false
+    },
+    {
+      "candidate": "B",
+      "name": "Infest R2 B",
+      "models": {
+        "DS": {
+          "name": "22TS-9",
+          "transport_id": 21,
+          "knobs": [
+            "Gain",
+            "Level",
+            "Bass",
+            "Middle",
+            "Treble",
+            "Reso",
+            "Pres",
+            "Bright"
+          ]
+        },
+        "AMP": {
+          "name": "100MES_CH3_AM",
+          "transport_id": 99,
+          "knobs": [
+            "Gain",
+            "Level",
+            "Bass",
+            "Middle",
+            "Treble",
+            "Reso",
+            "Pres",
+            "Bright"
+          ]
+        },
+        "CAB": {
+          "name": "11MESA_412_57",
+          "transport_id": 10,
+          "knobs": [
+            "Level",
+            "Low Cut",
+            "High Cut"
+          ]
+        },
+        "EQ": {
+          "name": "Guitar EQ 6",
+          "transport_id": 0,
+          "knobs": [
+            "100Hz",
+            "200Hz",
+            "400Hz",
+            "800Hz",
+            "1.6kHz",
+            "3.2kHz"
+          ]
+        }
+      },
+      "reason": "Comparar com A: altera somente o modelo de AMP.",
+      "auditory_status": "pending",
+      "importable": false
+    },
+    {
+      "candidate": "C",
+      "name": "Infest R2 C",
+      "models": {
+        "DS": {
+          "name": "22TS-9",
+          "transport_id": 21,
+          "knobs": [
+            "Gain",
+            "Level",
+            "Bass",
+            "Middle",
+            "Treble",
+            "Reso",
+            "Pres",
+            "Bright"
+          ]
+        },
+        "AMP": {
+          "name": "98MES_CH2_AMP",
+          "transport_id": 97,
+          "knobs": [
+            "Gain",
+            "Level",
+            "Bass",
+            "Middle",
+            "Treble",
+            "Reso",
+            "Pres",
+            "Bright"
+          ]
+        },
+        "CAB": {
+          "name": "12MESA_412_EC",
+          "transport_id": 11,
+          "knobs": [
+            "Level",
+            "Low Cut",
+            "High Cut"
+          ]
+        },
+        "EQ": {
+          "name": "Guitar EQ 6",
+          "transport_id": 0,
+          "knobs": [
+            "100Hz",
+            "200Hz",
+            "400Hz",
+            "800Hz",
+            "1.6kHz",
+            "3.2kHz"
+          ]
+        }
+      },
+      "reason": "Comparar com A: altera somente o modelo de CAB.",
+      "auditory_status": "pending",
+      "importable": false
+    }
+  ],
+  "blockers_for_automatic_import": [
+    "NEEDS_DEVICE_DATA: conversão Hz para raw dos cortes CAB",
+    "NEEDS_DEVICE_DATA: representação fracionária do EQ no hardware; builder atual trunca com int()",
+    "Confirmar se candidatos de AMP já incluem resposta de gabinete; sufixo AMP/AM não prova ausência de CAB"
+  ],
+  "validation": {
+    "catalog_version": "0.4.0",
+    "all_candidate_model_ids_and_knobs_found": true,
+    "sonic_equivalence_verified": false,
+    "firmware_on_user_hardware": null,
+    "pedal_write_performed": false
+  }
+}
