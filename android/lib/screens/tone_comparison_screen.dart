@@ -209,14 +209,38 @@ class _ToneComparisonScreenState extends State<ToneComparisonScreen>
         final snapshot = _preset!;
         setState(() =>
             _status = 'Medindo sua gravação e comparando com a referência...');
-        final result = await context.read<ApiService>().compareTone(
-            recording: _capture!,
-            preset: snapshot,
-            pairId: widget.pairId,
-            inputKind: _captureKind,
-            reference: _reference,
-            referenceStart: start,
-            referenceKind: _referenceKind);
+        Map<String, dynamic> result;
+        try {
+          result = await context.read<ApiService>().compareTone(
+              recording: _capture!,
+              preset: snapshot,
+              pairId: widget.pairId,
+              inputKind: _captureKind,
+              reference: _reference,
+              referenceStart: start,
+              referenceKind: _referenceKind);
+        } on ApiException catch (error) {
+          if (error.errorCode != 'reference_required' &&
+              !(error.statusCode == 404 &&
+                  error.message.contains('Preset não encontrado'))) {
+            rethrow;
+          }
+          if (!mounted) return;
+          setState(() {
+            _status =
+                'Selecione o áudio original da música. O preset está no celular, mas o backend não tem seu perfil de áudio.';
+            _report = null;
+          });
+          final selected = await _chooseAudio();
+          if (mounted && selected != null) {
+            setState(() {
+              _reference = selected;
+              _status =
+                  'Áudio original selecionado. Confira o início do trecho e toque em Analisar e sugerir ajustes novamente.';
+            });
+          }
+          return;
+        }
         if (mounted) {
           setState(() {
             _report = result;

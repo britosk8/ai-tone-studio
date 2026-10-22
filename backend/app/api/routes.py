@@ -44,7 +44,7 @@ def _get_pipeline() -> ToneAnalysisPipeline:
 @router.get("/health")
 async def health():
     """Health check."""
-    return {"status": "ok", "service": "AI Tone Studio API", "version": "1.2.2"}
+    return {"status": "ok", "service": "AI Tone Studio API", "version": "1.3.3"}
 
 
 @router.get("/devices")
@@ -254,6 +254,29 @@ def _ensure_pair(pair_id: str):
         _analyses[pair_id] = saved["analysis"]
 
 
+def _comparison_profile(pair_id: str, preset: dict):
+    """Usa somente perfil de áudio real, nunca parâmetros do pedal como áudio."""
+    metadata = preset.get("generation_metadata", {})
+    parent = metadata.get("source_pair_id") if isinstance(metadata, dict) else None
+    ids = [pair_id] + ([parent] if isinstance(parent, str) and parent != pair_id else [])
+    for candidate_id in ids:
+        import json
+        excerpt = load_record("comparison_reference", json.dumps([candidate_id, preset.get("role")]))
+        if excerpt and excerpt.get("profile"):
+            return excerpt["profile"], candidate_id, "saved_excerpt_profile"
+        analysis = _analyses.get(candidate_id)
+        if analysis is None:
+            saved = load_record("pair", candidate_id)
+            analysis = saved.get("analysis", {}) if saved else {}
+        profile = analysis.get("tone_reference")
+        if profile:
+            return profile, candidate_id, "saved_track_profile"
+    raise HTTPException(400, detail={"code": "reference_required", "message":
+        "Este preset está na biblioteca local, mas não há perfil de áudio da música no backend. "
+        "Selecione o áudio original e o início do trecho para analisar e sugerir ajustes. "
+        "A referência de configurações do pedal não substitui o áudio original."})
+
+
 def _serialize_preset(preset) -> dict:
     """Serializa Preset no formato esperado pelo app Flutter."""
     return {
@@ -352,6 +375,8 @@ async def compare_tone(
     try: preset=json.loads(preset_json)
     except ValueError:raise HTTPException(400,'Preset JSON inválido.')
     if not isinstance(preset,dict):raise HTTPException(400,'Preset inválido.')
+    if not 1 <= len(pair_id) <= 200 or preset.get('role') not in {'rhythm', 'lead'}:
+        raise HTTPException(400, 'Análise ou função do preset inválida.')
     work_dir=Path(tempfile.mkdtemp(prefix='tone_comparison_'))
     async def save_upload(upload, name, limit):
         suffix=Path(upload.filename or '').suffix.lower()
@@ -376,14 +401,20 @@ async def compare_tone(
                 raise HTTPException(400,'O trecho original termina antes da gravação. Escolha outro início de trecho.')
             source='selected_excerpt'
         else:
-            _ensure_pair(pair_id)
-            reference=_analyses[pair_id].get('tone_reference',{})
-            if not reference:raise HTTPException(400,'Esta análise antiga não tem perfil de comparação. Selecione o áudio original nesta tela.')
+            reference, reference_pair_id, source = _comparison_profile(pair_id, preset)
             reference_kind=reference.get('source_kind','mix')
-            source='saved_track_profile'
         result=await asyncio.to_thread(compare,reference,recorded,preset,CatalogLoader(CATALOGS_DIR),input_kind,reference_kind)
         result['reference_source']=source
+        if source != 'selected_excerpt':result['reference_pair_id']=reference_pair_id
+        if source == 'selected_excerpt':
+            import hashlib
+            save_record('comparison_reference', json.dumps([pair_id, preset.get('role')]), {
+                'profile': {**reference, 'source_kind': reference_kind},
+                'original_file_name': reference_file.filename,
+                'original_file_sha256': hashlib.sha256(reference_path.read_bytes()).hexdigest(),
+                'start_seconds': reference_start, 'duration_seconds': recorded['duration_seconds']})
         if source=='saved_track_profile':result['limitations'].append('Comparação com o perfil geral da música, não com o mesmo trecho. Selecione o áudio original e o início do trecho para uma referência mais útil.')
+        if source=='saved_excerpt_profile':result['limitations'].append('Comparação com o perfil do trecho original salvo para esta função. Toque a mesma passagem; selecione novamente o áudio original se mudar de trecho.')
         return result
     except HTTPException:raise
     except (ValueError,KeyError,TypeError) as error:raise HTTPException(400,str(error))

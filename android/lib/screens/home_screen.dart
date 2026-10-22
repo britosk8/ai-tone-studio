@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import '../services/preset_import.dart';
@@ -36,6 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
           _backendOk = true;
           _checking = false;
         });
+        unawaited(_syncReferences());
       }
     } catch (_) {
       if (mounted) {
@@ -44,6 +46,17 @@ class _HomeScreenState extends State<HomeScreen> {
           _checking = false;
         });
       }
+    }
+  }
+
+  Future<void> _syncReferences() async {
+    final api = context.read<ApiService>();
+    final store = context.read<PresetStore>();
+    try {
+      await store.load();
+      await api.syncSavedPedalReferences(store.pairs);
+    } catch (_) {
+      /* Os dados locais permanecem disponíveis para sincronizar depois. */
     }
   }
 

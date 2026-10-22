@@ -29,3 +29,10 @@ def load_record(kind: str, record_id: str):
     with _connect() as connection:
         row = connection.execute("SELECT data FROM records WHERE kind=? AND id=?", (kind, record_id)).fetchone()
     return json.loads(row[0]) if row else None
+
+
+def list_records(kind: str, limit: int = 100):
+    with _connect() as connection:
+        rows = connection.execute(
+            "SELECT data FROM records WHERE kind=? ORDER BY id LIMIT ?", (kind, limit)).fetchall()
+    return [json.loads(row[0]) for row in rows]

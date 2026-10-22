@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .api.routes import router
+from .api.pedal_references import router as references_router
 
 logging.basicConfig(
     level=logging.INFO,
@@ -13,7 +14,7 @@ logging.basicConfig(
 app = FastAPI(
     title="AI Tone Studio API",
     description="API para análise de áudio e geração de presets para pedaleiras M-VAVE",
-    version="1.2.2",
+    version="1.3.3",
 )
 
 app.add_middleware(
@@ -24,8 +25,9 @@ app.add_middleware(
 )
 
 app.include_router(router)
+app.include_router(references_router)
 
 
 @app.get("/")
 async def root():
-    return {"service": "AI Tone Studio", "version": "1.2.2", "docs": "/docs"}
+    return {"service": "AI Tone Studio", "version": "1.3.3", "docs": "/docs"}

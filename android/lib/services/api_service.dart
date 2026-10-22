@@ -4,11 +4,13 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/preset_pair.dart';
+import 'pedal_reference.dart';
 
 class ApiException implements Exception {
   final int? statusCode;
   final String message;
-  ApiException(this.message, {this.statusCode});
+  final String? errorCode;
+  ApiException(this.message, {this.statusCode, this.errorCode});
   @override
   String toString() => 'ApiException($statusCode): $message';
 }
@@ -41,11 +43,19 @@ class ApiService {
     }
     final body = utf8.decode(response.bodyBytes);
     String message = 'Erro ${response.statusCode}';
+    String? code;
     try {
       final decoded = json.decode(body) as Map<String, dynamic>;
-      message = decoded['detail']?.toString() ?? message;
+      final detail = decoded['detail'];
+      if (detail is Map) {
+        message = detail['message']?.toString() ?? message;
+        code = detail['code']?.toString();
+      } else {
+        message = detail?.toString() ?? message;
+      }
     } catch (_) {}
-    throw ApiException(message, statusCode: response.statusCode);
+    throw ApiException(message,
+        statusCode: response.statusCode, errorCode: code);
   }
 
   Future<Map<String, dynamic>> checkHealth() async {
@@ -119,6 +129,43 @@ class ApiService {
 
   Future<Map<String, dynamic>> exportJson(String pairId) async {
     return _get('/api/v1/presets/$pairId/export/json');
+  }
+
+  Future<void> syncPedalReference(
+      PresetPair pair, String role, PedalReference reference) async {
+    if (!['rhythm', 'lead'].contains(role)) {
+      throw ArgumentError('Função inválida');
+    }
+    final preset = role == 'rhythm' ? pair.rhythm : pair.lead;
+    final response = await http
+        .put(
+            Uri.parse(
+                '$_baseUrl/api/v1/presets/${Uri.encodeComponent(pair.id)}/pedal-reference/$role'),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({
+              'reference': reference.toJson(),
+              'generated_preset': preset.toJson()
+            }))
+        .timeout(const Duration(seconds: 10));
+    _handleResponse(response);
+  }
+
+  Future<int> syncSavedPedalReferences(Iterable<PresetPair> pairs) async {
+    final repository = PedalReferenceRepository();
+    var failures = 0;
+    for (final pair in pairs) {
+      for (final role in ['rhythm', 'lead']) {
+        try {
+          final reference = await repository.load(pair.id, role);
+          if (reference != null) {
+            await syncPedalReference(pair, role, reference);
+          }
+        } catch (_) {
+          failures++;
+        } // Referência local mantida para nova tentativa.
+      }
+    }
+    return failures;
   }
 
   Future<Map<String, dynamic>> compareTone(

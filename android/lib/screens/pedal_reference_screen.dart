@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/preset_pair.dart';
 import '../services/preset_store.dart';
+import '../services/api_service.dart';
 import '../services/pedal_reference.dart';
 import '../services/device/device_transport.dart';
 import '../services/device/preset_transfer.dart';
@@ -24,6 +25,7 @@ class _PedalReferenceScreenState extends State<PedalReferenceScreen> {
   List<Map<String, dynamic>> _devices = [];
   String? _deviceId;
   String _role = 'rhythm', _status = '';
+  String _syncStatus = '';
   bool _busy = true, _confirmed = false;
   bool _operationRunning = false;
   NativeDeviceTransport? _transport;
@@ -64,6 +66,26 @@ class _PedalReferenceScreenState extends State<PedalReferenceScreen> {
       _reference = reference;
       _decoded = decoded;
     });
+    if (reference != null) await _syncReference();
+  }
+
+  Future<void> _syncReference() async {
+    final reference = _reference;
+    final pair = _pair;
+    if (reference == null || pair == null) return;
+    try {
+      await context
+          .read<ApiService>()
+          .syncPedalReference(pair, _role, reference);
+      if (mounted) {
+        setState(() => _syncStatus = 'Referência salva também no backend.');
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() => _syncStatus =
+            'Referência salva no celular. Sincronização com o backend pendente; tente novamente quando ele estiver disponível.');
+      }
+    }
   }
 
   Future<void> _run(Future<void> Function() operation) async {
@@ -146,6 +168,7 @@ class _PedalReferenceScreenState extends State<PedalReferenceScreen> {
           }
           _transport = null;
         }
+        if (mounted) await _syncReference();
       });
 
   @override
@@ -197,6 +220,7 @@ class _PedalReferenceScreenState extends State<PedalReferenceScreen> {
                               _reference = null;
                               _decoded = null;
                               _status = '';
+                              _syncStatus = '';
                             });
                             await _loadReference();
                           });
@@ -217,6 +241,12 @@ class _PedalReferenceScreenState extends State<PedalReferenceScreen> {
                                 'Referência: ${_reference!.name} • slot ${_reference!.slot}',
                                 style: const TextStyle(fontSize: 20)),
                             Text('Gerado: ${generated.name}'),
+                            if (_syncStatus.isNotEmpty) Text(_syncStatus),
+                            TextButton(
+                                onPressed:
+                                    _busy ? null : () => _run(_syncReference),
+                                child: const Text(
+                                    'Sincronizar referência com o backend')),
                             Text(
                                 '${rows.where((r) => r.changed).length} diferenças de configuração'),
                             const Text(
