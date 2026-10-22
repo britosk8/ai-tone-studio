@@ -5,7 +5,37 @@ import 'preset_import.dart';
 
 /// Busca controlada do piloto Infest. Não é um modelo de matching treinado.
 class Mk300Pilot {
+  static const generatorId = 'mk300-infest-reference-candidates-v1';
+  static bool isCandidate(PresetPair pair) =>
+      pair.rhythm.generationMetadata['generator'] == generatorId;
+
+  static String? candidateKey(PresetPair pair) {
+    if (!isCandidate(pair)) return null;
+    final meta = pair.rhythm.generationMetadata;
+    final source = meta['source_pair_id'];
+    final candidate = meta['candidate'];
+    if (source is! String ||
+        source.isEmpty ||
+        !['A', 'B', 'C'].contains(candidate)) return null;
+    return jsonEncode([generatorId, source, candidate]);
+  }
+
+  static List<PresetPair> existingFor(List<PresetPair> pairs, String sourceId) {
+    final found = <String, PresetPair>{};
+    for (final pair in pairs) {
+      final meta = pair.rhythm.generationMetadata;
+      if (candidateKey(pair) != null && meta['source_pair_id'] == sourceId) {
+        found.putIfAbsent(meta['candidate'] as String, () => pair);
+      }
+    }
+    return [
+      for (final label in ['A', 'B', 'C'])
+        if (found[label] != null) found[label]!
+    ];
+  }
+
   static bool supports(PresetPair pair) =>
+      !isCandidate(pair) &&
       pair.rhythm.device == 'MK300' &&
       pair.lead.device == 'MK300' &&
       pair.rhythm.catalogVersion == '0.4.0' &&
@@ -89,7 +119,7 @@ class Mk300Pilot {
       base['preset_volume'] = 60;
       base['center_pan'] = true;
       base['generation_metadata'] = {
-        'generator': 'mk300-infest-reference-candidates-v1',
+        'generator': generatorId,
         'source_pair_id': source.id,
         'source_preset_id': source.rhythm.id,
         'reference': 'user-approved-Konig-MK20',

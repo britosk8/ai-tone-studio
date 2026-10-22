@@ -14,7 +14,6 @@ class _Mk300PilotScreenState extends State<Mk300PilotScreen> {
   String? _sourceId;
   bool _busy = false;
   String? _error;
-  List<PresetPair> _candidates = [];
 
   @override
   void initState() {
@@ -23,6 +22,7 @@ class _Mk300PilotScreenState extends State<Mk300PilotScreen> {
   }
 
   Future<void> _generate(PresetPair source) async {
+    if (_busy) return;
     setState(() {
       _busy = true;
       _error = null;
@@ -31,8 +31,7 @@ class _Mk300PilotScreenState extends State<Mk300PilotScreen> {
     try {
       final candidates = await Mk300Pilot.generate(source);
       if (!mounted) return;
-      await context.read<PresetStore>().saveNewBatch(candidates);
-      if (mounted) setState(() => _candidates = candidates);
+      await context.read<PresetStore>().saveOrReusePilotBatch(candidates);
     } catch (e) {
       if (mounted) {
         setState(() => _error = 'Não foi possível gerar os candidatos: $e');
@@ -42,12 +41,36 @@ class _Mk300PilotScreenState extends State<Mk300PilotScreen> {
     }
   }
 
+  Future<void> _clear() async {
+    if (_busy) return;
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    try {
+      final count = await context.read<PresetStore>().clearPilotCandidates();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+                '$count candidatos removidos. Presets de origem preservados.')));
+      }
+    } catch (e) {
+      if (mounted) setState(() => _error = 'Não foi possível limpar: $e');
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final pairs =
-        context.watch<PresetStore>().pairs.where(Mk300Pilot.supports).toList();
+    final store = context.watch<PresetStore>();
+    final pairs = store.pairs.where(Mk300Pilot.supports).toList();
     final selected = pairs.where((p) => p.id == _sourceId).firstOrNull ??
         (pairs.isEmpty ? null : pairs.first);
+    final candidates = selected == null
+        ? <PresetPair>[]
+        : Mk300Pilot.existingFor(store.pairs, selected.id);
+    final generatedCount = store.pairs.where(Mk300Pilot.isCandidate).length;
     return Scaffold(
       appBar: AppBar(title: const Text('Piloto Infest — MK300')),
       body: ListView(padding: const EdgeInsets.all(20), children: [
@@ -73,9 +96,8 @@ class _Mk300PilotScreenState extends State<Mk300PilotScreen> {
                     child:
                         Text(p.rhythm.name, overflow: TextOverflow.ellipsis)))
                 .toList(),
-            onChanged: _busy || _candidates.isNotEmpty
-                ? null
-                : (value) => setState(() => _sourceId = value),
+            onChanged:
+                _busy ? null : (value) => setState(() => _sourceId = value),
           ),
           const SizedBox(height: 16),
           const Text(
@@ -84,18 +106,28 @@ class _Mk300PilotScreenState extends State<Mk300PilotScreen> {
               'O solo anterior será mantido como cópia; somente a base será gerada.'),
           const SizedBox(height: 16),
           FilledButton.icon(
-            onPressed: _busy || _candidates.isNotEmpty
+            onPressed: _busy || candidates.length == 3
                 ? null
                 : () => _generate(selected),
             icon: const Icon(Icons.auto_fix_high),
             label: Text(_busy
                 ? 'Gerando candidatos...'
-                : 'Gerar candidatos na biblioteca'),
+                : candidates.length == 3
+                    ? 'Candidatos já existentes'
+                    : candidates.isEmpty
+                        ? 'Gerar candidatos na biblioteca'
+                        : 'Gerar somente candidatos faltantes'),
           ),
         ],
+        if (generatedCount > 0)
+          TextButton.icon(
+            onPressed: _busy ? null : _clear,
+            icon: const Icon(Icons.delete_sweep_outlined),
+            label: Text('Limpar candidatos e recomeçar ($generatedCount)'),
+          ),
         if (_error != null)
           Padding(padding: const EdgeInsets.all(12), child: Text(_error!)),
-        for (var i = 0; i < _candidates.length; i++) ...[
+        for (var i = 0; i < candidates.length; i++) ...[
           const SizedBox(height: 16),
           Card(
               child: Padding(
@@ -103,14 +135,20 @@ class _Mk300PilotScreenState extends State<Mk300PilotScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(_candidates[i].rhythm.name,
+                      Text(candidates[i].rhythm.name,
                           style: const TextStyle(fontSize: 20)),
-                      Text(i == 0
+                      Text(candidates[i]
+                                  .rhythm
+                                  .generationMetadata['candidate'] ==
+                              'A'
                           ? 'A • Primeiro candidato'
-                          : i == 1
+                          : candidates[i]
+                                      .rhythm
+                                      .generationMetadata['candidate'] ==
+                                  'B'
                               ? 'B • Troca somente o amplificador de A'
                               : 'C • Troca somente o gabinete de A'),
-                      Text(_candidates[i]
+                      Text(candidates[i]
                           .rhythm
                           .effectChain
                           .where((b) =>
@@ -121,14 +159,14 @@ class _Mk300PilotScreenState extends State<Mk300PilotScreen> {
                       FilledButton(
                           onPressed: () => Navigator.pushNamed(
                                   context, '/transfer', arguments: {
-                                'pair_id': _candidates[i].id,
+                                'pair_id': candidates[i].id,
                                 'role': 'rhythm'
                               }),
                           child: const Text('Enviar base para a MK300')),
                       TextButton(
                           onPressed: () => Navigator.pushNamed(
                               context, '/presets',
-                              arguments: {'pair_id': _candidates[i].id}),
+                              arguments: {'pair_id': candidates[i].id}),
                           child: const Text('Ver presets salvos')),
                     ],
                   ))),

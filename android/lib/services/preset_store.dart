@@ -2,11 +2,15 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/preset_pair.dart';
+import 'mk300_pilot.dart';
 
 class PresetStore extends ChangeNotifier {
   final List<PresetPair> _pairs = [];
   bool _loaded = false;
   Future<void>? _loading;
+  Future<void>? _pilotQueue;
+  static const pilotCleanupKey = 'mk300_pilot_cleanup_v1_done';
+  static const pilotBackupKey = 'mk300_pilot_before_cleanup_v1';
 
   List<PresetPair> get pairs => List.unmodifiable(_pairs);
 
@@ -36,7 +40,22 @@ class PresetStore extends ChangeNotifier {
         ));
       } catch (_) {}
     }
-    await _persist();
+    // Atualização solicitada: limpar somente candidatos gerados, uma vez.
+    // Snapshot completo salvo antes de remover qualquer item da biblioteca.
+    if (prefs.getBool(pilotCleanupKey) != true) {
+      if (_pairs.any(Mk300Pilot.isCandidate)) {
+        if (!await prefs.setStringList(pilotBackupKey, raw)) {
+          throw StateError('Não foi possível salvar o backup da limpeza');
+        }
+        _pairs.removeWhere(Mk300Pilot.isCandidate);
+      }
+      await _persist();
+      if (!await prefs.setBool(pilotCleanupKey, true)) {
+        throw StateError('Não foi possível registrar a limpeza');
+      }
+    } else {
+      await _persist();
+    }
     _loaded = true;
     notifyListeners();
   }
@@ -81,6 +100,60 @@ class PresetStore extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  Future<T> _pilotOperation<T>(Future<T> Function() task) {
+    final result = _pilotQueue == null
+        ? Future<T>.sync(task)
+        : _pilotQueue!.then((_) => task());
+    _pilotQueue =
+        result.then<void>((_) {}, onError: (Object error, StackTrace stack) {});
+    return result;
+  }
+
+  Future<List<PresetPair>> saveOrReusePilotBatch(List<PresetPair> candidates) =>
+      _pilotOperation(() async {
+        await load();
+        final keys = candidates.map(Mk300Pilot.candidateKey).toList();
+        if (keys.isEmpty ||
+            keys.contains(null) ||
+            keys.toSet().length != keys.length) {
+          throw StateError('Rodada de candidatos inválida');
+        }
+        final result = <PresetPair>[];
+        final missing = <PresetPair>[];
+        for (var i = 0; i < candidates.length; i++) {
+          final existing = _pairs
+              .where((p) => Mk300Pilot.candidateKey(p) == keys[i])
+              .firstOrNull;
+          result.add(existing ?? candidates[i]);
+          if (existing == null) missing.add(candidates[i]);
+        }
+        if (missing.isNotEmpty) await saveNewBatch(missing);
+        return result;
+      });
+
+  Future<int> clearPilotCandidates() => _pilotOperation(() async {
+        await load();
+        final removed = _pairs.where(Mk300Pilot.isCandidate).toList();
+        if (removed.isEmpty) return 0;
+        final prefs = await SharedPreferences.getInstance();
+        final raw = prefs.getStringList('preset_pairs') ?? [];
+        if (!await prefs.setStringList(
+            'mk300_pilot_before_latest_cleanup', raw)) {
+          throw StateError('Não foi possível salvar o backup da limpeza');
+        }
+        final original = List<PresetPair>.from(_pairs);
+        _pairs.removeWhere(Mk300Pilot.isCandidate);
+        try {
+          await _persist();
+        } catch (_) {
+          _pairs.clear();
+          _pairs.addAll(original);
+          rethrow;
+        }
+        notifyListeners();
+        return removed.length;
+      });
 
   Future<void> remove(String pairId) async {
     await load();
