@@ -37,7 +37,10 @@ class _ToneComparisonScreenState extends State<ToneComparisonScreen>
       _polling = false,
       _ownedRecording = false;
   File? _capture, _reference;
-  Map<String, dynamic>? _report;
+  Map<String, dynamic>? _report, _savedReference;
+  double _peakDbfs = -120, _clippedFraction = 0;
+  bool get _v2Reference =>
+      _preset?.generationMetadata['generator'] == 'guitar-v2-heuristic';
   PresetData? get _preset => _role == 'lead' ? _pair?.lead : _pair?.rhythm;
   @override
   void initState() {
@@ -56,9 +59,48 @@ class _ToneComparisonScreenState extends State<ToneComparisonScreen>
       if (pair == null) throw StateError('Preset não está na biblioteca.');
       setState(() => _pair = pair);
       await _refreshInputs();
+      await _loadReference();
     } catch (e) {
       if (mounted) setState(() => _status = 'Erro: $e');
     }
+  }
+
+  Future<void> _loadReference() async {
+    final role = _role;
+    try {
+      final info =
+          await context.read<ApiService>().referenceInfo(widget.pairId, role);
+      if (mounted && _role == role) setState(() => _savedReference = info);
+    } catch (_) {
+      if (mounted && _role == role) setState(() => _savedReference = null);
+    }
+  }
+
+  Future<void> _selectRegion() async {
+    final saved = _savedReference;
+    if (saved == null) return;
+    final selected = await showDialog<Map<String, double>>(
+        context: context,
+        builder: (context) => _SavedRegionDialog(
+            role: _role,
+            start: '${saved['start_seconds']}',
+            duration:
+                '${saved['needs_region'] == true ? 20 : saved['duration_seconds']}'));
+    if (selected == null || !mounted) return;
+    final begin = selected['start']!, seconds = selected['duration']!;
+    await _run(() async {
+      final info = await context
+          .read<ApiService>()
+          .setReferenceRegion(widget.pairId, _role, begin, seconds);
+      if (mounted) {
+        setState(() {
+          _savedReference = info;
+          _reference = null;
+          _report = null;
+          _status = 'Trecho salvo. Toque a mesma passagem da referência.';
+        });
+      }
+    });
   }
 
   Future<void> _refreshInputs() async {
@@ -125,7 +167,8 @@ class _ToneComparisonScreenState extends State<ToneComparisonScreen>
           _status =
               'Gravando pela entrada ${info['input']}. Toque o mesmo trecho da referência.';
         });
-        _timer = Timer.periodic(const Duration(seconds: 1), (_) => _poll());
+        _timer =
+            Timer.periodic(const Duration(milliseconds: 250), (_) => _poll());
       });
   Future<void> _poll() async {
     if (_polling || !_recording || _busy) return;
@@ -133,7 +176,14 @@ class _ToneComparisonScreenState extends State<ToneComparisonScreen>
     try {
       final status = await _recorder.status();
       if (!mounted) return;
-      setState(() => _elapsed++);
+      setState(() {
+        _elapsed = status['elapsed_ms'] is num
+            ? (status['elapsed_ms'] as num).toInt() ~/ 1000
+            : _elapsed;
+        _peakDbfs = (status['peak_dbfs'] as num?)?.toDouble() ?? -120;
+        _clippedFraction =
+            (status['clipped_fraction'] as num?)?.toDouble() ?? 0;
+      });
       if (status['finished'] == true) {
         await _stop();
       }
@@ -209,6 +259,10 @@ class _ToneComparisonScreenState extends State<ToneComparisonScreen>
         if (start == null || !start.isFinite || start < 0) {
           throw ArgumentError('Informe o início do trecho em segundos.');
         }
+        if (_v2Reference && _savedReference?['needs_region'] == true) {
+          throw StateError(
+              'Salve o trecho de base ou solo da guitarra já separada antes de comparar.');
+        }
         final snapshot = _preset!;
         setState(() =>
             _status = 'Medindo sua gravação e comparando com a referência...');
@@ -235,13 +289,22 @@ class _ToneComparisonScreenState extends State<ToneComparisonScreen>
                 : 'Selecione o áudio original da música. O preset está no celular, mas o backend não tem seu perfil de áudio.';
             _report = null;
           });
-          final selected = await _chooseAudio();
-          if (mounted && selected != null) {
-            setState(() {
-              _reference = selected;
-              _status =
-                  'Áudio original selecionado. Confira o início do trecho e toque em Analisar e sugerir ajustes novamente.';
-            });
+          if (!_v2Reference && _savedReference == null) {
+            // Compatibilidade: análises antigas podem ainda não ter o original salvo.
+            final selected = await _chooseAudio();
+            if (mounted && selected != null) {
+              setState(() {
+                _reference = selected;
+                _status =
+                    'Áudio original selecionado. Confira o início do trecho e analise novamente.';
+              });
+            }
+            return;
+          }
+          await _loadReference();
+          if (mounted) {
+            setState(() => _status =
+                'A referência salva não está disponível. Confira o trecho desta parte no backend; sua gravação foi preservada.');
           }
           return;
         }
@@ -338,9 +401,12 @@ class _ToneComparisonScreenState extends State<ToneComparisonScreen>
                             if (!mounted) return;
                             setState(() {
                               _role = v!;
+                              _savedReference = null;
+                              _reference = null;
                               _status =
                                   'Grave novamente com o preset selecionado.';
                             });
+                            await _loadReference();
                           })),
               const SizedBox(height: 12),
               const Text(
@@ -405,22 +471,46 @@ class _ToneComparisonScreenState extends State<ToneComparisonScreen>
                   child: Text(_recording
                       ? 'Parar gravação ($_elapsed s)'
                       : 'Gravar minha guitarra')),
+              if (_recording || _ownedRecording) ...[
+                Text('Pico de entrada: ${_peakDbfs.toStringAsFixed(1)} dBFS'),
+                LinearProgressIndicator(
+                    value: ((_peakDbfs + 60) / 60).clamp(0, 1),
+                    color:
+                        _clippedFraction >= .005 ? Colors.red : Colors.green),
+                if (_clippedFraction >= .005)
+                  const Text(
+                      'Saturação detectada na entrada. Pare, reduza o volume pelo app e grave novamente.',
+                      style: TextStyle(color: Colors.red)),
+              ],
               TextButton(
                   onPressed: _busy || _recording ? null : _importCapture,
                   child: const Text('Importar gravação de guitarra')),
               const Divider(),
-              const Text('Referência original',
+              const Text('Referência da guitarra',
                   style: TextStyle(fontWeight: FontWeight.bold)),
-              Text(_reference == null
-                  ? (_preset?.generationMetadata['generator'] ==
-                          'guitar-v2-heuristic'
-                      ? 'Sua gravação será comparada com a guitarra extraída da música enviada, no trecho desta parte salvo no backend. Toque a mesma passagem. Não precisa selecionar o original novamente.'
-                      : 'Será usado o perfil de referência salvo no backend, quando disponível. Para análises antigas ou mudar o trecho, selecione o áudio original.')
-                  : _reference!.path.split('/').last),
-              OutlinedButton(
-                  onPressed: _busy || _recording ? null : _chooseReference,
-                  child: const Text('Selecionar áudio original')),
+              if (_savedReference != null) ...[
+                Text(
+                    '${_role == 'lead' ? 'Solo' : 'Base'} — ${_savedReference!['title']}'),
+                Text(
+                    'Trecho: ${_savedReference!['start_seconds']} s — duração ${_savedReference!['duration_seconds']} s'),
+                Text(_savedReference!['needs_region'] == true
+                    ? 'Esta referência ainda contém a música inteira. Salve uma vez o trecho desta parte na guitarra já separada.'
+                    : 'Guitarra já separada e salva no backend. Sua gravação será comparada com este trecho, sem selecionar arquivo novamente.'),
+                OutlinedButton(
+                    onPressed: _busy || _recording ? null : _selectRegion,
+                    child: const Text('Ajustar trecho da guitarra salva')),
+              ] else ...[
+                Text(_v2Reference
+                    ? 'Buscando a guitarra separada salva no backend...'
+                    : 'Use a referência salva ou selecione um original apenas para análises antigas.'),
+              ],
+              if (!_v2Reference)
+                OutlinedButton(
+                    onPressed: _busy || _recording ? null : _chooseReference,
+                    child: const Text(
+                        'Selecionar outra referência (análises antigas)')),
               if (_reference != null) ...[
+                Text(_reference!.path.split('/').last),
                 TextField(
                     controller: _referenceStart,
                     keyboardType:
@@ -460,4 +550,75 @@ class _ToneComparisonScreenState extends State<ToneComparisonScreen>
           ]),
         ));
   }
+}
+
+class _SavedRegionDialog extends StatefulWidget {
+  final String role, start, duration;
+  const _SavedRegionDialog(
+      {required this.role, required this.start, required this.duration});
+  @override
+  State<_SavedRegionDialog> createState() => _SavedRegionDialogState();
+}
+
+class _SavedRegionDialogState extends State<_SavedRegionDialog> {
+  late final _start = TextEditingController(text: widget.start);
+  late final _duration = TextEditingController(text: widget.duration);
+  String? _error;
+  @override
+  void dispose() {
+    _start.dispose();
+    _duration.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => AlertDialog(
+          title: Text(widget.role == 'lead'
+              ? 'Trecho da guitarra solo'
+              : 'Trecho da guitarra base'),
+          content: Column(mainAxisSize: MainAxisSize.min, children: [
+            const Text(
+                'A guitarra já está separada. Este trecho ficará salvo para esta parte nas próximas comparações.'),
+            TextField(
+                controller: _start,
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                decoration: const InputDecoration(
+                    labelText: 'Início na música (segundos)')),
+            TextField(
+                controller: _duration,
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                decoration: const InputDecoration(
+                    labelText: 'Duração (3–120 segundos)')),
+            if (_error != null)
+              Text(_error!,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error))
+          ]),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancelar')),
+            FilledButton(
+                onPressed: () {
+                  final start =
+                          double.tryParse(_start.text.replaceAll(',', '.')),
+                      duration =
+                          double.tryParse(_duration.text.replaceAll(',', '.'));
+                  if (start == null ||
+                      duration == null ||
+                      !start.isFinite ||
+                      !duration.isFinite ||
+                      start < 0 ||
+                      duration < 3 ||
+                      duration > 120) {
+                    setState(() => _error =
+                        'Informe um início válido e duração entre 3 e 120 s.');
+                    return;
+                  }
+                  Navigator.pop(
+                      context, {'start': start, 'duration': duration});
+                },
+                child: const Text('Salvar trecho'))
+          ]);
 }

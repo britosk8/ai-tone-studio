@@ -89,10 +89,14 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
 
   Future<void> _loadAndSavePair(String pairId) async {
     try {
-      final api = context.read<ApiService>();
-      final pair = await api.getPresets(pairId);
+      final store = context.read<PresetStore>();
+      await store.load();
       if (!mounted) return;
-      await context.read<PresetStore>().save(pair);
+      if (!store.pairs.any((pair) => pair.id == pairId)) {
+        final pair = await context.read<ApiService>().getPresets(pairId);
+        if (!mounted) return;
+        await store.save(pair);
+      }
       if (mounted) {
         Navigator.pushReplacementNamed(context, '/presets',
             arguments: {'pair_id': pairId});

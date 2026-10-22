@@ -37,3 +37,5 @@ Desde a V1.3.4, `backend/data/recordings/` também contém capturas da guitarra 
 Os presets R1 e os registros de calibração ficam versionados para permitir comparação entre rodadas. Cada evolução deve registrar código, parâmetros, motivo da mudança e resultado observado antes da expansão para outras músicas.
 
 Na V1.4.0, incluir também `generation_inputs/` e `separations/` no backup de dados. O ponto imediatamente anterior à evolução do motor é o commit `2f2025c` (V1.3.4). A `main` e o baseline inicial permanecem preservados.
+
+Antes da V1.4.2: commit `5bbb726` (Android 1.4.1/API 1.4.0). A V1.4.2 acrescenta seleções de referências e jobs idempotentes no SQLite, além de recortes persistidos em `separations/`; manter backup integral de dados. Reverter código não deve apagar capturas, instrumentos ou seleções já salvas.

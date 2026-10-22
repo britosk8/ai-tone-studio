@@ -17,20 +17,43 @@ class GuitarToneEngine:
         self.compiler = compiler
         self.provider = provider or DemucsGuitarProvider()
 
-    def analyze(self, source, work_dir, source_kind, start, duration, progress):
-        progress(15, "Preparando áudio estéreo sem normalização...")
-        prepared = AudioPreprocessor().prepare(
-            source, work_dir / "reference.wav", start, duration
-        )
-        separation = None
-        target = prepared
-        if source_kind == "mix":
+    def analyze(
+        self,
+        source,
+        work_dir,
+        source_kind,
+        start,
+        duration,
+        progress,
+        cached_reference=None,
+    ):
+        if cached_reference:
+            from .separation import crop_saved_stems
+
             progress(
                 25,
-                "Separando guitarra, voz, baixo, bateria e demais instrumentos... Isso pode levar vários minutos.",
+                "Reutilizando a guitarra já separada, sem enviar a música novamente...",
             )
-            separation = self.provider.separate_guitar(prepared)
+            separation = crop_saved_stems(
+                cached_reference["cache_id"],
+                start - cached_reference["cache_start_seconds"],
+                duration,
+            )
             target = separation.guitar_stem
+        else:
+            progress(15, "Preparando áudio estéreo sem normalização...")
+            prepared = AudioPreprocessor().prepare(
+                source, work_dir / "reference.wav", start, duration
+            )
+            separation = None
+            target = prepared
+            if source_kind == "mix":
+                progress(
+                    25,
+                    "Separando guitarra, voz, baixo, bateria e demais instrumentos... Isso pode levar vários minutos.",
+                )
+                separation = self.provider.separate_guitar(prepared)
+                target = separation.guitar_stem
         progress(70, "Medindo espectro, dinâmica e ataque da guitarra...")
         features = GuitarToneFeatureExtractor().extract(target)
         descriptor = describe(features)
@@ -74,7 +97,10 @@ class GuitarToneEngine:
             "Cortes do gabinete mantêm valores iniciais do catálogo; a escala física ainda não foi calibrada.",
         ]
         if separation:
-            analysis.limitations += separation.metadata["limitations"]
+            analysis.limitations += separation.metadata.get(
+                "limitations",
+                ["A separação pode conter vazamentos e guitarras simultâneas."],
+            )
         if features["possible_layering"]:
             analysis.warnings.append(
                 "Referência estéreo larga: pode conter guitarras sobrepostas ou efeitos estéreo."

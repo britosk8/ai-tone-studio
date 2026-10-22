@@ -50,6 +50,54 @@ class ApiService {
     return response.bodyBytes;
   }
 
+  Future<List<Map<String, dynamic>>> referenceLibrary() async {
+    final data = await _get('/api/v1/reference-library');
+    return (data['songs'] as List)
+        .map((e) => Map<String, dynamic>.from(e as Map))
+        .toList();
+  }
+
+  Future<Map<String, dynamic>> referenceInfo(String pairId, String role) =>
+      _get('/api/v1/presets/$pairId/reference/$role');
+  Future<Map<String, dynamic>> setReferenceRegion(
+      String pairId, String role, double start, double duration) async {
+    final response = await http
+        .put(Uri.parse('$_baseUrl/api/v1/presets/$pairId/reference/$role'),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(
+                {'start_seconds': start, 'duration_seconds': duration}))
+        .timeout(const Duration(seconds: 60));
+    return _handleResponse(response);
+  }
+
+  Future<AnalysisJob> submitSavedAnalysis(
+      {required String pairId,
+      required String rhythmDevice,
+      required String leadDevice,
+      required double rhythmStart,
+      required double rhythmDuration,
+      required double leadStart,
+      required double leadDuration}) async {
+    final response = await http
+        .post(Uri.parse('$_baseUrl/api/v1/analyze-saved'),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({
+              'pair_id': pairId,
+              'rhythm_device': rhythmDevice,
+              'lead_device': leadDevice,
+              'rhythm_region': {
+                'start_seconds': rhythmStart,
+                'duration_seconds': rhythmDuration
+              },
+              'lead_region': {
+                'start_seconds': leadStart,
+                'duration_seconds': leadDuration
+              }
+            }))
+        .timeout(const Duration(seconds: 60));
+    return AnalysisJob.fromJson(_handleResponse(response));
+  }
+
   Future<Map<String, dynamic>> _get(String path) async {
     final uri = Uri.parse('$_baseUrl$path');
     final response = await http.get(uri).timeout(const Duration(seconds: 30));

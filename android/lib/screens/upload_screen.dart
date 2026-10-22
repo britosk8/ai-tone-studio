@@ -36,6 +36,9 @@ class _UploadScreenState extends State<UploadScreen> {
   final _excerptStart = TextEditingController(text: '0');
   final _excerptDuration = TextEditingController(text: '20');
   String? _error;
+  List<Map<String, dynamic>> _songs = [];
+  String? _savedPairId;
+  bool _useSaved = false;
 
   @override
   void initState() {
@@ -44,6 +47,34 @@ class _UploadScreenState extends State<UploadScreen> {
     _songController.text = widget.initialSongTitle ?? "";
     _rhythmDevice = widget.initialRhythmDevice;
     _leadDevice = widget.initialLeadDevice;
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadLibrary());
+  }
+
+  Future<void> _loadLibrary() async {
+    try {
+      final songs = await context.read<ApiService>().referenceLibrary();
+      if (!mounted) return;
+      setState(() => _songs = songs);
+    } catch (_) {/* Upload novo continua disponível sem biblioteca online. */}
+  }
+
+  void _selectSaved(String id) {
+    final song = _songs.firstWhere((s) => s['pair_id'] == id);
+    final roles = song['roles'] as Map;
+    final base = roles['rhythm'] as Map, solo = roles['lead'] as Map;
+    setState(() {
+      _savedPairId = id;
+      _useSaved = true;
+      _useExcerpt = true;
+      _differentLead = true;
+      _excerptStart.text = '${base['start_seconds']}';
+      _excerptDuration.text =
+          '${base['needs_region'] == true ? 20 : base['duration_seconds']}';
+      _leadStart.text = '${solo['start_seconds']}';
+      _leadDuration.text =
+          '${solo['needs_region'] == true ? 20 : solo['duration_seconds']}';
+      _error = null;
+    });
   }
 
   @override
@@ -92,7 +123,7 @@ class _UploadScreenState extends State<UploadScreen> {
   }
 
   Future<void> _submit() async {
-    if (_selectedFile == null) {
+    if (!_useSaved && _selectedFile == null) {
       setState(() => _error = 'Selecione um arquivo de áudio primeiro');
       return;
     }
@@ -136,19 +167,28 @@ class _UploadScreenState extends State<UploadScreen> {
     }
     try {
       final api = context.read<ApiService>();
-      final job = await api.submitAnalysis(
-        audioFile: _selectedFile!,
-        rhythmDevice: _rhythmDevice,
-        leadDevice: _leadDevice,
-        artist: _artistController.text,
-        songTitle: _songController.text,
-        originalFileName: _fileName,
-        sourceKind: _sourceKind,
-        excerptStart: _useExcerpt ? start! : 0,
-        excerptDuration: _useExcerpt ? duration : null,
-        leadStart: _differentLead ? leadStart : null,
-        leadDuration: _differentLead ? leadDuration : null,
-      );
+      final job = _useSaved && _savedPairId != null
+          ? await api.submitSavedAnalysis(
+              pairId: _savedPairId!,
+              rhythmDevice: _rhythmDevice,
+              leadDevice: _leadDevice,
+              rhythmStart: start!,
+              rhythmDuration: duration!,
+              leadStart: leadStart!,
+              leadDuration: leadDuration!)
+          : await api.submitAnalysis(
+              audioFile: _selectedFile!,
+              rhythmDevice: _rhythmDevice,
+              leadDevice: _leadDevice,
+              artist: _artistController.text,
+              songTitle: _songController.text,
+              originalFileName: _fileName,
+              sourceKind: _sourceKind,
+              excerptStart: _useExcerpt ? start! : 0,
+              excerptDuration: _useExcerpt ? duration : null,
+              leadStart: _differentLead ? leadStart : null,
+              leadDuration: _differentLead ? leadDuration : null,
+            );
 
       if (mounted) {
         Navigator.pushReplacementNamed(context, '/analysis',
@@ -178,12 +218,47 @@ class _UploadScreenState extends State<UploadScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const _SectionHeader('Arquivo de Áudio'),
-            const SizedBox(height: 12),
-            _FileSelector(
-              fileName: _fileName,
-              onTap: _pickFile,
-            ),
+            if (_songs.isNotEmpty) ...[
+              SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: const Text('Usar música já separada'),
+                  value: _useSaved,
+                  onChanged: _uploading
+                      ? null
+                      : (value) {
+                          if (value) {
+                            _selectSaved(_savedPairId ??
+                                _songs.first['pair_id'] as String);
+                          } else {
+                            setState(() => _useSaved = false);
+                          }
+                        }),
+              if (_useSaved) ...[
+                DropdownButtonFormField<String>(
+                    value: _savedPairId,
+                    isExpanded: true,
+                    decoration: const InputDecoration(
+                        labelText: 'Música salva no backend'),
+                    items: _songs
+                        .map((song) => DropdownMenuItem<String>(
+                            value: song['pair_id'] as String,
+                            child: Text(song['title'] as String,
+                                overflow: TextOverflow.ellipsis)))
+                        .toList(),
+                    onChanged:
+                        _uploading ? null : (value) => _selectSaved(value!)),
+                const Text(
+                    'Os trechos de base e solo salvos serão usados automaticamente. Se ainda houver apenas a música inteira, defina os trechos uma vez abaixo. Não será feita nova separação por IA.'),
+              ],
+            ],
+            if (!_useSaved) ...[
+              const _SectionHeader('Arquivo de Áudio'),
+              const SizedBox(height: 12),
+              _FileSelector(
+                fileName: _fileName,
+                onTap: _pickFile,
+              ),
+            ],
             if (_error != null) ...[
               const SizedBox(height: 8),
               Text(_error!,
@@ -191,22 +266,24 @@ class _UploadScreenState extends State<UploadScreen> {
                       const TextStyle(color: AppTheme.errorRed, fontSize: 13)),
             ],
             const SizedBox(height: 24),
-            const _SectionHeader('Referência do timbre'),
+            if (!_useSaved) const _SectionHeader('Referência do timbre'),
             const SizedBox(height: 12),
-            DropdownButtonFormField<String>(
-              value: _sourceKind,
-              decoration: const InputDecoration(labelText: 'Conteúdo do áudio'),
-              items: const [
-                DropdownMenuItem(
-                    value: 'mix',
-                    child: Text('Música com outros instrumentos')),
-                DropdownMenuItem(
-                    value: 'isolated',
-                    child: Text('Somente guitarra, já isolada')),
-              ],
-              onChanged:
-                  _uploading ? null : (v) => setState(() => _sourceKind = v!),
-            ),
+            if (!_useSaved)
+              DropdownButtonFormField<String>(
+                value: _sourceKind,
+                decoration:
+                    const InputDecoration(labelText: 'Conteúdo do áudio'),
+                items: const [
+                  DropdownMenuItem(
+                      value: 'mix',
+                      child: Text('Música com outros instrumentos')),
+                  DropdownMenuItem(
+                      value: 'isolated',
+                      child: Text('Somente guitarra, já isolada')),
+                ],
+                onChanged:
+                    _uploading ? null : (v) => setState(() => _sourceKind = v!),
+              ),
             const SizedBox(height: 8),
             const Text(
                 'A música será separada por IA no backend antes de analisar a guitarra. Prefira trechos de 20 segundos: em CPU a separação pode levar minutos. Base e solo simultâneos podem permanecer juntos.',
@@ -217,8 +294,9 @@ class _UploadScreenState extends State<UploadScreen> {
               subtitle: const Text(
                   'Sem seleção, analisa a música completa. O solo pode usar outro trecho abaixo.'),
               value: _useExcerpt,
-              onChanged:
-                  _uploading ? null : (v) => setState(() => _useExcerpt = v),
+              onChanged: _uploading || _useSaved
+                  ? null
+                  : (v) => setState(() => _useExcerpt = v),
             ),
             if (_useExcerpt) ...[
               TextField(
@@ -241,8 +319,9 @@ class _UploadScreenState extends State<UploadScreen> {
               contentPadding: EdgeInsets.zero,
               title: const Text('Usar outro trecho para o solo'),
               value: _differentLead,
-              onChanged:
-                  _uploading ? null : (v) => setState(() => _differentLead = v),
+              onChanged: _uploading || _useSaved
+                  ? null
+                  : (v) => setState(() => _differentLead = v),
             ),
             if (_differentLead) ...[
               TextField(
@@ -261,28 +340,30 @@ class _UploadScreenState extends State<UploadScreen> {
                       labelText: 'Duração do solo (3–120 segundos)')),
             ],
             const SizedBox(height: 24),
-            const _SectionHeader('Informações (opcional)'),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _artistController,
-              decoration: const InputDecoration(
-                labelText: 'Artista',
-                filled: true,
-                fillColor: AppTheme.bgCard,
-                border: OutlineInputBorder(borderSide: BorderSide.none),
+            if (!_useSaved) ...[
+              const _SectionHeader('Informações (opcional)'),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _artistController,
+                decoration: const InputDecoration(
+                  labelText: 'Artista',
+                  filled: true,
+                  fillColor: AppTheme.bgCard,
+                  border: OutlineInputBorder(borderSide: BorderSide.none),
+                ),
               ),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _songController,
-              decoration: const InputDecoration(
-                labelText: 'Música',
-                filled: true,
-                fillColor: AppTheme.bgCard,
-                border: OutlineInputBorder(borderSide: BorderSide.none),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _songController,
+                decoration: const InputDecoration(
+                  labelText: 'Música',
+                  filled: true,
+                  fillColor: AppTheme.bgCard,
+                  border: OutlineInputBorder(borderSide: BorderSide.none),
+                ),
               ),
-            ),
-            const SizedBox(height: 24),
+              const SizedBox(height: 24),
+            ],
             const _SectionHeader('Dispositivos'),
             const SizedBox(height: 12),
             _DeviceSelector(

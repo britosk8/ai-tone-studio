@@ -44,7 +44,7 @@ def _get_pipeline() -> ToneAnalysisPipeline:
 @router.get("/health")
 async def health():
     """Health check."""
-    return {"status": "ok", "service": "AI Tone Studio API", "version": "1.4.0"}
+    return {"status": "ok", "service": "AI Tone Studio API", "version": "1.4.2"}
 
 
 @router.get("/devices")
@@ -168,6 +168,7 @@ async def _run_analysis_job(
     engine_mode: str = "legacy",
     lead_start: Optional[float] = None,
     lead_duration: Optional[float] = None,
+    cached_sources=None,
 ):
     """Executa o pipeline de análise em background."""
     work_dir = Path(tempfile.mkdtemp(prefix=f"toneai_{job_id[:8]}_"))
@@ -209,7 +210,7 @@ async def _run_analysis_job(
             source_kind=source_kind,
             excerpt_start=excerpt_start,
             excerpt_duration=excerpt_duration,
-            engine_mode=engine_mode, lead_start=lead_start, lead_duration=lead_duration, progress=progress,
+            engine_mode=engine_mode, lead_start=lead_start, lead_duration=lead_duration, progress=progress, cached_sources=cached_sources,
         )
 
         if input_sha256:
@@ -297,6 +298,16 @@ def _comparison_profile(pair_id: str, preset: dict):
     ids = [pair_id] + ([parent] if isinstance(parent, str) and parent != pair_id else [])
     for candidate_id in ids:
         import json
+        try:
+            from ..core.reference_library import reference_info,select_region
+            info=reference_info(candidate_id,preset.get('role'))
+            if info['needs_region']:
+                raise HTTPException(400,{'code':'reference_region_required','message':'Salve uma vez o trecho da guitarra base ou solo já separado antes de comparar.'})
+            selected=load_record('comparison_reference',json.dumps([candidate_id,preset.get('role')])) or {}
+            if info['selection_saved'] and any(selected.get(key)!=info.get(key) for key in ['cache_id','start_seconds','duration_seconds']):
+                select_region(candidate_id,preset.get('role'),info['start_seconds'],info['duration_seconds'],register=False)
+        except (ValueError,OSError,KeyError):
+            pass  # Análises antigas mantêm seu perfil original; nunca inventar guitarra.
         excerpt = load_record("comparison_reference", json.dumps([candidate_id, preset.get("role")]))
         if excerpt and excerpt.get("profile"):
             return excerpt["profile"], candidate_id, "saved_excerpt_profile"

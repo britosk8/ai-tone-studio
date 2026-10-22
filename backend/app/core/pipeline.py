@@ -42,6 +42,7 @@ class ToneAnalysisPipeline:
         lead_start: Optional[float] = None,
         lead_duration: Optional[float] = None,
         progress=None,
+        cached_sources=None,
     ) -> tuple[AudioAnalysisResult, PresetPair]:
         """
         Processa um arquivo de áudio e gera par de presets.
@@ -53,7 +54,7 @@ class ToneAnalysisPipeline:
         work_dir = Path(tempfile.mkdtemp(prefix="toneai_"))
         try:
             return await asyncio.to_thread(
-                self._run, audio_path, rhythm_device, lead_device, artist, song_title, work_dir, source_kind, excerpt_start, excerpt_duration, engine_mode, lead_start, lead_duration, progress
+                self._run, audio_path, rhythm_device, lead_device, artist, song_title, work_dir, source_kind, excerpt_start, excerpt_duration, engine_mode, lead_start, lead_duration, progress, cached_sources
             )
         finally:
             shutil.rmtree(work_dir, ignore_errors=True)
@@ -73,18 +74,19 @@ class ToneAnalysisPipeline:
         lead_start: Optional[float] = None,
         lead_duration: Optional[float] = None,
         progress=None,
+        cached_sources=None,
     ) -> tuple[AudioAnalysisResult, PresetPair]:
 
         if engine_mode == "guitar_v2":
             from ..services.tone_engine.engine import GuitarToneEngine
             engine = GuitarToneEngine(self.compiler)
             report = progress or (lambda percent, message: None)
-            analysis = engine.analyze(audio_path,work_dir,source_kind,excerpt_start,excerpt_duration,report)
+            analysis = engine.analyze(audio_path,work_dir,source_kind,excerpt_start,excerpt_duration,report,(cached_sources or {}).get("rhythm"))
             lead_analysis = analysis
             if lead_start is not None:
                 lead_dir = work_dir / 'lead'
                 lead_dir.mkdir()
-                lead_analysis = engine.analyze(audio_path,lead_dir,source_kind,lead_start,lead_duration,report)
+                lead_analysis = engine.analyze(audio_path,lead_dir,source_kind,lead_start,lead_duration,report,(cached_sources or {}).get("lead"))
             report(85, 'Gerando e validando presets no catálogo da pedaleira...')
             pair = self.compiler.compile_pair(analysis,rhythm_device,lead_device,artist,song_title)
             if lead_analysis is not analysis:

@@ -23,6 +23,10 @@ class ToneRecordingBridge(private val activity: Activity, messenger: BinaryMesse
     @Volatile private var lastError: String?=null
     private var file:File?=null
     private var inputName=""
+    @Volatile private var meterSamples=0L
+    @Volatile private var meterClipped=0L
+    @Volatile private var meterPeakDbfs=-120.0
+    private var meterSamplesPerSecond=44100
     private val effects=mutableListOf<AudioEffect>()
     init {MethodChannel(messenger,"ai_tone/recording").setMethodCallHandler(this)}
     private fun usb(d:AudioDeviceInfo)=d.type==AudioDeviceInfo.TYPE_USB_DEVICE || d.type==AudioDeviceInfo.TYPE_USB_HEADSET
@@ -52,6 +56,7 @@ class ToneRecordingBridge(private val activity: Activity, messenger: BinaryMesse
                         if(AcousticEchoCanceler.isAvailable())AcousticEchoCanceler.create(audio.audioSessionId)?.let{it.enabled=false;effects.add(it)}
                         file?.delete();file=File(activity.cacheDir,"tone-recording-${System.nanoTime()}.wav")
                         inputName=device.productName.toString();finished=false;lastError=null;active=true
+                        meterSamples=0;meterClipped=0;meterPeakDbfs=-120.0;meterSamplesPerSecond=sr*channels
                         audio.startRecording()
                         worker.execute {
                             try {
@@ -68,6 +73,18 @@ class ToneRecordingBridge(private val activity: Activity, messenger: BinaryMesse
                                             checked=true
                                         }
                                         if(checked && (routed==null || routed.id!=device.id))throw IllegalStateException("Entrada selecionada desconectada durante a gravação")
+                                        var peak=0
+                                        var clipped=0L
+                                        var index=0
+                                        while(index+1<count) {
+                                            val sample=((bytes[index].toInt() and 255) or (bytes[index+1].toInt() shl 8)).toShort().toInt()
+                                            val amplitude=kotlin.math.abs(sample)
+                                            peak=maxOf(peak,amplitude)
+                                            if(amplitude>=32765)clipped++
+                                            index+=2
+                                        }
+                                        meterSamples+=count/2;meterClipped+=clipped
+                                        meterPeakDbfs=20*kotlin.math.log10(maxOf(peak/32768.0,1e-6))
                                         out.write(bytes,0,count);total+=count
                                     }
                                     if(!checked)throw IllegalStateException("Gravação muito curta para confirmar a entrada")
@@ -83,7 +100,7 @@ class ToneRecordingBridge(private val activity: Activity, messenger: BinaryMesse
                         result.success(mapOf("input" to inputName,"seconds" to seconds,"sample_rate" to sr,"channels" to channels))
                     }catch(e:Exception){active=false;effects.forEach{it.release()};effects.clear();audio.release();recorder=null;throw e}
                 }
-                "status" -> result.success(mapOf("recording" to active,"finished" to finished,"error" to lastError,"path" to if(finished && lastError==null)file?.absolutePath else null,"input" to inputName))
+                "status" -> result.success(mapOf("recording" to active,"finished" to finished,"error" to lastError,"path" to if(finished && lastError==null)file?.absolutePath else null,"input" to inputName,"peak_dbfs" to meterPeakDbfs,"clipped_fraction" to if(meterSamples>0)meterClipped.toDouble()/meterSamples else 0.0,"elapsed_ms" to meterSamples*1000/meterSamplesPerSecond))
                 "stop" -> {
                     active=false
                     worker.execute{activity.runOnUiThread{if(lastError!=null)result.error("recording_error",lastError,null)else if(file?.exists()==true)result.success(file!!.absolutePath)else result.error("recording_error","Nenhum áudio gravado",null)}}

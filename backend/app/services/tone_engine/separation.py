@@ -109,3 +109,90 @@ class DemucsGuitarProvider:
             finally:
                 if temporary.exists():
                     shutil.rmtree(temporary)
+
+
+def crop_saved_stems(cache_id, relative_start, duration):
+    """Recorta saídas já separadas; nenhuma inferência ou normalização adicional."""
+    import soundfile as sf
+
+    if len(cache_id) != 64 or any(c not in "0123456789abcdef" for c in cache_id):
+        raise ValueError("Referência salva inválida")
+    parent = data_directory() / "separations"
+    source = parent / cache_id
+    manifest = json.loads((source / "manifest.json").read_text())
+    available = sf.info(source / "guitar.wav").duration
+    duration = duration if duration is not None else available - relative_start
+    if (
+        relative_start < 0
+        or duration < 3
+        or relative_start + duration > available + 0.01
+    ):
+        raise ValueError("Trecho fora da referência de guitarra salva")
+    for name, digest in manifest["stem_sha256"].items():
+        if (
+            name not in {"guitar", "vocals", "drums", "bass", "piano", "other"}
+            or hashlib.sha256((source / f"{name}.wav").read_bytes()).hexdigest()
+            != digest
+        ):
+            raise ValueError("Integridade dos instrumentos não confirmada")
+    if relative_start == 0 and abs(duration - available) < 0.01:
+        return SeparationResult(source / "guitar.wav", source, manifest)
+    identity = {
+        "parent": cache_id,
+        "start_seconds": relative_start,
+        "duration_seconds": duration,
+        "operation": "crop-v1",
+    }
+    key = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()
+    target = parent / key
+    with _LOCK:
+        if not target.exists():
+            temporary = Path(tempfile.mkdtemp(prefix="crop_", dir=parent))
+            try:
+                for name in manifest["sources"]:
+                    # Stems silenciosos são válidos; não usar o preprocessor com teste de audibilidade.
+                    import subprocess
+
+                    subprocess.run(
+                        [
+                            "ffmpeg",
+                            "-v",
+                            "error",
+                            "-nostdin",
+                            "-i",
+                            str(source / f"{name}.wav"),
+                            "-ss",
+                            str(relative_start),
+                            "-t",
+                            str(duration),
+                            "-c:a",
+                            "pcm_f32le",
+                            str(temporary / f"{name}.wav"),
+                        ],
+                        check=True,
+                        capture_output=True,
+                        timeout=180,
+                    )
+                metadata = {
+                    **manifest,
+                    "cache_id": key,
+                    "selection": identity,
+                    "stem_sha256": {
+                        n: hashlib.sha256(
+                            (temporary / f"{n}.wav").read_bytes()
+                        ).hexdigest()
+                        for n in manifest["sources"]
+                    },
+                }
+                (temporary / "manifest.json").write_text(json.dumps(metadata, indent=2))
+                temporary.rename(target)
+            finally:
+                if temporary.exists():
+                    shutil.rmtree(temporary)
+        metadata = json.loads((target / "manifest.json").read_text())
+        if any(
+            hashlib.sha256((target / f"{n}.wav").read_bytes()).hexdigest() != digest
+            for n, digest in metadata["stem_sha256"].items()
+        ):
+            raise ValueError("Cache recortado corrompido")
+    return SeparationResult(target / "guitar.wav", target, metadata)

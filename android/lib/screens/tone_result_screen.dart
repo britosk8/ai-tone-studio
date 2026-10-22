@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../models/preset_pair.dart';
 import '../services/preset_store.dart';
 import '../services/tone_adjustments.dart';
+import '../services/capture_level.dart';
 
 /// Revisão explícita; só persiste ao usuário aceitar e nunca grava automaticamente no pedal.
 class ToneResultScreen extends StatefulWidget {
@@ -20,7 +21,7 @@ class ToneResultScreen extends StatefulWidget {
 }
 
 class _ToneResultScreenState extends State<ToneResultScreen> {
-  bool _busy = false, _saved = false;
+  bool _busy = false, _saved = false, _levelAdjusted = false;
   String? _error;
   late final List<Map<String, dynamic>> _suggestions;
   late final Set<int> _selected;
@@ -73,6 +74,40 @@ class _ToneResultScreenState extends State<ToneResultScreen> {
     }
   }
 
+  Future<void> _reduceLevel() async {
+    if (_busy || _levelAdjusted) return;
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    try {
+      final store = context.read<PresetStore>();
+      final pair = store.pairs.where((p) => p.id == widget.pairId).firstOrNull;
+      if (pair == null) throw StateError('Preset não está mais na biblioteca.');
+      final current = widget.role == 'lead' ? pair.lead : pair.rhythm;
+      if (current.id != widget.preset.id ||
+          current.presetVolume != widget.preset.presetVolume) {
+        throw StateError(
+            'O volume mudou. Faça uma nova gravação antes de reduzir novamente.');
+      }
+      final updated = reduceCaptureLevel(current);
+      await store.save(pair.withPreset(updated));
+      if (!mounted) return;
+      setState(() {
+        _levelAdjusted = true;
+        _busy = false;
+      });
+      await _send();
+    } catch (error) {
+      if (mounted) {
+        setState(() {
+          _error = '$error';
+          _busy = false;
+        });
+      }
+    }
+  }
+
   Future<void> _send() async {
     await Navigator.pushNamed(context, '/transfer',
         arguments: {'pair_id': widget.pairId, 'role': widget.role});
@@ -98,7 +133,7 @@ class _ToneResultScreenState extends State<ToneResultScreen> {
                     ? 'EQ sem ajustes recomendados'
                     : 'Sem ajustes automáticos recomendados';
     final explanation = _clipped
-        ? 'O sinal chegou saturado (clipping). Essa captura não permite avaliar o timbre com segurança. Reduza o nível enviado pela pedaleira à USB ou o nível de entrada da interface e grave novamente. Reduzir o volume depois de gravar não recupera o sinal.'
+        ? 'O sinal chegou saturado (clipping). Essa captura não permite avaliar o timbre com segurança. Reduza o nível antes da captura e grave novamente. Você pode testar o volume global pelo app; se a USB tiver um controle independente, será preciso conferir esse ajuste na pedaleira. Reduzir o volume depois de gravar não recupera o sinal.'
         : _suggestions.isNotEmpty
             ? 'Revise as mudanças abaixo. Elas atualizam este preset da biblioteca; depois você pode enviá-lo ao pedal.'
             : hasDifferences
@@ -148,6 +183,22 @@ class _ToneResultScreenState extends State<ToneResultScreen> {
                             Text(
                                 'Amostras próximas ao limite: ${((capture['clipped_fraction'] as num) * 100).toStringAsFixed(1)}%'),
                         ]))),
+            if (_clipped &&
+                widget.preset.device == 'MK300' &&
+                (widget.preset.presetVolume ?? 0) > 1) ...[
+              Text(
+                  'Volume global do preset: ${widget.preset.presetVolume}. Ganho da distorção e EQ serão preservados.'),
+              const Text(
+                  'Este é um teste de nível: depois do envio, grave novamente para verificar a resposta da USB.'),
+              FilledButton(
+                  onPressed: _busy || _levelAdjusted ? null : _reduceLevel,
+                  child: Text(
+                      'Reduzir volume ${widget.preset.presetVolume} → ${((widget.preset.presetVolume ?? 0) * .75).floor().clamp(1, 100)} e seguir para envio')),
+              if (_levelAdjusted)
+                OutlinedButton(
+                    onPressed: _busy ? null : _send,
+                    child: const Text('Reenviar preset com volume reduzido')),
+            ],
             if (!_clipped) ...[
               Text(widget.report['summary'] as String? ?? ''),
               if (differences.isNotEmpty) ...[
