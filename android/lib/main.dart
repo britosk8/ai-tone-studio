@@ -59,7 +59,7 @@ class AiToneStudioApp extends StatelessWidget {
                       initialArtist: args['artist'] as String?,
                       initialSongTitle: args['song_title'] as String?,
                       initialRhythmDevice:
-                          args['rhythm_device'] as String? ?? 'MK20',
+                          args['rhythm_device'] as String? ?? 'MK300',
                       initialLeadDevice:
                           args['lead_device'] as String? ?? 'MK300',
                     ));
@@ -93,8 +93,9 @@ class AiToneStudioApp extends StatelessWidget {
           case '/compare':
             final args = settings.arguments as Map<String, dynamic>;
             return MaterialPageRoute(
-                builder: (_) =>
-                    ToneComparisonScreen(pairId: args['pair_id'] as String));
+                builder: (_) => ToneComparisonScreen(
+                    pairId: args['pair_id'] as String,
+                    initialRole: args['role'] as String? ?? 'lead'));
           case '/settings':
             return MaterialPageRoute(builder: (_) => const SettingsScreen());
           default:

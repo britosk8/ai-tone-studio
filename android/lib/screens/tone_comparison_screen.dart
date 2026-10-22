@@ -11,7 +11,9 @@ import 'tone_result_screen.dart';
 
 class ToneComparisonScreen extends StatefulWidget {
   final String pairId;
-  const ToneComparisonScreen({super.key, required this.pairId});
+  final String initialRole;
+  const ToneComparisonScreen(
+      {super.key, required this.pairId, this.initialRole = 'lead'});
   @override
   State<ToneComparisonScreen> createState() => _ToneComparisonScreenState();
 }
@@ -40,6 +42,7 @@ class _ToneComparisonScreenState extends State<ToneComparisonScreen>
   @override
   void initState() {
     super.initState();
+    _role = widget.initialRole == 'rhythm' ? 'rhythm' : 'lead';
     WidgetsBinding.instance.addObserver(this);
     _load();
   }
@@ -409,7 +412,10 @@ class _ToneComparisonScreenState extends State<ToneComparisonScreen>
               const Text('Referência original',
                   style: TextStyle(fontWeight: FontWeight.bold)),
               Text(_reference == null
-                  ? 'Sem arquivo: usar perfil geral da música, quando disponível. Para análises antigas ou comparar o mesmo trecho, selecione o áudio original.'
+                  ? (_preset?.generationMetadata['generator'] ==
+                          'guitar-v2-heuristic'
+                      ? 'Sua gravação será comparada com a guitarra extraída da música enviada, no trecho desta parte salvo no backend. Toque a mesma passagem. Não precisa selecionar o original novamente.'
+                      : 'Será usado o perfil de referência salvo no backend, quando disponível. Para análises antigas ou mudar o trecho, selecione o áudio original.')
                   : _reference!.path.split('/').last),
               OutlinedButton(
                   onPressed: _busy || _recording ? null : _chooseReference,

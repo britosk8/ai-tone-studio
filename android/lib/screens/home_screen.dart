@@ -217,7 +217,7 @@ class _EmptyState extends StatelessWidget {
                 textAlign: TextAlign.center),
             const SizedBox(height: 12),
             const Text(
-              'Importe um MP3, WAV ou FLAC e gere presets automáticos para MK20 (base) e MK300 (solo).',
+              'Importe sua música e gere presets de base e solo para MK300 ou MK20. Escolha o pedal de cada parte.',
               style: TextStyle(color: AppTheme.textSecondary),
               textAlign: TextAlign.center,
             ),

@@ -80,6 +80,12 @@ class _PresetListScreenState extends State<PresetListScreen> {
     }
   }
 
+  Future<void> _comparePreset(PresetData preset) async {
+    await Navigator.pushNamed(context, '/compare',
+        arguments: {'pair_id': _pair!.id, 'role': preset.role});
+    if (mounted) await _loadPair();
+  }
+
   Future<void> _chooseCandidate(PresetData current) async {
     try {
       final candidates = await context
@@ -196,6 +202,7 @@ class _PresetListScreenState extends State<PresetListScreen> {
             onEdit: () => _editPreset(pair.rhythm),
             onCandidates: () => _chooseCandidate(pair.rhythm),
             onExportStem: () => _exportStem(pair.rhythm),
+            onCompare: () => _comparePreset(pair.rhythm),
           ),
           _PresetCard(
             preset: pair.lead,
@@ -205,6 +212,7 @@ class _PresetListScreenState extends State<PresetListScreen> {
             onEdit: () => _editPreset(pair.lead),
             onCandidates: () => _chooseCandidate(pair.lead),
             onExportStem: () => _exportStem(pair.lead),
+            onCompare: () => _comparePreset(pair.lead),
           ),
           Padding(
               padding: const EdgeInsets.all(16),
@@ -314,7 +322,8 @@ class _AnalysisSummaryCard extends StatelessWidget {
                   analysis.sourceSeparated
                       ? 'Guitarra extraída por IA. O preset é uma estimativa inicial: vazamentos e artefatos podem influenciar o resultado.'
                       : 'Preset estimado a partir do áudio. A confiança não representa fidelidade sonora ao original.',
-                  style: const TextStyle(fontSize: 11, color: AppTheme.warnYellow),
+                  style:
+                      const TextStyle(fontSize: 11, color: AppTheme.warnYellow),
                 ),
               ),
             ],
@@ -366,7 +375,7 @@ class _PresetCard extends StatelessWidget {
   final String roleLabel;
   final String pairId;
   final VoidCallback onEdit;
-  final VoidCallback onCandidates, onExportStem;
+  final VoidCallback onCandidates, onExportStem, onCompare;
 
   const _PresetCard({
     required this.preset,
@@ -376,6 +385,7 @@ class _PresetCard extends StatelessWidget {
     required this.onEdit,
     required this.onCandidates,
     required this.onExportStem,
+    required this.onCompare,
   });
 
   @override
@@ -429,6 +439,12 @@ class _PresetCard extends StatelessWidget {
                   icon: const Icon(Icons.audio_file_outlined),
                   label: const Text('Exportar guitarra separada')),
           ],
+          TextButton.icon(
+              onPressed: onCompare,
+              icon: const Icon(Icons.mic),
+              label: Text(preset.role == 'rhythm'
+                  ? 'Gravar e comparar esta base'
+                  : 'Gravar e comparar este solo')),
           ...preset.effectChain.where((b) => b.enabled).map(
                 (block) => _EffectRow(block: block),
               ),

@@ -12,7 +12,7 @@ class UploadScreen extends StatefulWidget {
       {super.key,
       this.initialArtist,
       this.initialSongTitle,
-      this.initialRhythmDevice = "MK20",
+      this.initialRhythmDevice = "MK300",
       this.initialLeadDevice = "MK300"});
 
   @override
@@ -22,7 +22,7 @@ class UploadScreen extends StatefulWidget {
 class _UploadScreenState extends State<UploadScreen> {
   File? _selectedFile;
   String _fileName = '';
-  String _rhythmDevice = 'MK20';
+  String _rhythmDevice = 'MK300';
   String _leadDevice = 'MK300';
   final _artistController = TextEditingController();
   final _songController = TextEditingController();
@@ -288,7 +288,7 @@ class _UploadScreenState extends State<UploadScreen> {
             _DeviceSelector(
               label: 'Guitarra base (ritmo)',
               selected: _rhythmDevice,
-              options: const ['MK20', 'MK300'],
+              options: const ['MK300', 'MK20'],
               onChanged: (v) => setState(() => _rhythmDevice = v!),
             ),
             const SizedBox(height: 12),
