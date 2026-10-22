@@ -30,6 +30,9 @@ class _UploadScreenState extends State<UploadScreen> {
   String _autoTitle = "";
   String _sourceKind = 'mix';
   bool _useExcerpt = false;
+  bool _differentLead = false;
+  final _leadStart = TextEditingController(text: '0');
+  final _leadDuration = TextEditingController(text: '20');
   final _excerptStart = TextEditingController(text: '0');
   final _excerptDuration = TextEditingController(text: '20');
   String? _error;
@@ -47,6 +50,8 @@ class _UploadScreenState extends State<UploadScreen> {
   void dispose() {
     _artistController.dispose();
     _songController.dispose();
+    _leadStart.dispose();
+    _leadDuration.dispose();
     _excerptStart.dispose();
     _excerptDuration.dispose();
     super.dispose();
@@ -113,6 +118,22 @@ class _UploadScreenState extends State<UploadScreen> {
       _error = null;
     });
 
+    final leadStart = double.tryParse(_leadStart.text.replaceAll(',', '.'));
+    final leadDuration =
+        double.tryParse(_leadDuration.text.replaceAll(',', '.'));
+    if (_differentLead &&
+        (leadStart == null ||
+            !leadStart.isFinite ||
+            leadStart < 0 ||
+            leadStart > 7200 ||
+            leadDuration == null ||
+            !leadDuration.isFinite ||
+            leadDuration < 3 ||
+            leadDuration > 120)) {
+      setState(() => _error =
+          'Informe um trecho solo válido: início 0–7200 s e duração 3–120 s.');
+      return;
+    }
     try {
       final api = context.read<ApiService>();
       final job = await api.submitAnalysis(
@@ -125,6 +146,8 @@ class _UploadScreenState extends State<UploadScreen> {
         sourceKind: _sourceKind,
         excerptStart: _useExcerpt ? start! : 0,
         excerptDuration: _useExcerpt ? duration : null,
+        leadStart: _differentLead ? leadStart : null,
+        leadDuration: _differentLead ? leadDuration : null,
       );
 
       if (mounted) {
@@ -186,12 +209,13 @@ class _UploadScreenState extends State<UploadScreen> {
             ),
             const SizedBox(height: 8),
             const Text(
-                'Para orientar os ajustes, prefira um trecho com a guitarra em destaque. Declare guitarra isolada somente quando não houver outros instrumentos. Confiança não mede a fidelidade ao original.',
+                'A música será separada por IA no backend antes de analisar a guitarra. Prefira trechos de 20 segundos: em CPU a separação pode levar minutos. Base e solo simultâneos podem permanecer juntos.',
                 style: TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
-              title: const Text('Analisar apenas um trecho'),
-              subtitle: const Text('Base e solo partirão deste mesmo trecho.'),
+              title: const Text('Selecionar trecho da base'),
+              subtitle: const Text(
+                  'Sem seleção, analisa a música completa. O solo pode usar outro trecho abaixo.'),
               value: _useExcerpt,
               onChanged:
                   _uploading ? null : (v) => setState(() => _useExcerpt = v),
@@ -211,6 +235,30 @@ class _UploadScreenState extends State<UploadScreen> {
                       const TextInputType.numberWithOptions(decimal: true),
                   decoration: const InputDecoration(
                       labelText: 'Duração do trecho (3–120 segundos)')),
+            ],
+            const SizedBox(height: 24),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: const Text('Usar outro trecho para o solo'),
+              value: _differentLead,
+              onChanged:
+                  _uploading ? null : (v) => setState(() => _differentLead = v),
+            ),
+            if (_differentLead) ...[
+              TextField(
+                  controller: _leadStart,
+                  enabled: !_uploading,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
+                  decoration: const InputDecoration(
+                      labelText: 'Início do solo (segundos)')),
+              TextField(
+                  controller: _leadDuration,
+                  enabled: !_uploading,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
+                  decoration: const InputDecoration(
+                      labelText: 'Duração do solo (3–120 segundos)')),
             ],
             const SizedBox(height: 24),
             const _SectionHeader('Informações (opcional)'),

@@ -232,6 +232,7 @@ class AudioAnalysis {
   final SpectralProfile spectral;
   final bool hasReverb;
   final bool hasDelay;
+  final bool sourceSeparated, engineV2, possibleLayering;
 
   const AudioAnalysis({
     required this.gainCharacter,
@@ -241,10 +242,21 @@ class AudioAnalysis {
     required this.spectral,
     required this.hasReverb,
     required this.hasDelay,
+    this.sourceSeparated = false,
+    this.engineV2 = false,
+    this.possibleLayering = false,
   });
 
   factory AudioAnalysis.fromJson(Map<String, dynamic> json) {
     return AudioAnalysis(
+      sourceSeparated: json['source_separated'] == true ||
+          (json['engine_diagnostics'] as Map?)?['separation'] != null,
+      engineV2: json['engine_mode'] == 'guitar_v2' ||
+          (json['engine_diagnostics'] as Map?)?['engine'] == 'guitar_v2',
+      possibleLayering: json['possible_layering'] == true ||
+          ((json['engine_diagnostics'] as Map?)?['features']
+                  as Map?)?['possible_layering'] ==
+              true,
       gainCharacter: json['gain_character'] as String? ?? 'unknown',
       confidence: json['confidence'] as String? ?? 'low',
       distortionLevel: (json['distortion_level'] as num? ?? 0).toDouble(),

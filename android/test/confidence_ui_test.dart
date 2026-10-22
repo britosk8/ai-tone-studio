@@ -32,8 +32,10 @@ void main() {
             .initialValue,
         'mix');
     expect(find.text('Início do trecho (segundos)'), findsNothing);
-    await tester.ensureVisible(find.byType(SwitchListTile));
-    await tester.tap(find.byType(SwitchListTile));
+    await tester.ensureVisible(
+        find.widgetWithText(SwitchListTile, 'Selecionar trecho da base'));
+    await tester
+        .tap(find.widgetWithText(SwitchListTile, 'Selecionar trecho da base'));
     await tester.pumpAndSettle();
     expect(find.text('Início do trecho (segundos)'), findsOneWidget);
     expect(find.text('Duração do trecho (3–120 segundos)'), findsOneWidget);
@@ -41,8 +43,25 @@ void main() {
         tester.widgetList<TextField>(find.byType(TextField)).toList();
     expect(fields[0].controller!.text, '0');
     expect(fields[1].controller!.text, '20');
-    await tester.tap(find.byType(SwitchListTile));
+    await tester
+        .tap(find.widgetWithText(SwitchListTile, 'Selecionar trecho da base'));
     await tester.pumpAndSettle();
     expect(find.text('Início do trecho (segundos)'), findsNothing);
+  });
+  testWidgets('Trechos independentes preservam os dados da música',
+      (tester) async {
+    await tester.pumpWidget(const MaterialApp(
+        home: UploadScreen(
+            initialArtist: 'Artista', initialSongTitle: 'Original')));
+    final soloSwitch =
+        find.widgetWithText(SwitchListTile, 'Usar outro trecho para o solo');
+    await tester.ensureVisible(soloSwitch);
+    await tester.tap(soloSwitch);
+    await tester.pumpAndSettle();
+    expect(find.text('Início do solo (segundos)'), findsOneWidget);
+    expect(find.text('Início do trecho (segundos)'), findsNothing);
+    final fields = tester.widgetList<TextField>(find.byType(TextField));
+    expect(fields.any((field) => field.controller!.text == 'Original'), isTrue);
+    expect(fields.any((field) => field.controller!.text == 'Artista'), isTrue);
   });
 }

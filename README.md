@@ -1,5 +1,7 @@
 # Evolução em develop — piloto automático MK300
 
+Android/API **1.4.0**: [motor de guitarra, separação por IA e geração nova pelo aplicativo](docs/MOTOR_GUITARRA_V1_4_0.md). [APK de teste](releases/ai-tone-studio-v1.4.0-develop.apk).
+
 Android/API **1.3.4**: [gravações USB da guitarra preservadas no backend](docs/GRAVACOES_BACKEND_V1_3_4.md), com preset selecionado, análise e download do áudio original.
 
 Android/API **1.3.3**: [referências sincronizadas no backend e correção da comparação dos presets locais](docs/SINCRONIZACAO_REFERENCIAS_V1_3_3.md). A importação anterior do Gohth pode sincronizar ao abrir o app atualizado com o backend disponível.
@@ -143,7 +145,7 @@ Em **Ajustes**, configure o endereço do computador que executa o backend e toqu
 flutter build apk --release
 ```
 
-Saída padrão: `android/build/app/outputs/flutter-apk/app-release.apk`. A versão Android é `1.2.3`, build `8` (API permanece `1.2.2`), applicationId `com.aitone.studio`. O APK de teste mantém a assinatura debug usada na V1 anterior. Instale por cima para preservar os dados; não desinstale o aplicativo antes de atualizar.
+Saída padrão: `android/build/app/outputs/flutter-apk/app-release.apk`. A versão Android atual é `1.4.0`, build `14` (API `1.4.0`), applicationId `com.aitone.studio`. O APK de teste mantém a assinatura debug usada na V1 anterior. Instale por cima para preservar os dados; não desinstale o aplicativo antes de atualizar.
 
 O app permite HTTP para o backend local. TLS, assinatura de distribuição e publicação em loja não fazem parte desta entrega.
 
@@ -200,4 +202,4 @@ docs/               Notas de entrega e roteiro de teste
 
 Edições do aplicativo ficam no Android. As exportações feitas pelo aplicativo incluem as edições; os endpoints do backend retornam a versão original gerada. O JSON exportado pelo app é um formato próprio, não um arquivo nativo importável no M-EFCS.
 
-Entrega atual: [APK V1.2.3](releases/ai-tone-studio-v1.2.3.apk), com [resultado e atualização](docs/RESULTADO_AJUSTES_V1_2_2.md), com [roteiro de referência/confiança](docs/REFERENCIA_CONFIANCA_V1_2_1.md) e [gravação/comparação](docs/GRAVACAO_COMPARACAO_V1_2_0.md). Veja o [roteiro de conectividade](docs/CONECTIVIDADE_V1_1_0.md). A [V1.0.1](releases/ai-tone-studio-v1.0.1.apk) e seu [roteiro](docs/TESTE_V1_0_1.md) continuam preservados.
+Entrega atual: [APK V1.4.0](releases/ai-tone-studio-v1.4.0-develop.apk). Histórico: [APK V1.2.3](releases/ai-tone-studio-v1.2.3.apk), com [resultado e atualização](docs/RESULTADO_AJUSTES_V1_2_2.md), com [roteiro de referência/confiança](docs/REFERENCIA_CONFIANCA_V1_2_1.md) e [gravação/comparação](docs/GRAVACAO_COMPARACAO_V1_2_0.md). Veja o [roteiro de conectividade](docs/CONECTIVIDADE_V1_1_0.md). A [V1.0.1](releases/ai-tone-studio-v1.0.1.apk) e seu [roteiro](docs/TESTE_V1_0_1.md) continuam preservados.

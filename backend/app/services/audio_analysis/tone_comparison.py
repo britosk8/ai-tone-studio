@@ -29,7 +29,11 @@ def fingerprint(y, sr=22050):
 
 def measure(path:Path, start=0, seconds=31):
     y,sr=librosa.load(str(path),sr=22050,mono=True,offset=start,duration=seconds)
-    return fingerprint(y,sr)
+    result = fingerprint(y,sr)
+    native, native_sr = librosa.load(str(path),sr=None,mono=False,offset=start,duration=seconds)
+    result['clipped_fraction'] = float(np.mean(np.abs(native)>=0.9999))
+    result['peak_dbfs'] = 20*math.log10(max(float(np.max(np.abs(native))),1e-9))
+    return result
 
 def compare(reference, recorded, preset, catalog:CatalogLoader, input_kind='usb', reference_kind='mix'):
     if reference.get('version')!=1 or set(reference.get('bands_db',{}))!=set(BANDS):
@@ -48,6 +52,7 @@ def compare(reference, recorded, preset, catalog:CatalogLoader, input_kind='usb'
     specs={**catalog._get_amp_params(data),**model.get('params',{})}
     limitations=['Comparação DSP heurística, sem modelo treinado de timbre e sem percentual de similaridade validado.',
         'Toque a mesma passagem da referência. Guitarra, captadores, execução e cadeia de gravação alteram o resultado.']
+    if reference_kind=='separated_guitar':limitations.append('Referência extraída por IA; vazamentos, artefatos e guitarras sobrepostas ainda podem influenciar a comparação.')
     if reference_kind=='mix':limitations.append('A referência é uma mixagem: baixo, bateria, voz e masterização influenciam as medições. As sugestões são conservadoras.')
     if input_kind=='microphone':limitations.append('Microfone, ambiente e caixa acústica influenciam o espectro. Prefira a saída USB processada.')
     differences={k:round(recorded['bands_db'][k]-reference['bands_db'][k],2) for k in BANDS}

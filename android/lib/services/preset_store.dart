@@ -178,6 +178,9 @@ class PresetStore extends ChangeNotifier {
               'lead': p.lead.toJson(),
               'analysis': {
                 'gain_character': p.analysis.gainCharacter,
+                'source_separated': p.analysis.sourceSeparated,
+                'engine_mode': p.analysis.engineV2 ? 'guitar_v2' : 'legacy',
+                'possible_layering': p.analysis.possibleLayering,
                 'confidence': p.analysis.confidence,
                 'distortion_level': p.analysis.distortionLevel,
                 'estimated_bpm': p.analysis.estimatedBpm,

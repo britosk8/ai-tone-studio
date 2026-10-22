@@ -33,6 +33,23 @@ class ApiService {
     _baseUrl = url.trimRight().replaceAll(RegExp(r'/$'), '');
   }
 
+  Future<List<PresetData>> getToneCandidates(String pairId, String role) async {
+    final data = await _get('/api/v1/presets/$pairId/candidates/$role');
+    return (data['candidates'] as List)
+        .map((e) => PresetData.fromJson(Map<String, dynamic>.from(e as Map)))
+        .toList();
+  }
+
+  Future<List<int>> downloadGuitarStem(String pairId, String role) async {
+    final response = await http
+        .get(Uri.parse('$_baseUrl/api/v1/presets/$pairId/stems/$role/guitar'))
+        .timeout(const Duration(seconds: 60));
+    if (response.statusCode != 200) {
+      _handleResponse(response);
+    }
+    return response.bodyBytes;
+  }
+
   Future<Map<String, dynamic>> _get(String path) async {
     final uri = Uri.parse('$_baseUrl$path');
     final response = await http.get(uri).timeout(const Duration(seconds: 30));
@@ -85,6 +102,8 @@ class ApiService {
     String sourceKind = 'mix',
     double excerptStart = 0,
     double? excerptDuration,
+    double? leadStart,
+    double? leadDuration,
   }) async {
     final uri = Uri.parse('$_baseUrl/api/v1/analyze');
     final request = http.MultipartRequest('POST', uri);
@@ -92,6 +111,11 @@ class ApiService {
     request.fields['rhythm_device'] = rhythmDevice;
     request.fields['lead_device'] = leadDevice;
     request.fields['source_kind'] = sourceKind;
+    request.fields['engine_mode'] = 'guitar_v2';
+    if (leadStart != null && leadDuration != null) {
+      request.fields['lead_start'] = leadStart.toString();
+      request.fields['lead_duration'] = leadDuration.toString();
+    }
     request.fields['excerpt_start'] = excerptStart.toString();
     if (excerptDuration != null) {
       request.fields['excerpt_duration'] = excerptDuration.toString();

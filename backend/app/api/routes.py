@@ -44,7 +44,7 @@ def _get_pipeline() -> ToneAnalysisPipeline:
 @router.get("/health")
 async def health():
     """Health check."""
-    return {"status": "ok", "service": "AI Tone Studio API", "version": "1.3.4"}
+    return {"status": "ok", "service": "AI Tone Studio API", "version": "1.4.0"}
 
 
 @router.get("/devices")
@@ -76,12 +76,21 @@ async def analyze_audio(
     source_kind: str = Form("mix"),
     excerpt_start: float = Form(0),
     excerpt_duration: Optional[float] = Form(None),
+    engine_mode: str = Form("legacy"),
+    lead_start: Optional[float] = Form(None),
+    lead_duration: Optional[float] = Form(None),
 ):
     """
     Inicia análise assíncrona de áudio e geração de presets.
     Retorna job_id para polling de status.
     """
     import math
+    if engine_mode not in {'legacy','guitar_v2'}:
+        raise HTTPException(400, "Motor de análise inválido")
+    if (lead_start is None) != (lead_duration is None):
+        raise HTTPException(400, "Informe início e duração do trecho solo")
+    if lead_start is not None and (not math.isfinite(lead_start) or not 0<=lead_start<=7200 or not math.isfinite(lead_duration) or not 3<=lead_duration<=120):
+        raise HTTPException(400, "Trecho solo inválido")
     if source_kind not in {"mix", "isolated"}:
         raise HTTPException(400, "Tipo de referência inválido")
     if not math.isfinite(excerpt_start) or not 0 <= excerpt_start <= 7200:
@@ -138,7 +147,7 @@ async def analyze_audio(
     # Processa em background
     background_tasks.add_task(
         _run_analysis_job,
-        job_id, file_bytes, suffix, rhythm_dev, lead_dev, artist, song_title, original_name, source_kind, excerpt_start, excerpt_duration
+        job_id, file_bytes, suffix, rhythm_dev, lead_dev, artist, song_title, original_name, source_kind, excerpt_start, excerpt_duration, engine_mode, lead_start, lead_duration
     )
 
     return {"job_id": job_id, "status": "queued"}
@@ -156,6 +165,9 @@ async def _run_analysis_job(
     source_kind: str = "mix",
     excerpt_start: float = 0,
     excerpt_duration: Optional[float] = None,
+    engine_mode: str = "legacy",
+    lead_start: Optional[float] = None,
+    lead_duration: Optional[float] = None,
 ):
     """Executa o pipeline de análise em background."""
     work_dir = Path(tempfile.mkdtemp(prefix=f"toneai_{job_id[:8]}_"))
@@ -166,11 +178,28 @@ async def _run_analysis_job(
         # Salva arquivo temporário
         audio_path = work_dir / f"input{suffix}"
         audio_path.write_bytes(file_bytes)
+        input_sha256 = None
+        if engine_mode == 'guitar_v2':
+            from ..core.storage import data_directory
+            import hashlib
+            input_sha256 = hashlib.sha256(file_bytes).hexdigest()
+            originals = data_directory()/'generation_inputs'
+            originals.mkdir(parents=True,exist_ok=True)
+            preserved = originals/(input_sha256+suffix)
+            # Mesmo conteúdo reaproveitado; escrita exclusiva impede sobrescrever.
+            try:
+                with preserved.open('xb') as output:
+                    output.write(file_bytes)
+            except FileExistsError:
+                if hashlib.sha256(preserved.read_bytes()).hexdigest()!=input_sha256:
+                    raise ValueError('Original preservado está corrompido; confira o backend.')
 
         _jobs[job_id]["progress"] = "Analisando áudio e gerando presets..."
         _jobs[job_id]["progress_percent"] = 10
 
         pipeline = _get_pipeline()
+        def progress(percent, message):
+            _jobs[job_id].update(progress_percent=max(percent,_jobs[job_id].get("progress_percent",0)), progress=message)
         analysis, preset_pair = await pipeline.process(
             audio_path=audio_path,
             rhythm_device=rhythm_device,
@@ -180,8 +209,11 @@ async def _run_analysis_job(
             source_kind=source_kind,
             excerpt_start=excerpt_start,
             excerpt_duration=excerpt_duration,
+            engine_mode=engine_mode, lead_start=lead_start, lead_duration=lead_duration, progress=progress,
         )
 
+        if input_sha256:
+            analysis.engine_diagnostics['original_sha256'] = input_sha256
         preset_pair.rhythm_preset.source_file_name = original_name
         preset_pair.lead_preset.source_file_name = original_name
 
@@ -190,6 +222,7 @@ async def _run_analysis_job(
         _presets[pair_id] = preset_pair
         _analyses[pair_id] = {
             "tone_reference": analysis.reference_profile,
+            "engine_diagnostics": analysis.engine_diagnostics,
             "gain_character": analysis.effect_estimates.gain_character.value,
             "confidence": analysis.overall_confidence.value,
             "distortion_level": analysis.effect_estimates.distortion_level,
@@ -208,6 +241,9 @@ async def _run_analysis_job(
             },
         }
 
+        for role, profile in analysis.engine_diagnostics.get('reference_profiles',{}).items():
+            import json
+            save_record('comparison_reference',json.dumps([pair_id,role]), {'profile':profile})
         save_record("pair", pair_id, {"pair": preset_pair.model_dump(mode="json"), "analysis": _analyses[pair_id]})
 
         _jobs[job_id].update({
@@ -285,6 +321,8 @@ def _serialize_preset(preset) -> dict:
         "device": preset.device_model.value,
         "catalog_version": preset.catalog_version,
         "bpm": preset.bpm,
+        "generation_metadata": preset.generation_metadata,
+        "preset_volume": preset.preset_volume,
         "role": preset.role.value,
         "analysis_confidence": preset.overall_confidence.value,
         "artist": preset.artist or "",
@@ -319,6 +357,38 @@ async def get_preset_pair(pair_id: str):
         "analysis_summary": pair.analysis_summary,
         "analysis": _analyses.get(pair_id, {}),
     }
+
+
+@router.get("/presets/{pair_id}/stems/{role}/{instrument}")
+async def download_stem(pair_id: str, role: str, instrument: str):
+    from fastapi.responses import FileResponse
+    from ..core.storage import data_directory
+    import hashlib
+    if role not in {'rhythm','lead'} or instrument not in {'guitar','vocals','bass','drums','other','piano'}:
+        raise HTTPException(400, 'Instrumento ou função inválida')
+    _ensure_pair(pair_id)
+    diagnostics = _analyses[pair_id].get('engine_diagnostics',{})
+    if role == 'lead' and not diagnostics.get('lead',{}).get('same_region'):
+        diagnostics = diagnostics.get('lead',{})
+    separation = diagnostics.get('separation') or {}
+    key = separation.get('cache_id','')
+    if len(key)!=64 or any(c not in '0123456789abcdef' for c in key):
+        raise HTTPException(404, 'Esta análise não possui instrumentos separados')
+    path = data_directory()/'separations'/key/f'{instrument}.wav'
+    if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest()!=separation.get('stem_sha256',{}).get(instrument):
+        raise HTTPException(404, 'Instrumento indisponível ou arquivo alterado')
+    return FileResponse(path, media_type='audio/wav',filename=f'{role}-{instrument}.wav')
+
+
+@router.get("/presets/{pair_id}/candidates/{role}")
+async def get_candidates(pair_id: str, role: str):
+    from ..models.preset import Preset
+    if role not in {'rhythm','lead'}:
+        raise HTTPException(400,'Função inválida')
+    _ensure_pair(pair_id)
+    candidates = _analyses[pair_id].get('engine_diagnostics',{}).get('candidates',{}).get(role,[])
+    return {'candidates':[_serialize_preset(Preset.model_validate(p)) for p in candidates],
+            'ranking':'Alternativas da mesma família do catálogo, sem ranking de fidelidade sonora.'}
 
 
 @router.get("/presets/{pair_id}/export/json")

@@ -1,0 +1,273 @@
+{
+  "note": "Exemplo real do motor heurístico; sem validação sonora e sem envio MK20.",
+  "source": "Papa Roach - Infest .m4a",
+  "region": {
+    "start_seconds": 50,
+    "duration_seconds": 20
+  },
+  "target_tone": {
+    "version": 1,
+    "distortion": 0.5941365369432433,
+    "compression": 0.13893359440680175,
+    "bass": 0.7205304658544704,
+    "low_mids": 0.6800272502776591,
+    "mids": 0.6530687634581991,
+    "high_mids": 0.7819743991896073,
+    "treble": 0.6823353935975685,
+    "fizz": 0.0,
+    "attack": 0.2144594669342041,
+    "delay": null,
+    "reverb": null,
+    "modulation": null
+  },
+  "preset": {
+    "id": "5621fe83-1ac4-4e53-98fe-eec84c9c522e",
+    "name": "Base - Infest",
+    "device": "MK20",
+    "catalog_version": "0.3.0",
+    "bpm": 184.5703125,
+    "generation_metadata": {
+      "generator": "guitar-v2-heuristic",
+      "target_tone": {
+        "version": 1,
+        "distortion": 0.5941365369432433,
+        "compression": 0.13893359440680175,
+        "bass": 0.7205304658544704,
+        "low_mids": 0.6800272502776591,
+        "mids": 0.6530687634581991,
+        "high_mids": 0.7819743991896073,
+        "treble": 0.6823353935975685,
+        "fizz": 0.0,
+        "attack": 0.2144594669342041,
+        "delay": null,
+        "reverb": null,
+        "modulation": null
+      },
+      "region": {
+        "start_seconds": 50,
+        "duration_seconds": 20.0
+      },
+      "separation_cache_id": "67f97e8fca07cab430cf770040b97e2f20949c0746fad9d606778b9f0e06436a"
+    },
+    "preset_volume": null,
+    "role": "rhythm",
+    "analysis_confidence": "low",
+    "artist": "",
+    "song_title": "Infest",
+    "source_file_name": "",
+    "effect_chain": [
+      {
+        "slot": "0",
+        "effect_type": "noise_gate",
+        "model_id": "0",
+        "model_name": "AI Gate",
+        "enabled": true,
+        "parameters": {
+          "Gate": 40.0,
+          "Bias": 50.0
+        },
+        "parameter_specs": {
+          "Gate": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Bias": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          }
+        },
+        "generated_confidence": "speculative",
+        "generation_rationale": "Gate sugerido para controle de ruído; não identificado no áudio. Ajuste ao ruído real da sua guitarra"
+      },
+      {
+        "slot": "1",
+        "effect_type": "drive",
+        "model_id": "1",
+        "model_name": "TS8",
+        "enabled": false,
+        "parameters": {
+          "Gain": 10.0,
+          "Level": 50.0,
+          "Bass": 50.0,
+          "Middle": 50.0,
+          "Treble": 50.0,
+          "Reso": 50.0,
+          "Pres": 50.0,
+          "Bright": 50.0
+        },
+        "parameter_specs": {
+          "Gain": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Level": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Bass": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Middle": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Treble": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Reso": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Pres": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Bright": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          }
+        },
+        "generated_confidence": "low",
+        "generation_rationale": "Regra heurística aplicada ao perfil de guitarra; modelo da família do catálogo, sem equivalência acústica demonstrada."
+      },
+      {
+        "slot": "2",
+        "effect_type": "amp",
+        "model_id": "18",
+        "model_name": "HVMetal_1",
+        "enabled": true,
+        "parameters": {
+          "Gain": 47.0,
+          "Level": 40.0,
+          "Bass": 53.0,
+          "Middle": 55.0,
+          "Treble": 55.0,
+          "Reso": 25.0,
+          "Pres": 53.0,
+          "Bright": 30.0
+        },
+        "parameter_specs": {
+          "Gain": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Level": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Bass": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Middle": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Treble": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Reso": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Pres": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Bright": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          }
+        },
+        "generated_confidence": "low",
+        "generation_rationale": "Regra heurística aplicada ao perfil de guitarra; modelo da família do catálogo, sem equivalência acústica demonstrada."
+      },
+      {
+        "slot": "3",
+        "effect_type": "cabinet",
+        "model_id": "1",
+        "model_name": "BogUber412A",
+        "enabled": true,
+        "parameters": {
+          "Level": 60.0,
+          "Low Cut": 60.0,
+          "High Cut": 12000.0
+        },
+        "parameter_specs": {
+          "Level": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Low Cut": {
+            "min": 20.0,
+            "max": 300.0,
+            "step": 1.0,
+            "unit": "Hz"
+          },
+          "High Cut": {
+            "min": 5000.0,
+            "max": 18000.0,
+            "step": 1.0,
+            "unit": "Hz"
+          }
+        },
+        "generated_confidence": "low",
+        "generation_rationale": "Regra heurística aplicada ao perfil de guitarra; modelo da família do catálogo, sem equivalência acústica demonstrada."
+      }
+    ]
+  },
+  "confidence": "low",
+  "optimization_score": null,
+  "limitations": [
+    "Análise realizada em referência com múltiplos instrumentos. Estimativas de timbre de guitarra têm precisão reduzida.",
+    "Confiança é qualitativa sobre a estimativa, não um percentual de fidelidade ao original nem identificação do modelo de equipamento.",
+    "O timbre gerado é uma aproximação baseada em características espectrais, não uma identificação do equipamento original da gravação.",
+    "Motor v2 em modo heurístico; sem modelo calibrado da MK300/MK20 nem percentual de similaridade.",
+    "Base e solo são partes indicadas pelos trechos; o separador não desmembra guitarras simultâneas.",
+    "Efeitos temporais permanecem desligados sem evidência suficiente.",
+    "Cortes do gabinete mantêm valores iniciais do catálogo; a escala física ainda não foi calibrada.",
+    "Guitar pode conter base e solo sobrepostos.",
+    "Vazamento e artefatos não foram medidos contra stems verdadeiros."
+  ]
+}

@@ -83,6 +83,8 @@ class Preset(BaseModel):
     # Metadados de qualidade da geração
     overall_confidence: ConfidenceLevel
     generation_summary: str = ""
+    generation_metadata: dict = Field(default_factory=dict)
+    preset_volume: Optional[int] = None
     limitations_noted: list[str] = []
     analysis_warnings: list[str] = []
 

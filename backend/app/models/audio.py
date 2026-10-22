@@ -118,6 +118,7 @@ class AudioAnalysisResult(BaseModel):
     limitations: list[str] = []
     warnings: list[str] = []
     reference_profile: dict = Field(default_factory=dict)
+    engine_diagnostics: dict = Field(default_factory=dict)
 
 
 class MusicTrack(BaseModel):

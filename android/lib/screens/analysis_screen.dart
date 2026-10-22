@@ -26,7 +26,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
   static const _labels = {
     'pending': 'Aguardando processamento...',
     'running': 'Analisando características do áudio...',
-    'separating': 'Separando instrumentos (Demucs)...',
+    'separating': 'Separando guitarra e demais instrumentos por IA...',
     'compiling': 'Gerando presets...',
     'done': 'Presets gerados!',
     'failed': 'Falha no processamento',

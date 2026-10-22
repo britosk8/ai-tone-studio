@@ -80,6 +80,67 @@ class _PresetListScreenState extends State<PresetListScreen> {
     }
   }
 
+  Future<void> _chooseCandidate(PresetData current) async {
+    try {
+      final candidates = await context
+          .read<ApiService>()
+          .getToneCandidates(_pair!.id, current.role);
+      if (!mounted) return;
+      final chosen = await showDialog<PresetData>(
+          context: context,
+          builder: (context) => SimpleDialog(
+                  title: const Text('Alternativas de amplificador'),
+                  children: [
+                    const Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Text(
+                            'Opções da mesma família do catálogo. A ordem não representa fidelidade sonora. Escolher atualiza este preset na biblioteca.')),
+                    for (final candidate in candidates)
+                      SimpleDialogOption(
+                          onPressed: () => Navigator.pop(context, candidate),
+                          child: Text(candidate.effectChain
+                              .where((b) => b.effectType == 'amp')
+                              .map((b) => b.modelName)
+                              .join(', '))),
+                  ]));
+      if (chosen == null || !mounted) return;
+      final replacement = PresetData.fromJson({
+        ...current.toJson(),
+        'effect_chain': chosen.effectChain.map((e) => e.toJson()).toList(),
+        'generation_metadata': chosen.generationMetadata,
+        'preset_volume': chosen.presetVolume
+      });
+      final updated = _pair!.withPreset(replacement);
+      await context.read<PresetStore>().save(updated);
+      if (mounted) setState(() => _pair = updated);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Não foi possível carregar as alternativas: $e')));
+      }
+    }
+  }
+
+  Future<void> _exportStem(PresetData preset) async {
+    try {
+      final bytes = await context
+          .read<ApiService>()
+          .downloadGuitarStem(_pair!.id, preset.role);
+      final directory = await getTemporaryDirectory();
+      final file = File('${directory.path}/guitarra-${preset.role}.wav');
+      await file.writeAsBytes(bytes, flush: true);
+      if (mounted) {
+        await Share.shareXFiles([XFile(file.path)],
+            text: 'Guitarra extraída por IA — ${preset.songTitle}');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Não foi possível exportar a guitarra: $e')));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_loading) {
@@ -133,6 +194,8 @@ class _PresetListScreenState extends State<PresetListScreen> {
             roleLabel: 'GUITARRA BASE',
             pairId: pair.id,
             onEdit: () => _editPreset(pair.rhythm),
+            onCandidates: () => _chooseCandidate(pair.rhythm),
+            onExportStem: () => _exportStem(pair.rhythm),
           ),
           _PresetCard(
             preset: pair.lead,
@@ -140,6 +203,8 @@ class _PresetListScreenState extends State<PresetListScreen> {
             roleLabel: 'GUITARRA SOLO',
             pairId: pair.id,
             onEdit: () => _editPreset(pair.lead),
+            onCandidates: () => _chooseCandidate(pair.lead),
+            onExportStem: () => _exportStem(pair.lead),
           ),
           Padding(
               padding: const EdgeInsets.all(16),
@@ -229,6 +294,11 @@ class _AnalysisSummaryCard extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             SpectralChart(spectral: analysis.spectral),
+            if (analysis.possibleLayering)
+              const Padding(
+                  padding: EdgeInsets.only(top: 12),
+                  child: Text(
+                      'A referência pode conter guitarras sobrepostas ou efeitos estéreo. Use trechos distintos para base e solo.')),
             if (analysis.confidence == 'low' ||
                 analysis.confidence == 'speculative') ...[
               const SizedBox(height: 12),
@@ -240,10 +310,11 @@ class _AnalysisSummaryCard extends StatelessWidget {
                   border:
                       Border.all(color: AppTheme.warnYellow.withOpacity(0.3)),
                 ),
-                child: const Text(
-                  'Análise feita em mixagem completa sem separação de fontes. '
-                  'Os presets são aproximações — a separação de fontes é opcional.',
-                  style: TextStyle(fontSize: 11, color: AppTheme.warnYellow),
+                child: Text(
+                  analysis.sourceSeparated
+                      ? 'Guitarra extraída por IA. O preset é uma estimativa inicial: vazamentos e artefatos podem influenciar o resultado.'
+                      : 'Preset estimado a partir do áudio. A confiança não representa fidelidade sonora ao original.',
+                  style: const TextStyle(fontSize: 11, color: AppTheme.warnYellow),
                 ),
               ),
             ],
@@ -295,6 +366,7 @@ class _PresetCard extends StatelessWidget {
   final String roleLabel;
   final String pairId;
   final VoidCallback onEdit;
+  final VoidCallback onCandidates, onExportStem;
 
   const _PresetCard({
     required this.preset,
@@ -302,6 +374,8 @@ class _PresetCard extends StatelessWidget {
     required this.roleLabel,
     required this.pairId,
     required this.onEdit,
+    required this.onCandidates,
+    required this.onExportStem,
   });
 
   @override
@@ -343,6 +417,18 @@ class _PresetCard extends StatelessWidget {
               ],
             ),
           ),
+          if (preset.generationMetadata['generator'] ==
+              'guitar-v2-heuristic') ...[
+            TextButton.icon(
+                onPressed: onCandidates,
+                icon: const Icon(Icons.tune),
+                label: const Text('Comparar alternativas de amplificador')),
+            if (preset.generationMetadata['separation_cache_id'] != null)
+              TextButton.icon(
+                  onPressed: onExportStem,
+                  icon: const Icon(Icons.audio_file_outlined),
+                  label: const Text('Exportar guitarra separada')),
+          ],
           ...preset.effectChain.where((b) => b.enabled).map(
                 (block) => _EffectRow(block: block),
               ),
