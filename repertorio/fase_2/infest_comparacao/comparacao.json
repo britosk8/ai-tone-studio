@@ -1,0 +1,236 @@
+{
+  "schema_version": 1,
+  "track_id": "01",
+  "approval_file": "repertorio/fase_1/01/APROVACAO_REFERENCIAS.json",
+  "model": "htdemucs_6s",
+  "demucs_version": "4.0.1",
+  "torch_version": "2.5.1+cpu",
+  "device": "cpu",
+  "threads": 2,
+  "context_seconds_each_side": 8,
+  "segment_seconds": 7.8,
+  "shifts": 1,
+  "overlap": 0.25,
+  "seed": 0,
+  "interpretation": "Comparação de estabilidade e escuta entre duas configurações; não mede fidelidade ou pureza da separação.",
+  "results": [
+    {
+      "candidate_id": "01_base_01",
+      "start_seconds": 50,
+      "end_seconds": 70,
+      "source_file": "repertorio/fase_1/01/original/Papa Roach - Infest .m4a",
+      "source_sha256": "942f425d80ff0b6f7364501853504c7e6e2448185e768f9b1f54e5063cb889db",
+      "input_file": "repertorio/fase_1/01/trechos/candidato_base_01_0050s.wav",
+      "input_sha256": "f15013a41f06cef96cedfa1f246f6eac5456ad15bbad5b4fa3d5b7f3f1140cbc",
+      "inference_seconds": 24.0577717499109,
+      "processed_context_seconds": 36.0,
+      "original_context_start": 42,
+      "original_context_end": 78,
+      "trim_offset_samples": 352800,
+      "target_preview_rms_dbfs": -24.0,
+      "previews": [
+        {
+          "label": "mixagem",
+          "file": "repertorio/fase_2/infest_comparacao/01_base_01/escuta_mixagem.wav",
+          "sha256": "fa1e3e7b68a188be3a9ea4f76acd741c921ad03b6201cbf1e70d9e1c45349d16",
+          "gain_db": -14.205714658947144,
+          "sample_peak_dbfs": -11.951409445909693,
+          "rms_dbfs": -24.000000248654892
+        },
+        {
+          "label": "guitarra_inicial",
+          "file": "repertorio/fase_2/infest_comparacao/01_base_01/escuta_guitarra_inicial.wav",
+          "sha256": "1378dea395810473c155ae764f8c7a81dbff9c04d2c435f59bef32e69023da40",
+          "gain_db": -7.334048587883738,
+          "sample_peak_dbfs": -10.222936558613975,
+          "rms_dbfs": -23.999999775693823
+        },
+        {
+          "label": "guitarra_contexto",
+          "file": "repertorio/fase_2/infest_comparacao/01_base_01/escuta_guitarra_contexto.wav",
+          "sha256": "af839480d5fac6e97ba5acf81206fff28a2aeadc52ae263a4126a675691560fa",
+          "gain_db": -7.51278921628904,
+          "sample_peak_dbfs": -10.389416575335579,
+          "rms_dbfs": -23.999999785404043
+        }
+      ],
+      "context_stems": [
+        {
+          "source": "drums",
+          "file": "repertorio/fase_2/infest_comparacao/01_base_01/drums.wav",
+          "sha256": "7dfbc3d399c4406d11894b8d5b7d2529b04f91fed15f1641d974ea76189b2c7f"
+        },
+        {
+          "source": "bass",
+          "file": "repertorio/fase_2/infest_comparacao/01_base_01/bass.wav",
+          "sha256": "4c4ccfac225be0571c5f3a8bcfd4adc1618e1972007a18780eb5c2b8f38f10a7"
+        },
+        {
+          "source": "other",
+          "file": "repertorio/fase_2/infest_comparacao/01_base_01/other.wav",
+          "sha256": "798f240fa091abdc28e7db90236f9b689857ed2fffb003505c0e1a46b994dc76"
+        },
+        {
+          "source": "vocals",
+          "file": "repertorio/fase_2/infest_comparacao/01_base_01/vocals.wav",
+          "sha256": "92148a56aaab0cc2544a645d3b3e616b2e52674655b478944b675a0ce37f68aa"
+        },
+        {
+          "source": "guitar",
+          "file": "repertorio/fase_2/infest_comparacao/01_base_01/guitar.wav",
+          "sha256": "6f0e0950ed252de4abacbe6b36c44b741b58ab437db43067bb3a6b5c11b24dc1"
+        },
+        {
+          "source": "piano",
+          "file": "repertorio/fase_2/infest_comparacao/01_base_01/piano.wav",
+          "sha256": "1b774b7070026a5aaf81ba272219350c9c251bba953c429201faf8312469acb2"
+        }
+      ],
+      "raw_metrics": {
+        "mixagem": {
+          "rms_dbfs": -9.794285341052856,
+          "sample_peak_dbfs": 2.254305676144463,
+          "crest_db": 12.04859101719732,
+          "stereo_correlation": 0.700519537920871,
+          "relative_bands_db": {
+            "bass": -3.0828448536019315,
+            "middle": -4.030031405703828,
+            "treble": -9.472333260994072
+          }
+        },
+        "guitarra_inicial": {
+          "rms_dbfs": -16.66595141211626,
+          "sample_peak_dbfs": -2.8888882629393553,
+          "crest_db": 13.777063149176904,
+          "stereo_correlation": -0.05581577280447016,
+          "relative_bands_db": {
+            "bass": -5.0053064744467255,
+            "middle": -2.9997797607530896,
+            "treble": -7.376777133293912
+          }
+        },
+        "guitarra_contexto": {
+          "rms_dbfs": -16.48721078371096,
+          "sample_peak_dbfs": -2.876627206949418,
+          "crest_db": 13.610583576761542,
+          "stereo_correlation": -0.04610681049525198,
+          "relative_bands_db": {
+            "bass": -5.132007670893138,
+            "middle": -2.894693507182646,
+            "treble": -7.453281298498054
+          }
+        }
+      },
+      "stem_quality_status": "pending_human_review"
+    },
+    {
+      "candidate_id": "01_solo_destaque_01",
+      "start_seconds": 160,
+      "end_seconds": 180,
+      "source_file": "repertorio/fase_1/01/original/Papa Roach - Infest .m4a",
+      "source_sha256": "942f425d80ff0b6f7364501853504c7e6e2448185e768f9b1f54e5063cb889db",
+      "input_file": "repertorio/fase_1/01/trechos/candidato_solo_destaque_01_0160s.wav",
+      "input_sha256": "edbb980492672987e2a63f1044c7dca8991039b9ac0f541d0075c58149a0d645",
+      "inference_seconds": 23.876863184035756,
+      "processed_context_seconds": 36.0,
+      "original_context_start": 152,
+      "original_context_end": 188,
+      "trim_offset_samples": 352800,
+      "target_preview_rms_dbfs": -24.0,
+      "previews": [
+        {
+          "label": "mixagem",
+          "file": "repertorio/fase_2/infest_comparacao/01_solo_destaque_01/escuta_mixagem.wav",
+          "sha256": "8030ef01db55fa88c32761375a1771f4de3b92bd17ef1ad6b874def66ef51372",
+          "gain_db": -13.19813310835455,
+          "sample_peak_dbfs": -11.53897945821942,
+          "rms_dbfs": -23.999999814970778
+        },
+        {
+          "label": "guitarra_inicial",
+          "file": "repertorio/fase_2/infest_comparacao/01_solo_destaque_01/escuta_guitarra_inicial.wav",
+          "sha256": "ecb0e32565d93dc0411580f468b95c97b0e138785ed5f16bd44d4e397b5eb393",
+          "gain_db": -7.139790951704786,
+          "sample_peak_dbfs": -9.108247455923475,
+          "rms_dbfs": -24.000000125441655
+        },
+        {
+          "label": "guitarra_contexto",
+          "file": "repertorio/fase_2/infest_comparacao/01_solo_destaque_01/escuta_guitarra_contexto.wav",
+          "sha256": "c44819c7fb32edf777e0eff2a6bc94ad08afbb988e77fa86fa8befe895b97881",
+          "gain_db": -7.205857032288846,
+          "sample_peak_dbfs": -9.348977933060059,
+          "rms_dbfs": -24.000000242670197
+        }
+      ],
+      "context_stems": [
+        {
+          "source": "drums",
+          "file": "repertorio/fase_2/infest_comparacao/01_solo_destaque_01/drums.wav",
+          "sha256": "482502ddb2d34c0caa3e83547ba94fa6a13ecff1cd01336eadfb9134f5523076"
+        },
+        {
+          "source": "bass",
+          "file": "repertorio/fase_2/infest_comparacao/01_solo_destaque_01/bass.wav",
+          "sha256": "dedd779fa1fe507a0a8cea92c336857b1cad06c31119e642ed0eb91f6ced137e"
+        },
+        {
+          "source": "other",
+          "file": "repertorio/fase_2/infest_comparacao/01_solo_destaque_01/other.wav",
+          "sha256": "803fc13a4b37034026d560a4783ee1de195941a177ea861fd7266ba098b640bc"
+        },
+        {
+          "source": "vocals",
+          "file": "repertorio/fase_2/infest_comparacao/01_solo_destaque_01/vocals.wav",
+          "sha256": "1baeea0a1988bf97390500712c2c7fbb618288b3a61761303e724287729c35b0"
+        },
+        {
+          "source": "guitar",
+          "file": "repertorio/fase_2/infest_comparacao/01_solo_destaque_01/guitar.wav",
+          "sha256": "85699350abdac4e6d2982c1acabad66d5ca5e95d603c8a24cfc2f184fbf11546"
+        },
+        {
+          "source": "piano",
+          "file": "repertorio/fase_2/infest_comparacao/01_solo_destaque_01/piano.wav",
+          "sha256": "032a618aafbbef80cca2235dc670db0af9b2c1587ed9cf2ae5c50727ecbbed0d"
+        }
+      ],
+      "raw_metrics": {
+        "mixagem": {
+          "rms_dbfs": -10.80186689164545,
+          "sample_peak_dbfs": 1.6591538948302786,
+          "crest_db": 12.461020786475727,
+          "stereo_correlation": 0.7413791551796874,
+          "relative_bands_db": {
+            "bass": -3.7891754795944883,
+            "middle": -3.5777095445912153,
+            "treble": -8.436681682060303
+          }
+        },
+        "guitarra_inicial": {
+          "rms_dbfs": -16.860209048295214,
+          "sample_peak_dbfs": -1.9684565144500539,
+          "crest_db": 14.89175253384516,
+          "stereo_correlation": 0.3314788546775688,
+          "relative_bands_db": {
+            "bass": -6.81020593230132,
+            "middle": -2.356126825169356,
+            "treble": -6.772057428435337
+          }
+        },
+        "guitarra_contexto": {
+          "rms_dbfs": -16.794142967711153,
+          "sample_peak_dbfs": -2.1431206156270295,
+          "crest_db": 14.651022352084125,
+          "stereo_correlation": 0.3299251112263896,
+          "relative_bands_db": {
+            "bass": -6.785078381393978,
+            "middle": -2.3737111710845085,
+            "treble": -6.748589924547668
+          }
+        }
+      },
+      "stem_quality_status": "pending_human_review"
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "candidate_id": "02_base_01",
+  "input": "repertorio/fase_1/02/trechos/candidato_base_01_0070s.wav",
+  "input_sha256": "50ca2c30b2645b965bc504e3c0e0e403b8d21ffbb15e515c7bc69813bfd0e223",
+  "source_original": "repertorio/fase_1/02/original/Hot Water Music - State Of Grace.m4a",
+  "start_seconds": 70,
+  "end_seconds": 90,
+  "model": "htdemucs_6s",
+  "demucs_version": "4.0.1",
+  "model_sources": [
+    "drums",
+    "bass",
+    "other",
+    "vocals",
+    "guitar",
+    "piano"
+  ],
+  "seed": 0,
+  "shifts": 0,
+  "segment_seconds": 4,
+  "overlap": 0.25,
+  "threads": 2,
+  "device": "cpu",
+  "sample_rate": 44100,
+  "load_seconds": 0.1891209710156545,
+  "inference_seconds": 25.298275499022566,
+  "realtime_factor": 1.2649137749511283,
+  "reconstruction_error_relative_rms": 0.0628648877977312,
+  "stems": [
+    {
+      "source": "drums",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/02_base_01/drums.wav",
+      "sha256": "0d581aa4ee502b9476f52f2ac3ac6c88a64939edd8d2650e55d9934b01ba5561",
+      "peak": 1.027565836906433,
+      "rms": 0.14519201078227448
+    },
+    {
+      "source": "bass",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/02_base_01/bass.wav",
+      "sha256": "13697fcb4f91088563a767594f3e21f7e5d41d5934c364fcf0cca44878e94bec",
+      "peak": 0.46288734674453735,
+      "rms": 0.10319266278311826
+    },
+    {
+      "source": "other",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/02_base_01/other.wav",
+      "sha256": "37d97582b4d67182408143cfb57a55fbb7e3eb014bb488b5419f1b12dee689e5",
+      "peak": 0.19620029628276825,
+      "rms": 0.010895909397470059
+    },
+    {
+      "source": "vocals",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/02_base_01/vocals.wav",
+      "sha256": "3712be530c21ae0526305a04b26cb42038b62c37de223ac1dde7912f73783eb9",
+      "peak": 0.7011933326721191,
+      "rms": 0.1200784000254168
+    },
+    {
+      "source": "guitar",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/02_base_01/guitar.wav",
+      "sha256": "3a3fcc653414386d42af4689254e8d9a629b54925489b2a426a244fb677cd672",
+      "peak": 0.5598272681236267,
+      "rms": 0.12346138776427595
+    },
+    {
+      "source": "piano",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/02_base_01/piano.wav",
+      "sha256": "165d176ec26746bf4714e9fad13ee4ce25b678ce37b0e44624d5ba71b709c5f3",
+      "peak": 0.005060500465333462,
+      "rms": 0.00015807218986201043
+    }
+  ],
+  "review_status": "pendente_de_escuta",
+  "limitations": [
+    "Guitar inclui quaisquer guitarras presentes; não separa base de solo.",
+    "Não há stems verdadeiros para medir SDR ou fidelidade da separação.",
+    "Erro de reconstrução não comprova pureza nem preservação do timbre.",
+    "Vazamento e artefatos precisam ser avaliados por audição.",
+    "Modelo experimental de referência; sem integração ao app."
+  ],
+  "model_checkpoints": [
+    {
+      "name": "5c90dfd2-34c22ccb.th",
+      "sha256": "34c22ccb381c6f9fdbf324f04e1e2fe21aaaf293f5ded163a162697ff9a02ddd"
+    }
+  ]
+}

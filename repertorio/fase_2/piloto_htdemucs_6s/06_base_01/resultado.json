@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "candidate_id": "06_base_01",
+  "input": "repertorio/fase_1/06/trechos/candidato_base_01_0170s.wav",
+  "input_sha256": "e0754361f1a4857b1b58511b93195e960b43509882cc1f523a3ce9d9934e9daa",
+  "source_original": "repertorio/fase_1/06/original/Rage Against The Machine - Bombtrack.m4a",
+  "start_seconds": 170,
+  "end_seconds": 190,
+  "model": "htdemucs_6s",
+  "demucs_version": "4.0.1",
+  "model_sources": [
+    "drums",
+    "bass",
+    "other",
+    "vocals",
+    "guitar",
+    "piano"
+  ],
+  "seed": 0,
+  "shifts": 0,
+  "segment_seconds": 4,
+  "overlap": 0.25,
+  "threads": 2,
+  "device": "cpu",
+  "sample_rate": 44100,
+  "load_seconds": 0.2121935059549287,
+  "inference_seconds": 27.404025337076746,
+  "realtime_factor": 1.3702012668538373,
+  "reconstruction_error_relative_rms": 0.07647181018419641,
+  "stems": [
+    {
+      "source": "drums",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/06_base_01/drums.wav",
+      "sha256": "2525cfea60874128e0c48877bec81216f80cf5f335368a58321e7df1a7396478",
+      "peak": 0.9937785863876343,
+      "rms": 0.1176523976987624
+    },
+    {
+      "source": "bass",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/06_base_01/bass.wav",
+      "sha256": "13ea2cb07d66e8c8045a3849e88cbafe3e16499cdcbb3d1afb3c056a7d635ed4",
+      "peak": 0.4459661841392517,
+      "rms": 0.10640488117957778
+    },
+    {
+      "source": "other",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/06_base_01/other.wav",
+      "sha256": "e4e2aa6439af568734a111dc6dd86756b442996eb373061d821f3b4a5c52387a",
+      "peak": 0.002708820393308997,
+      "rms": 8.141816081597698e-05
+    },
+    {
+      "source": "vocals",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/06_base_01/vocals.wav",
+      "sha256": "897b6ab5f1b28edb80e9aaae3df2696c9a8f311be551649159d4b38f90a677db",
+      "peak": 0.9081268310546875,
+      "rms": 0.11377314382101986
+    },
+    {
+      "source": "guitar",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/06_base_01/guitar.wav",
+      "sha256": "5c895f91886ea97871caaf81fd221706e897a41a177f9c80b2f4eb4b966731f5",
+      "peak": 0.5273275971412659,
+      "rms": 0.09952675686106875
+    },
+    {
+      "source": "piano",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/06_base_01/piano.wav",
+      "sha256": "5283880edb808c43f5a1ec7c52c37a434e24201dc7c2706ffa46a1436c38839c",
+      "peak": 0.11242988705635071,
+      "rms": 0.004596760307249194
+    }
+  ],
+  "review_status": "pendente_de_escuta",
+  "limitations": [
+    "Guitar inclui quaisquer guitarras presentes; não separa base de solo.",
+    "Não há stems verdadeiros para medir SDR ou fidelidade da separação.",
+    "Erro de reconstrução não comprova pureza nem preservação do timbre.",
+    "Vazamento e artefatos precisam ser avaliados por audição.",
+    "Modelo experimental de referência; sem integração ao app."
+  ],
+  "model_checkpoints": [
+    {
+      "name": "5c90dfd2-34c22ccb.th",
+      "sha256": "34c22ccb381c6f9fdbf324f04e1e2fe21aaaf293f5ded163a162697ff9a02ddd"
+    }
+  ]
+}

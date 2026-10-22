@@ -1,0 +1,633 @@
+{
+  "format": "ai-tone-studio",
+  "version": 1,
+  "id": "f92f031e-c59d-4b1c-944d-56938888e8fe",
+  "rhythm_preset": {
+    "id": "f92f031e-c59d-4b1c-944d-56938888e8fe",
+    "name": "Infest Base R1",
+    "device": "MK300",
+    "catalog_version": "0.4.0",
+    "bpm": null,
+    "role": "rhythm",
+    "analysis_confidence": "low",
+    "artist": "Papa Roach",
+    "song_title": "Infest — Piloto R1",
+    "source_file_name": "Papa Roach - Infest .m4a",
+    "effect_chain": [
+      {
+        "slot": "0",
+        "effect_type": "noise_gate",
+        "model_id": "0",
+        "model_name": "AI Gate",
+        "enabled": true,
+        "parameters": {
+          "Gate": 15.0,
+          "Bias": 50.0
+        },
+        "parameter_specs": {
+          "Gate": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Bias": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          }
+        },
+        "generated_confidence": "speculative",
+        "generation_rationale": "Gate sugerido para controle de ruído; não identificado no áudio. Ajuste ao ruído real da sua guitarra | Piloto R1: hipótese inicial, não equipamento original identificado."
+      },
+      {
+        "slot": "1",
+        "effect_type": "compressor",
+        "model_id": "8",
+        "model_name": "Compress",
+        "enabled": false,
+        "parameters": {
+          "Sustain": 63.0,
+          "Attack": 40.0,
+          "Level": 55.0,
+          "Blend": 100.0
+        },
+        "parameter_specs": {
+          "Sustain": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Attack": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Level": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Blend": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          }
+        },
+        "generated_confidence": "low",
+        "generation_rationale": "Dinâmica sugere compressão; a masterização e outros instrumentos também podem explicar a medição | Piloto R1: hipótese inicial, não equipamento original identificado. Desligado por evidência insuficiente; não empilhar drive/ambiência nesta primeira captura."
+      },
+      {
+        "slot": "2",
+        "effect_type": "drive",
+        "model_id": "0",
+        "model_name": "1BLUES_OD",
+        "enabled": false,
+        "parameters": {
+          "Gain": 30.0,
+          "Level": 70.0,
+          "Bass": 51.0,
+          "Middle": 50.0,
+          "Treble": 50.0,
+          "Reso": 0.0,
+          "Pres": 88.0,
+          "Bright": 85.0
+        },
+        "parameter_specs": {
+          "Gain": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Level": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Bass": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Middle": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Treble": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Reso": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Pres": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Bright": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          }
+        },
+        "generated_confidence": "low",
+        "generation_rationale": "Timbre estimado: overdrive | Piloto R1: hipótese inicial, não equipamento original identificado. Desligado por evidência insuficiente; não empilhar drive/ambiência nesta primeira captura."
+      },
+      {
+        "slot": "3",
+        "effect_type": "amp",
+        "model_id": "1",
+        "model_name": "2J900_OD",
+        "enabled": true,
+        "parameters": {
+          "Gain": 33.0,
+          "Level": 50.0,
+          "Bass": 75.0,
+          "Middle": 58.0,
+          "Treble": 40.0,
+          "Reso": 0.0,
+          "Pres": 50.0,
+          "Bright": 0.0
+        },
+        "parameter_specs": {
+          "Gain": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Level": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Bass": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Middle": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Treble": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Reso": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Pres": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Bright": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          }
+        },
+        "generated_confidence": "low",
+        "generation_rationale": "Amp compatível com timbre overdrive | Piloto R1: hipótese inicial, não equipamento original identificado."
+      },
+      {
+        "slot": "4",
+        "effect_type": "cabinet",
+        "model_id": "1",
+        "model_name": "2JVM_1960_57",
+        "enabled": true,
+        "parameters": {
+          "Level": 80.0,
+          "Low Cut": 0.0,
+          "High Cut": 200.0
+        },
+        "parameter_specs": {
+          "Level": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Low Cut": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "High Cut": {
+            "min": 0.0,
+            "max": 200.0,
+            "step": 1.0,
+            "unit": "raw"
+          }
+        },
+        "generated_confidence": "low",
+        "generation_rationale": "Cabinet padrão para o tipo de amp selecionado | Piloto R1: hipótese inicial, não equipamento original identificado."
+      },
+      {
+        "slot": "5",
+        "effect_type": "reverb",
+        "model_id": "0",
+        "model_name": "Room",
+        "enabled": false,
+        "parameters": {
+          "Decay": 25.0,
+          "Mix": 15.0,
+          "High Pass": 80.0,
+          "Low Pass": 80.0,
+          "Mod Depth": 40.0
+        },
+        "parameter_specs": {
+          "Decay": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Mix": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "High Pass": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Low Pass": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Mod Depth": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          }
+        },
+        "generated_confidence": "low",
+        "generation_rationale": "Leve reverb detectado — reduzido para não sujar o riff | Piloto R1: hipótese inicial, não equipamento original identificado. Desligado por evidência insuficiente; não empilhar drive/ambiência nesta primeira captura."
+      }
+    ]
+  },
+  "lead_preset": {
+    "id": "150ca710-9ebc-49c5-ad24-19cc79437bea",
+    "name": "Infest Solo R1",
+    "device": "MK300",
+    "catalog_version": "0.4.0",
+    "bpm": null,
+    "role": "lead",
+    "analysis_confidence": "low",
+    "artist": "Papa Roach",
+    "song_title": "Infest — Piloto R1",
+    "source_file_name": "Papa Roach - Infest .m4a",
+    "effect_chain": [
+      {
+        "slot": "0",
+        "effect_type": "noise_gate",
+        "model_id": "0",
+        "model_name": "AI Gate",
+        "enabled": true,
+        "parameters": {
+          "Gate": 15.0,
+          "Bias": 50.0
+        },
+        "parameter_specs": {
+          "Gate": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Bias": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          }
+        },
+        "generated_confidence": "speculative",
+        "generation_rationale": "Gate sugerido para controle de ruído; não identificado no áudio. Preserve as notas longas ao ajustar | Piloto R1: hipótese inicial, não equipamento original identificado."
+      },
+      {
+        "slot": "1",
+        "effect_type": "drive",
+        "model_id": "0",
+        "model_name": "1BLUES_OD",
+        "enabled": false,
+        "parameters": {
+          "Gain": 37.0,
+          "Level": 72.0,
+          "Bass": 51.0,
+          "Middle": 50.0,
+          "Treble": 50.0,
+          "Reso": 0.0,
+          "Pres": 88.0,
+          "Bright": 85.0
+        },
+        "parameter_specs": {
+          "Gain": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Level": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Bass": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Middle": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Treble": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Reso": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Pres": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Bright": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          }
+        },
+        "generated_confidence": "low",
+        "generation_rationale": "Drive condicionado à distorção estimada (overdrive); o papel solo não implica distorção | Piloto R1: hipótese inicial, não equipamento original identificado. Desligado por evidência insuficiente; não empilhar drive/ambiência nesta primeira captura."
+      },
+      {
+        "slot": "2",
+        "effect_type": "amp",
+        "model_id": "1",
+        "model_name": "2J900_OD",
+        "enabled": true,
+        "parameters": {
+          "Gain": 32.0,
+          "Level": 50.0,
+          "Bass": 60.0,
+          "Middle": 67.0,
+          "Treble": 50.0,
+          "Reso": 0.0,
+          "Pres": 67.0,
+          "Bright": 0.0
+        },
+        "parameter_specs": {
+          "Gain": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Level": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Bass": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Middle": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Treble": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Reso": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Pres": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Bright": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          }
+        },
+        "generated_confidence": "low",
+        "generation_rationale": "Amp compatível com o caráter estimado overdrive; modelo original não identificado | Piloto R1: hipótese inicial, não equipamento original identificado."
+      },
+      {
+        "slot": "3",
+        "effect_type": "cabinet",
+        "model_id": "1",
+        "model_name": "2JVM_1960_57",
+        "enabled": true,
+        "parameters": {
+          "Level": 80.0,
+          "Low Cut": 0.0,
+          "High Cut": 200.0
+        },
+        "parameter_specs": {
+          "Level": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Low Cut": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "High Cut": {
+            "min": 0.0,
+            "max": 200.0,
+            "step": 1.0,
+            "unit": "raw"
+          }
+        },
+        "generated_confidence": "low",
+        "generation_rationale": "Cabinet escolhido para o caráter estimado; modelo original não identificado | Piloto R1: hipótese inicial, não equipamento original identificado."
+      },
+      {
+        "slot": "4",
+        "effect_type": "delay",
+        "model_id": "0",
+        "model_name": "Clean",
+        "enabled": false,
+        "parameters": {
+          "Time": 365.0,
+          "Fb": 25.0,
+          "Mix": 20.0,
+          "Sync": 0.0
+        },
+        "parameter_specs": {
+          "Time": {
+            "min": 0.0,
+            "max": 2000.0,
+            "step": 1.0,
+            "unit": "ms"
+          },
+          "Fb": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Mix": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Sync": {
+            "min": 0.0,
+            "max": 1.0,
+            "step": 1.0,
+            "unit": null
+          }
+        },
+        "generated_confidence": "low",
+        "generation_rationale": "Delay para expressão no solo | Piloto R1: hipótese inicial, não equipamento original identificado. Desligado por evidência insuficiente; não empilhar drive/ambiência nesta primeira captura."
+      },
+      {
+        "slot": "5",
+        "effect_type": "reverb",
+        "model_id": "0",
+        "model_name": "Room",
+        "enabled": false,
+        "parameters": {
+          "Decay": 40.0,
+          "Mix": 28.0,
+          "High Pass": 80.0,
+          "Low Pass": 80.0,
+          "Mod Depth": 40.0
+        },
+        "parameter_specs": {
+          "Decay": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Mix": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "High Pass": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Low Pass": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Mod Depth": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          }
+        },
+        "generated_confidence": "low",
+        "generation_rationale": "Reverb para ambiência do solo | Piloto R1: hipótese inicial, não equipamento original identificado. Desligado por evidência insuficiente; não empilhar drive/ambiência nesta primeira captura."
+      }
+    ]
+  },
+  "analysis": {
+    "gain_character": "overdrive",
+    "confidence": "low",
+    "distortion_level": 0.4732374701717737,
+    "estimated_bpm": null,
+    "spectral_profile": {
+      "low": 1.0,
+      "low_mid": 0.6294456086486474,
+      "mid": 0.40701565294220854,
+      "high_mid": 0.2947492298168986,
+      "high": 0.012572107057169749,
+      "brightness": 0.41073680019912007
+    },
+    "effect_presence": {
+      "reverb_probability": false,
+      "delay_probability": false
+    }
+  },
+  "experimental_metadata": {
+    "label": "Piloto R1 — não validado auditivamente",
+    "generator": "heuristico_catalogo_0.4.0",
+    "separation": "htdemucs_6s",
+    "independent_references": true
+  }
+}

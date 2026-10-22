@@ -1,0 +1,399 @@
+{
+  "id": "bed41f5f-0da9-4e00-94bf-eb8ab81b2bfa",
+  "rhythm_preset": {
+    "id": "bed41f5f-0da9-4e00-94bf-eb8ab81b2bfa",
+    "name": "Base - Audio importado",
+    "device": "MK300",
+    "catalog_version": "0.4.0",
+    "bpm": 120.0,
+    "role": "rhythm",
+    "analysis_confidence": "low",
+    "artist": "",
+    "song_title": "Audio importado",
+    "effect_chain": [
+      {
+        "slot": "0",
+        "effect_type": "noise_gate",
+        "model_id": "0",
+        "model_name": "AI Gate",
+        "enabled": true,
+        "parameters": {
+          "Gate": 32.0,
+          "Bias": 50.0
+        },
+        "parameter_specs": {
+          "Gate": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Bias": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          }
+        },
+        "generated_confidence": "medium",
+        "generation_rationale": "Noise gate essencial para guitarra base com distorção"
+      },
+      {
+        "slot": "1",
+        "effect_type": "compressor",
+        "model_id": "8",
+        "model_name": "Compress",
+        "enabled": true,
+        "parameters": {
+          "Attack": 40.0,
+          "Sustain": 54.0,
+          "Blend": 100.0,
+          "Level": 55.0
+        },
+        "parameter_specs": {
+          "Attack": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Sustain": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Blend": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Level": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          }
+        },
+        "generated_confidence": "medium",
+        "generation_rationale": "Compressão detectada na análise"
+      },
+      {
+        "slot": "2",
+        "effect_type": "drive",
+        "model_id": "0",
+        "model_name": "1BLUES_OD",
+        "enabled": true,
+        "parameters": {
+          "Gain": 39.0,
+          "Level": 70.0
+        },
+        "parameter_specs": {
+          "Gain": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Level": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          }
+        },
+        "generated_confidence": "low",
+        "generation_rationale": "Timbre estimado: overdrive"
+      },
+      {
+        "slot": "3",
+        "effect_type": "amp",
+        "model_id": "1",
+        "model_name": "2J900_OD",
+        "enabled": true,
+        "parameters": {
+          "Gain": 42.0,
+          "Bass": 59.0,
+          "Middle": 64.0,
+          "Treble": 49.0,
+          "Pres": 52.0,
+          "Level": 65.0
+        },
+        "parameter_specs": {
+          "Gain": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Bass": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Middle": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Treble": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Pres": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Level": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          }
+        },
+        "generated_confidence": "low",
+        "generation_rationale": "Amp compatível com timbre overdrive"
+      },
+      {
+        "slot": "4",
+        "effect_type": "cabinet",
+        "model_id": "1",
+        "model_name": "2JVM_1960_57",
+        "enabled": true,
+        "parameters": {},
+        "parameter_specs": {},
+        "generated_confidence": "low",
+        "generation_rationale": "Cabinet padrão para o tipo de amp selecionado"
+      },
+      {
+        "slot": "5",
+        "effect_type": "reverb",
+        "model_id": "0",
+        "model_name": "Room",
+        "enabled": true,
+        "parameters": {
+          "Decay": 25.0,
+          "Mix": 15.0
+        },
+        "parameter_specs": {
+          "Decay": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Mix": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          }
+        },
+        "generated_confidence": "low",
+        "generation_rationale": "Leve reverb detectado — reduzido para não sujar o riff"
+      }
+    ]
+  },
+  "lead_preset": {
+    "id": "537c56a8-0557-4e9e-a077-04a44e65fe10",
+    "name": "Solo - Audio importado",
+    "device": "MK300",
+    "catalog_version": "0.4.0",
+    "bpm": 120.0,
+    "role": "lead",
+    "analysis_confidence": "low",
+    "artist": "",
+    "song_title": "Audio importado",
+    "effect_chain": [
+      {
+        "slot": "0",
+        "effect_type": "noise_gate",
+        "model_id": "0",
+        "model_name": "AI Gate",
+        "enabled": true,
+        "parameters": {
+          "Gate": 15.0,
+          "Bias": 50.0
+        },
+        "parameter_specs": {
+          "Gate": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Bias": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          }
+        },
+        "generated_confidence": "medium",
+        "generation_rationale": "Noise gate sutil para não cortar notas longas do solo"
+      },
+      {
+        "slot": "1",
+        "effect_type": "drive",
+        "model_id": "0",
+        "model_name": "1BLUES_OD",
+        "enabled": true,
+        "parameters": {
+          "Gain": 48.0,
+          "Level": 72.0
+        },
+        "parameter_specs": {
+          "Gain": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Level": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          }
+        },
+        "generated_confidence": "low",
+        "generation_rationale": "Gain aumentado para sustain no solo"
+      },
+      {
+        "slot": "2",
+        "effect_type": "amp",
+        "model_id": "3",
+        "model_name": "4J900_HV",
+        "enabled": true,
+        "parameters": {
+          "Gain": 48.0,
+          "Bass": 48.0,
+          "Middle": 72.0,
+          "Treble": 59.0,
+          "Pres": 70.0,
+          "Level": 70.0
+        },
+        "parameter_specs": {
+          "Gain": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Bass": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Middle": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Treble": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Pres": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Level": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          }
+        },
+        "generated_confidence": "low",
+        "generation_rationale": "Amp com presença destacada para solo"
+      },
+      {
+        "slot": "3",
+        "effect_type": "cabinet",
+        "model_id": "1",
+        "model_name": "2JVM_1960_57",
+        "enabled": true,
+        "parameters": {},
+        "parameter_specs": {},
+        "generated_confidence": "low",
+        "generation_rationale": "Cabinet 4x12 fechado para maior sustain"
+      },
+      {
+        "slot": "4",
+        "effect_type": "delay",
+        "model_id": "0",
+        "model_name": "Clean",
+        "enabled": true,
+        "parameters": {
+          "Time": 375.0,
+          "Fb": 25.0,
+          "Mix": 20.0
+        },
+        "parameter_specs": {
+          "Time": {
+            "min": 0.0,
+            "max": 2000.0,
+            "step": 1.0,
+            "unit": "ms"
+          },
+          "Fb": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Mix": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          }
+        },
+        "generated_confidence": "low",
+        "generation_rationale": "Delay para expressão no solo"
+      },
+      {
+        "slot": "5",
+        "effect_type": "reverb",
+        "model_id": "0",
+        "model_name": "Room",
+        "enabled": true,
+        "parameters": {
+          "Decay": 40.0,
+          "Mix": 14.0
+        },
+        "parameter_specs": {
+          "Decay": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          },
+          "Mix": {
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "unit": null
+          }
+        },
+        "generated_confidence": "low",
+        "generation_rationale": "Reverb para ambiência do solo"
+      }
+    ]
+  },
+  "analysis": {}
+}

@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "candidate_id": "05_solo_destaque_01",
+  "input": "repertorio/fase_1/05/trechos/candidato_solo_destaque_01_0110s.wav",
+  "input_sha256": "39223cc04b2f629abe683512b86d0bf499a712005fc58cfabce5188379a6b2db",
+  "source_original": "repertorio/fase_1/05/original/Matanza - Clube Dos Canalhas.m4a",
+  "start_seconds": 110,
+  "end_seconds": 130,
+  "model": "htdemucs_6s",
+  "demucs_version": "4.0.1",
+  "model_sources": [
+    "drums",
+    "bass",
+    "other",
+    "vocals",
+    "guitar",
+    "piano"
+  ],
+  "seed": 0,
+  "shifts": 0,
+  "segment_seconds": 4,
+  "overlap": 0.25,
+  "threads": 2,
+  "device": "cpu",
+  "sample_rate": 44100,
+  "load_seconds": 0.21467818599194288,
+  "inference_seconds": 27.902916646911763,
+  "realtime_factor": 1.395145832345588,
+  "reconstruction_error_relative_rms": 0.05154680724294968,
+  "stems": [
+    {
+      "source": "drums",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/05_solo_destaque_01/drums.wav",
+      "sha256": "9ac53082d92bd3ac632ea887304d8bd3206513e32b9232e6d82b4ddde76e6f19",
+      "peak": 1.3447810411453247,
+      "rms": 0.1640371347489877
+    },
+    {
+      "source": "bass",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/05_solo_destaque_01/bass.wav",
+      "sha256": "7ad76d3dae3cbde140e0cb9b140cc15d2a670d34bc7cda723c35f33c67aa0f75",
+      "peak": 0.5303471088409424,
+      "rms": 0.17937589129997855
+    },
+    {
+      "source": "other",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/05_solo_destaque_01/other.wav",
+      "sha256": "b2e7d224c1c452f2aea297a01de7ea80012b43f05a4e85442d1e31ea3caa76f6",
+      "peak": 0.016062237322330475,
+      "rms": 0.0006536548500915122
+    },
+    {
+      "source": "vocals",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/05_solo_destaque_01/vocals.wav",
+      "sha256": "862f1eb65ac59e7951304a2abfbddedf5e3c54c03f58b08d18046274af824944",
+      "peak": 0.5833799242973328,
+      "rms": 0.10609550070579374
+    },
+    {
+      "source": "guitar",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/05_solo_destaque_01/guitar.wav",
+      "sha256": "3b8af378cd87888396afc83c191d78e65106a4c7c802f28994b13eb4727eb7bd",
+      "peak": 0.8479131460189819,
+      "rms": 0.1510162707787154
+    },
+    {
+      "source": "piano",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/05_solo_destaque_01/piano.wav",
+      "sha256": "546e5eb4204fb98a97bc0246dee6e15bf5a285833164dffce0a9b06c2823c170",
+      "peak": 0.003715911414474249,
+      "rms": 0.0001727400717294494
+    }
+  ],
+  "review_status": "pendente_de_escuta",
+  "limitations": [
+    "Guitar inclui quaisquer guitarras presentes; não separa base de solo.",
+    "Não há stems verdadeiros para medir SDR ou fidelidade da separação.",
+    "Erro de reconstrução não comprova pureza nem preservação do timbre.",
+    "Vazamento e artefatos precisam ser avaliados por audição.",
+    "Modelo experimental de referência; sem integração ao app."
+  ],
+  "model_checkpoints": [
+    {
+      "name": "5c90dfd2-34c22ccb.th",
+      "sha256": "34c22ccb381c6f9fdbf324f04e1e2fe21aaaf293f5ded163a162697ff9a02ddd"
+    }
+  ]
+}

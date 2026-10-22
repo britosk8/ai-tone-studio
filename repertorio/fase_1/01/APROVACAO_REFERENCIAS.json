@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "track_id": "01",
+  "track_title": "Papa Roach — Infest",
+  "approved_on": "2026-10-22",
+  "approved_by": "usuario",
+  "scope": "Escolha dos trechos principais e funções propostas; não aprova a qualidade da separação nem presets.",
+  "evidence": "Perfeito as trechos da proposta Principal estão corretos pode seguir",
+  "decisions": [
+    {
+      "candidate_id": "01_base_01",
+      "decision": "aceitar_base",
+      "start_seconds": 50,
+      "end_seconds": 70
+    },
+    {
+      "candidate_id": "01_solo_destaque_01",
+      "decision": "aceitar_solo",
+      "start_seconds": 160,
+      "end_seconds": 180
+    }
+  ],
+  "separation_review_status": "pending",
+  "capture_software": "Gravador de Áudio padrão do Windows",
+  "capture_route": "MK300 saída de áudio → MQ44 → notebook Windows",
+  "capture_files_received": false
+}

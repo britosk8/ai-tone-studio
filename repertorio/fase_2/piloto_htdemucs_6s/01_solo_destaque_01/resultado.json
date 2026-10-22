@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "candidate_id": "01_solo_destaque_01",
+  "input": "repertorio/fase_1/01/trechos/candidato_solo_destaque_01_0160s.wav",
+  "input_sha256": "edbb980492672987e2a63f1044c7dca8991039b9ac0f541d0075c58149a0d645",
+  "source_original": "repertorio/fase_1/01/original/Papa Roach - Infest .m4a",
+  "start_seconds": 160,
+  "end_seconds": 180,
+  "model": "htdemucs_6s",
+  "demucs_version": "4.0.1",
+  "model_sources": [
+    "drums",
+    "bass",
+    "other",
+    "vocals",
+    "guitar",
+    "piano"
+  ],
+  "seed": 0,
+  "shifts": 0,
+  "segment_seconds": 4,
+  "overlap": 0.25,
+  "threads": 2,
+  "device": "cpu",
+  "sample_rate": 44100,
+  "load_seconds": 0.22733069397509098,
+  "inference_seconds": 27.863304276019335,
+  "realtime_factor": 1.3931652138009667,
+  "reconstruction_error_relative_rms": 0.048114423292343764,
+  "stems": [
+    {
+      "source": "drums",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/01_solo_destaque_01/drums.wav",
+      "sha256": "228ca133e79184eecf392b7cae739702754556511bc289cb451e2f63e0f19a49",
+      "peak": 1.393478512763977,
+      "rms": 0.13268040259971636
+    },
+    {
+      "source": "bass",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/01_solo_destaque_01/bass.wav",
+      "sha256": "d3096b5bb8a5f4d5509477aee56443e8914e11e2b746c8328c14b34db373ff4d",
+      "peak": 0.8507421016693115,
+      "rms": 0.15366772672686235
+    },
+    {
+      "source": "other",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/01_solo_destaque_01/other.wav",
+      "sha256": "89de108031337a58bae666e8d032a03da1478f118357204d762f91a64a2191fe",
+      "peak": 0.0046908073127269745,
+      "rms": 0.00024135920181277796
+    },
+    {
+      "source": "vocals",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/01_solo_destaque_01/vocals.wav",
+      "sha256": "746bd12ac5bbb59eb518b5467876b8fd029a2408bdace05dfe9692c2af245eea",
+      "peak": 0.6921401619911194,
+      "rms": 0.10442337417580215
+    },
+    {
+      "source": "guitar",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/01_solo_destaque_01/guitar.wav",
+      "sha256": "b9bbebeaa2290c53ccc028eca56685fc36969582d4c16e31e45930852ae0dc90",
+      "peak": 0.7972181439399719,
+      "rms": 0.14354548850206478
+    },
+    {
+      "source": "piano",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/01_solo_destaque_01/piano.wav",
+      "sha256": "d90dfb02df4cddfc49ce2e6266114fe6c40b160c9a5d3c98b2d6e8197fd83645",
+      "peak": 0.002691715257242322,
+      "rms": 0.000271429897454014
+    }
+  ],
+  "review_status": "pendente_de_escuta",
+  "limitations": [
+    "Guitar inclui quaisquer guitarras presentes; não separa base de solo.",
+    "Não há stems verdadeiros para medir SDR ou fidelidade da separação.",
+    "Erro de reconstrução não comprova pureza nem preservação do timbre.",
+    "Vazamento e artefatos precisam ser avaliados por audição.",
+    "Modelo experimental de referência; sem integração ao app."
+  ],
+  "model_checkpoints": [
+    {
+      "name": "5c90dfd2-34c22ccb.th",
+      "sha256": "34c22ccb381c6f9fdbf324f04e1e2fe21aaaf293f5ded163a162697ff9a02ddd"
+    }
+  ]
+}

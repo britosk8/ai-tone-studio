@@ -1,0 +1,29 @@
+{
+  "protected_files_verified": 81,
+  "protected_files_unchanged": 77,
+  "versioned_changes_verified": 4,
+  "originals_preserved": 6,
+  "active_clips": 24,
+  "max_sample_error_vs_original": 0.0,
+  "separated_clips": 12,
+  "valid_stems": 72,
+  "average_realtime_factor": 1.3761742567793889,
+  "html_pages": [
+    {
+      "file": "repertorio/fase_1/REVISAO_REFERENCIAS.html",
+      "audio_links": 30
+    },
+    {
+      "file": "repertorio/fase_2/OUVIR_SEPARACAO.html",
+      "audio_links": 84
+    }
+  ],
+  "backend_environment_unchanged": {
+    "demucs": false,
+    "torch": false,
+    "librosa": true
+  },
+  "musical_validation": "pending",
+  "pedal_captures": "pending",
+  "reamp_test": "pending"
+}

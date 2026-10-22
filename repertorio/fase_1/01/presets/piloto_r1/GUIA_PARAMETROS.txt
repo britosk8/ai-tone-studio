@@ -1,0 +1,133 @@
+PRESETS INICIAIS EXPERIMENTAIS — INFEST / MK300
+
+Importar o arquivo Infest_MK300_Piloto_R1.json no aplicativo com importação JSON.
+Não é um arquivo nativo do M-EFCS. Os dois presets usam referências distintas.
+
+=== PRESET: Infest Base R1 ===
+Dispositivo: MK300
+Função: RHYTHM
+Música: Papa Roach — Infest — Piloto R1
+
+Confiança da geração: LOW
+
+Análise independente da guitarra extraída do trecho aprovado; gerador heurístico atual, com cadeia enxuta para o primeiro teste.
+
+--- CADEIA DE EFEITOS ---
+
+[1] AI Gate (LIGADO)
+    Gate: 15
+    Bias: 50
+
+[2] Compress (DESLIGADO)
+    Sustain: 63
+    Attack: 40
+    Level: 55
+    Blend: 100
+
+[3] 1BLUES_OD (DESLIGADO)
+    Gain: 30
+    Level: 70
+    Bass: 51
+    Middle: 50
+    Treble: 50
+    Reso: 0
+    Pres: 88
+    Bright: 85
+
+[4] 2J900_OD (LIGADO)
+    Gain: 33
+    Level: 50
+    Bass: 75
+    Middle: 58
+    Treble: 40
+    Reso: 0
+    Pres: 50
+    Bright: 0
+
+[5] 2JVM_1960_57 (LIGADO)
+    Level: 80
+    Low Cut: 0
+    High Cut: 200
+
+[6] Room (DESLIGADO)
+    Decay: 25
+    Mix: 15
+    High Pass: 80
+    Low Pass: 80
+    Mod Depth: 40
+
+--- LIMITAÇÕES ---
+• Seleção de cabinet é uma estimativa — ajuste de acordo com o som da sua guitarra
+• Guitarra estimada por Demucs htdemucs_6s; trecho aprovado, qualidade do stem ainda não aprovada.
+• Geração por medições e regras, não por modelo treinado de reprodução da MK300.
+• Preset inicial experimental: precisa ser ouvido e ajustado na guitarra e pedaleira reais.
+• Análise realizada em referência com múltiplos instrumentos. Estimativas de timbre de guitarra têm precisão reduzida.
+• Confiança é qualitativa sobre a estimativa, não um percentual de fidelidade ao original nem identificação do modelo de equipamento.
+• O timbre gerado é uma aproximação baseada em características espectrais, não uma identificação do equipamento original da gravação.
+• Level do amp 50 e CAB 80 são valores iniciais, não calibração de volume real.
+• Gate 15/Bias 50, Reso 0/Bright 0 e cortes do CAB são hipóteses explícitas dentro do catálogo; não foram estimados com precisão nem validados no equipamento.
+• Sem compensação específica para captadores SSS/HH; depende das capturas reais.
+
+=== PRESET: Infest Solo R1 ===
+Dispositivo: MK300
+Função: LEAD
+Música: Papa Roach — Infest — Piloto R1
+
+Confiança da geração: LOW
+
+Análise independente da guitarra extraída do trecho aprovado; gerador heurístico atual, com cadeia enxuta para o primeiro teste.
+
+--- CADEIA DE EFEITOS ---
+
+[1] AI Gate (LIGADO)
+    Gate: 15
+    Bias: 50
+
+[2] 1BLUES_OD (DESLIGADO)
+    Gain: 37
+    Level: 72
+    Bass: 51
+    Middle: 50
+    Treble: 50
+    Reso: 0
+    Pres: 88
+    Bright: 85
+
+[3] 2J900_OD (LIGADO)
+    Gain: 32
+    Level: 50
+    Bass: 60
+    Middle: 67
+    Treble: 50
+    Reso: 0
+    Pres: 67
+    Bright: 0
+
+[4] 2JVM_1960_57 (LIGADO)
+    Level: 80
+    Low Cut: 0
+    High Cut: 200
+
+[5] Clean (DESLIGADO)
+    Time: 365
+    Fb: 25
+    Mix: 20
+    Sync: 0
+
+[6] Room (DESLIGADO)
+    Decay: 40
+    Mix: 28
+    High Pass: 80
+    Low Pass: 80
+    Mod Depth: 40
+
+--- LIMITAÇÕES ---
+• Guitarra estimada por Demucs htdemucs_6s; trecho aprovado, qualidade do stem ainda não aprovada.
+• Geração por medições e regras, não por modelo treinado de reprodução da MK300.
+• Preset inicial experimental: precisa ser ouvido e ajustado na guitarra e pedaleira reais.
+• Análise realizada em referência com múltiplos instrumentos. Estimativas de timbre de guitarra têm precisão reduzida.
+• Confiança é qualitativa sobre a estimativa, não um percentual de fidelidade ao original nem identificação do modelo de equipamento.
+• O timbre gerado é uma aproximação baseada em características espectrais, não uma identificação do equipamento original da gravação.
+• Level do amp 50 e CAB 80 são valores iniciais, não calibração de volume real.
+• Gate 15/Bias 50, Reso 0/Bright 0 e cortes do CAB são hipóteses explícitas dentro do catálogo; não foram estimados com precisão nem validados no equipamento.
+• Sem compensação específica para captadores SSS/HH; depende das capturas reais.

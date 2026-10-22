@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "candidate_id": "03_base_01",
+  "input": "repertorio/fase_1/03/trechos/candidato_base_01_0050s.wav",
+  "input_sha256": "262937db23f86c4aa6d9253dc748ef87a5e531a11ddf86bbf618b7bcd88ecc98",
+  "source_original": "repertorio/fase_1/03/original/Foo Fighters - Everlong.m4a",
+  "start_seconds": 50,
+  "end_seconds": 70,
+  "model": "htdemucs_6s",
+  "demucs_version": "4.0.1",
+  "model_sources": [
+    "drums",
+    "bass",
+    "other",
+    "vocals",
+    "guitar",
+    "piano"
+  ],
+  "seed": 0,
+  "shifts": 0,
+  "segment_seconds": 4,
+  "overlap": 0.25,
+  "threads": 2,
+  "device": "cpu",
+  "sample_rate": 44100,
+  "load_seconds": 0.22401784895919263,
+  "inference_seconds": 28.032674367073923,
+  "realtime_factor": 1.4016337183536962,
+  "reconstruction_error_relative_rms": 0.0697924210452601,
+  "stems": [
+    {
+      "source": "drums",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/03_base_01/drums.wav",
+      "sha256": "7ccca21e67598dcb46fd919082c6abf124f6f1fc1976fab31c1126e76241b260",
+      "peak": 0.9721804857254028,
+      "rms": 0.11960340848415187
+    },
+    {
+      "source": "bass",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/03_base_01/bass.wav",
+      "sha256": "d20d65cb42d22d4393e70dcbc1662675a4514cb390c457135d293493b08c6880",
+      "peak": 0.46315404772758484,
+      "rms": 0.17149588404073435
+    },
+    {
+      "source": "other",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/03_base_01/other.wav",
+      "sha256": "3ce5222f23c0a0c6c656d1ff6bdf8c6c2dfe2520575f574c387c7c0da38a3e97",
+      "peak": 0.05543581768870354,
+      "rms": 0.0021779420717285176
+    },
+    {
+      "source": "vocals",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/03_base_01/vocals.wav",
+      "sha256": "e79e14e534236600614d234a1907cf4d9f0be2de0eebad5433b0de9dbbcabd49",
+      "peak": 0.8326292037963867,
+      "rms": 0.08975511352917122
+    },
+    {
+      "source": "guitar",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/03_base_01/guitar.wav",
+      "sha256": "07621d8b6479a23ea3bac8887ec91cc53d2958d90a08799a4da7587a680d9cd1",
+      "peak": 0.8101758360862732,
+      "rms": 0.16780332834138992
+    },
+    {
+      "source": "piano",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/03_base_01/piano.wav",
+      "sha256": "da8cef5cd884609c1d2f240af587e8a17c371df30726e831bd74de0da6bc3173",
+      "peak": 0.004922986030578613,
+      "rms": 0.00020571906954493046
+    }
+  ],
+  "review_status": "pendente_de_escuta",
+  "limitations": [
+    "Guitar inclui quaisquer guitarras presentes; não separa base de solo.",
+    "Não há stems verdadeiros para medir SDR ou fidelidade da separação.",
+    "Erro de reconstrução não comprova pureza nem preservação do timbre.",
+    "Vazamento e artefatos precisam ser avaliados por audição.",
+    "Modelo experimental de referência; sem integração ao app."
+  ],
+  "model_checkpoints": [
+    {
+      "name": "5c90dfd2-34c22ccb.th",
+      "sha256": "34c22ccb381c6f9fdbf324f04e1e2fe21aaaf293f5ded163a162697ff9a02ddd"
+    }
+  ]
+}

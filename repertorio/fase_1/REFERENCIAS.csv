@@ -1,0 +1,25 @@
+pasta,musica,artista,id,papel_proposto,inicio,fim,arquivo,validacao
+01,Infest,Papa Roach,01_base_01,base,00:50,01:10,repertorio/fase_1/01/trechos/candidato_base_01_0050s.wav,approved_for_pilot
+01,Infest,Papa Roach,01_base_02,base,03:10,03:30,repertorio/fase_1/01/trechos/candidato_base_02_0190s.wav,pendente
+01,Infest,Papa Roach,01_solo_destaque_01,solo_destaque,02:40,03:00,repertorio/fase_1/01/trechos/candidato_solo_destaque_01_0160s.wav,approved_for_pilot
+01,Infest,Papa Roach,01_solo_destaque_02,solo_destaque,01:30,01:50,repertorio/fase_1/01/trechos/candidato_solo_destaque_02_0090s.wav,pendente
+02,State Of Grace,Hot Water Music,02_base_01,base,01:10,01:30,repertorio/fase_1/02/trechos/candidato_base_01_0070s.wav,pendente
+02,State Of Grace,Hot Water Music,02_base_02,base,00:30,00:50,repertorio/fase_1/02/trechos/candidato_base_02_0030s.wav,pendente
+02,State Of Grace,Hot Water Music,02_solo_destaque_01,solo_destaque,01:40,02:00,repertorio/fase_1/02/trechos/candidato_solo_destaque_01_0100s.wav,pendente
+02,State Of Grace,Hot Water Music,02_solo_destaque_02,solo_destaque,02:20,02:40,repertorio/fase_1/02/trechos/candidato_solo_destaque_02_0140s.wav,pendente
+03,Everlong,Foo Fighters,03_base_01,base,00:50,01:10,repertorio/fase_1/03/trechos/candidato_base_01_0050s.wav,pendente
+03,Everlong,Foo Fighters,03_base_02,base,00:10,00:30,repertorio/fase_1/03/trechos/candidato_base_02_0010s.wav,pendente
+03,Everlong,Foo Fighters,03_solo_destaque_01,solo_destaque,04:00,04:20,repertorio/fase_1/03/trechos/candidato_solo_destaque_01_0240s.wav,pendente
+03,Everlong,Foo Fighters,03_solo_destaque_02,solo_destaque,03:20,03:40,repertorio/fase_1/03/trechos/candidato_solo_destaque_02_0200s.wav,pendente
+04,This Could Be Anywhere In The World,Alexisonfire,04_base_01,base,02:40,03:00,repertorio/fase_1/04/trechos/candidato_base_01_0160s.wav,pendente
+04,This Could Be Anywhere In The World,Alexisonfire,04_base_02,base,03:10,03:30,repertorio/fase_1/04/trechos/candidato_base_02_0190s.wav,pendente
+04,This Could Be Anywhere In The World,Alexisonfire,04_solo_destaque_01,solo_destaque,01:00,01:20,repertorio/fase_1/04/trechos/candidato_solo_destaque_01_0060s.wav,pendente
+04,This Could Be Anywhere In The World,Alexisonfire,04_solo_destaque_02,solo_destaque,02:00,02:20,repertorio/fase_1/04/trechos/candidato_solo_destaque_02_0120s.wav,pendente
+05,Clube Dos Canalhas,Matanza,05_base_01,base,01:20,01:40,repertorio/fase_1/05/trechos/candidato_base_01_0080s.wav,pendente
+05,Clube Dos Canalhas,Matanza,05_base_02,base,00:20,00:40,repertorio/fase_1/05/trechos/candidato_base_02_0020s.wav,pendente
+05,Clube Dos Canalhas,Matanza,05_solo_destaque_01,solo_destaque,01:50,02:10,repertorio/fase_1/05/trechos/candidato_solo_destaque_01_0110s.wav,pendente
+05,Clube Dos Canalhas,Matanza,05_solo_destaque_02,solo_destaque,00:50,01:10,repertorio/fase_1/05/trechos/candidato_solo_destaque_02_0050s.wav,pendente
+06,Bombtrack,Rage Against The Machine,06_base_01,base,02:50,03:10,repertorio/fase_1/06/trechos/candidato_base_01_0170s.wav,pendente
+06,Bombtrack,Rage Against The Machine,06_base_02,base,00:30,00:50,repertorio/fase_1/06/trechos/candidato_base_02_0030s.wav,pendente
+06,Bombtrack,Rage Against The Machine,06_solo_destaque_01,solo_destaque,03:20,03:40,repertorio/fase_1/06/trechos/candidato_solo_destaque_01_0200s.wav,pendente
+06,Bombtrack,Rage Against The Machine,06_solo_destaque_02,solo_destaque,01:50,02:10,repertorio/fase_1/06/trechos/candidato_solo_destaque_02_0110s.wav,pendente

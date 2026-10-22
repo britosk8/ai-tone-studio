@@ -1,0 +1,487 @@
+{
+  "schema_version": 1,
+  "inputs_are_mixes": true,
+  "review_required": true,
+  "jobs": [
+    {
+      "candidate_id": "01_base_01",
+      "track_id": "01",
+      "proposed_role": "base",
+      "priority": 1,
+      "input": "repertorio/fase_1/01/trechos/candidato_base_01_0050s.wav",
+      "sha256": "f15013a41f06cef96cedfa1f246f6eac5456ad15bbad5b4fa3d5b7f3f1140cbc",
+      "start_seconds": 50,
+      "end_seconds": 70,
+      "review_status": "approved_for_pilot",
+      "target_sources": [
+        "drums",
+        "bass",
+        "vocals",
+        "guitar",
+        "piano",
+        "other"
+      ],
+      "guitar_parts_split": false
+    },
+    {
+      "candidate_id": "01_base_02",
+      "track_id": "01",
+      "proposed_role": "base",
+      "priority": 2,
+      "input": "repertorio/fase_1/01/trechos/candidato_base_02_0190s.wav",
+      "sha256": "041ed2e3c48c6d42d9327fde494b6704d0d3bfdb91e3f235201947ed98a715e7",
+      "start_seconds": 190,
+      "end_seconds": 210,
+      "review_status": "pending",
+      "target_sources": [
+        "drums",
+        "bass",
+        "vocals",
+        "guitar",
+        "piano",
+        "other"
+      ],
+      "guitar_parts_split": false
+    },
+    {
+      "candidate_id": "01_solo_destaque_01",
+      "track_id": "01",
+      "proposed_role": "solo_destaque",
+      "priority": 1,
+      "input": "repertorio/fase_1/01/trechos/candidato_solo_destaque_01_0160s.wav",
+      "sha256": "edbb980492672987e2a63f1044c7dca8991039b9ac0f541d0075c58149a0d645",
+      "start_seconds": 160,
+      "end_seconds": 180,
+      "review_status": "approved_for_pilot",
+      "target_sources": [
+        "drums",
+        "bass",
+        "vocals",
+        "guitar",
+        "piano",
+        "other"
+      ],
+      "guitar_parts_split": false
+    },
+    {
+      "candidate_id": "01_solo_destaque_02",
+      "track_id": "01",
+      "proposed_role": "solo_destaque",
+      "priority": 2,
+      "input": "repertorio/fase_1/01/trechos/candidato_solo_destaque_02_0090s.wav",
+      "sha256": "2de1232bd1396a1a15fbd5d6f9ba47e7563a677b5ef5278314ff9533b19d5f56",
+      "start_seconds": 90,
+      "end_seconds": 110,
+      "review_status": "pending",
+      "target_sources": [
+        "drums",
+        "bass",
+        "vocals",
+        "guitar",
+        "piano",
+        "other"
+      ],
+      "guitar_parts_split": false
+    },
+    {
+      "candidate_id": "02_base_01",
+      "track_id": "02",
+      "proposed_role": "base",
+      "priority": 1,
+      "input": "repertorio/fase_1/02/trechos/candidato_base_01_0070s.wav",
+      "sha256": "50ca2c30b2645b965bc504e3c0e0e403b8d21ffbb15e515c7bc69813bfd0e223",
+      "start_seconds": 70,
+      "end_seconds": 90,
+      "review_status": "pending",
+      "target_sources": [
+        "drums",
+        "bass",
+        "vocals",
+        "guitar",
+        "piano",
+        "other"
+      ],
+      "guitar_parts_split": false
+    },
+    {
+      "candidate_id": "02_base_02",
+      "track_id": "02",
+      "proposed_role": "base",
+      "priority": 2,
+      "input": "repertorio/fase_1/02/trechos/candidato_base_02_0030s.wav",
+      "sha256": "9bf618202ebde1b3031f99339cdc8b425faf85b5eb048ac0d4ddabdc19afd992",
+      "start_seconds": 30,
+      "end_seconds": 50,
+      "review_status": "pending",
+      "target_sources": [
+        "drums",
+        "bass",
+        "vocals",
+        "guitar",
+        "piano",
+        "other"
+      ],
+      "guitar_parts_split": false
+    },
+    {
+      "candidate_id": "02_solo_destaque_01",
+      "track_id": "02",
+      "proposed_role": "solo_destaque",
+      "priority": 1,
+      "input": "repertorio/fase_1/02/trechos/candidato_solo_destaque_01_0100s.wav",
+      "sha256": "26093f4b23847ca0bb5640fa5d07658d9499667bd57026375cd6f3ce5a6007e0",
+      "start_seconds": 100,
+      "end_seconds": 120,
+      "review_status": "pending",
+      "target_sources": [
+        "drums",
+        "bass",
+        "vocals",
+        "guitar",
+        "piano",
+        "other"
+      ],
+      "guitar_parts_split": false
+    },
+    {
+      "candidate_id": "02_solo_destaque_02",
+      "track_id": "02",
+      "proposed_role": "solo_destaque",
+      "priority": 2,
+      "input": "repertorio/fase_1/02/trechos/candidato_solo_destaque_02_0140s.wav",
+      "sha256": "6f8c34be4f40fc6e3116be65a7e1b62a3eb35bc8c4c408889ece799234931fd3",
+      "start_seconds": 140,
+      "end_seconds": 160,
+      "review_status": "pending",
+      "target_sources": [
+        "drums",
+        "bass",
+        "vocals",
+        "guitar",
+        "piano",
+        "other"
+      ],
+      "guitar_parts_split": false
+    },
+    {
+      "candidate_id": "03_base_01",
+      "track_id": "03",
+      "proposed_role": "base",
+      "priority": 1,
+      "input": "repertorio/fase_1/03/trechos/candidato_base_01_0050s.wav",
+      "sha256": "262937db23f86c4aa6d9253dc748ef87a5e531a11ddf86bbf618b7bcd88ecc98",
+      "start_seconds": 50,
+      "end_seconds": 70,
+      "review_status": "pending",
+      "target_sources": [
+        "drums",
+        "bass",
+        "vocals",
+        "guitar",
+        "piano",
+        "other"
+      ],
+      "guitar_parts_split": false
+    },
+    {
+      "candidate_id": "03_base_02",
+      "track_id": "03",
+      "proposed_role": "base",
+      "priority": 2,
+      "input": "repertorio/fase_1/03/trechos/candidato_base_02_0010s.wav",
+      "sha256": "bb6c899312d807e01e21415e75dfd0acfcdb07f21407387f00f84b800e85618b",
+      "start_seconds": 10,
+      "end_seconds": 30,
+      "review_status": "pending",
+      "target_sources": [
+        "drums",
+        "bass",
+        "vocals",
+        "guitar",
+        "piano",
+        "other"
+      ],
+      "guitar_parts_split": false
+    },
+    {
+      "candidate_id": "03_solo_destaque_01",
+      "track_id": "03",
+      "proposed_role": "solo_destaque",
+      "priority": 1,
+      "input": "repertorio/fase_1/03/trechos/candidato_solo_destaque_01_0240s.wav",
+      "sha256": "7d2999a911d10176bb4d12d6d0f5dd434197719a6d6a05501562b11af4d5c814",
+      "start_seconds": 240,
+      "end_seconds": 260,
+      "review_status": "pending",
+      "target_sources": [
+        "drums",
+        "bass",
+        "vocals",
+        "guitar",
+        "piano",
+        "other"
+      ],
+      "guitar_parts_split": false
+    },
+    {
+      "candidate_id": "03_solo_destaque_02",
+      "track_id": "03",
+      "proposed_role": "solo_destaque",
+      "priority": 2,
+      "input": "repertorio/fase_1/03/trechos/candidato_solo_destaque_02_0200s.wav",
+      "sha256": "06eee0054776cd819f8b9d9d63b9be1f05314f11a47f6be8722c530264d4e482",
+      "start_seconds": 200,
+      "end_seconds": 220,
+      "review_status": "pending",
+      "target_sources": [
+        "drums",
+        "bass",
+        "vocals",
+        "guitar",
+        "piano",
+        "other"
+      ],
+      "guitar_parts_split": false
+    },
+    {
+      "candidate_id": "04_base_01",
+      "track_id": "04",
+      "proposed_role": "base",
+      "priority": 1,
+      "input": "repertorio/fase_1/04/trechos/candidato_base_01_0160s.wav",
+      "sha256": "d6aeda577f206c44c4ef3ecf87204f5724fd7b7c2a28131ef52791bfc40eea85",
+      "start_seconds": 160,
+      "end_seconds": 180,
+      "review_status": "pending",
+      "target_sources": [
+        "drums",
+        "bass",
+        "vocals",
+        "guitar",
+        "piano",
+        "other"
+      ],
+      "guitar_parts_split": false
+    },
+    {
+      "candidate_id": "04_base_02",
+      "track_id": "04",
+      "proposed_role": "base",
+      "priority": 2,
+      "input": "repertorio/fase_1/04/trechos/candidato_base_02_0190s.wav",
+      "sha256": "5a2893c7a3d05d9757f35a2f1b2d5a07e0b47d75b1df70309e22bf449f990f7f",
+      "start_seconds": 190,
+      "end_seconds": 210,
+      "review_status": "pending",
+      "target_sources": [
+        "drums",
+        "bass",
+        "vocals",
+        "guitar",
+        "piano",
+        "other"
+      ],
+      "guitar_parts_split": false
+    },
+    {
+      "candidate_id": "04_solo_destaque_01",
+      "track_id": "04",
+      "proposed_role": "solo_destaque",
+      "priority": 1,
+      "input": "repertorio/fase_1/04/trechos/candidato_solo_destaque_01_0060s.wav",
+      "sha256": "8f599e0541c1e14fc284753beaf360f09bc26940e1f2ac82540dff35ae7c88c3",
+      "start_seconds": 60,
+      "end_seconds": 80,
+      "review_status": "pending",
+      "target_sources": [
+        "drums",
+        "bass",
+        "vocals",
+        "guitar",
+        "piano",
+        "other"
+      ],
+      "guitar_parts_split": false
+    },
+    {
+      "candidate_id": "04_solo_destaque_02",
+      "track_id": "04",
+      "proposed_role": "solo_destaque",
+      "priority": 2,
+      "input": "repertorio/fase_1/04/trechos/candidato_solo_destaque_02_0120s.wav",
+      "sha256": "1935c544f678f945fac95de44891920848ddb98e0f58aa86c205fd2d235626cf",
+      "start_seconds": 120,
+      "end_seconds": 140,
+      "review_status": "pending",
+      "target_sources": [
+        "drums",
+        "bass",
+        "vocals",
+        "guitar",
+        "piano",
+        "other"
+      ],
+      "guitar_parts_split": false
+    },
+    {
+      "candidate_id": "05_base_01",
+      "track_id": "05",
+      "proposed_role": "base",
+      "priority": 1,
+      "input": "repertorio/fase_1/05/trechos/candidato_base_01_0080s.wav",
+      "sha256": "88e8ad6169386eae558383e609390bd9c04776e18fc076b13195326306e846cf",
+      "start_seconds": 80,
+      "end_seconds": 100,
+      "review_status": "pending",
+      "target_sources": [
+        "drums",
+        "bass",
+        "vocals",
+        "guitar",
+        "piano",
+        "other"
+      ],
+      "guitar_parts_split": false
+    },
+    {
+      "candidate_id": "05_base_02",
+      "track_id": "05",
+      "proposed_role": "base",
+      "priority": 2,
+      "input": "repertorio/fase_1/05/trechos/candidato_base_02_0020s.wav",
+      "sha256": "eb23dd1c5e6617ef027db1237ed7585343b8afca25cdc7f043a79f20ddd12cef",
+      "start_seconds": 20,
+      "end_seconds": 40,
+      "review_status": "pending",
+      "target_sources": [
+        "drums",
+        "bass",
+        "vocals",
+        "guitar",
+        "piano",
+        "other"
+      ],
+      "guitar_parts_split": false
+    },
+    {
+      "candidate_id": "05_solo_destaque_01",
+      "track_id": "05",
+      "proposed_role": "solo_destaque",
+      "priority": 1,
+      "input": "repertorio/fase_1/05/trechos/candidato_solo_destaque_01_0110s.wav",
+      "sha256": "39223cc04b2f629abe683512b86d0bf499a712005fc58cfabce5188379a6b2db",
+      "start_seconds": 110,
+      "end_seconds": 130,
+      "review_status": "pending",
+      "target_sources": [
+        "drums",
+        "bass",
+        "vocals",
+        "guitar",
+        "piano",
+        "other"
+      ],
+      "guitar_parts_split": false
+    },
+    {
+      "candidate_id": "05_solo_destaque_02",
+      "track_id": "05",
+      "proposed_role": "solo_destaque",
+      "priority": 2,
+      "input": "repertorio/fase_1/05/trechos/candidato_solo_destaque_02_0050s.wav",
+      "sha256": "6a0f6645a26a3cdeff8f12a1e9d8a88408f4f20e8bca8d14ada6b38eef723064",
+      "start_seconds": 50,
+      "end_seconds": 70,
+      "review_status": "pending",
+      "target_sources": [
+        "drums",
+        "bass",
+        "vocals",
+        "guitar",
+        "piano",
+        "other"
+      ],
+      "guitar_parts_split": false
+    },
+    {
+      "candidate_id": "06_base_01",
+      "track_id": "06",
+      "proposed_role": "base",
+      "priority": 1,
+      "input": "repertorio/fase_1/06/trechos/candidato_base_01_0170s.wav",
+      "sha256": "e0754361f1a4857b1b58511b93195e960b43509882cc1f523a3ce9d9934e9daa",
+      "start_seconds": 170,
+      "end_seconds": 190,
+      "review_status": "pending",
+      "target_sources": [
+        "drums",
+        "bass",
+        "vocals",
+        "guitar",
+        "piano",
+        "other"
+      ],
+      "guitar_parts_split": false
+    },
+    {
+      "candidate_id": "06_base_02",
+      "track_id": "06",
+      "proposed_role": "base",
+      "priority": 2,
+      "input": "repertorio/fase_1/06/trechos/candidato_base_02_0030s.wav",
+      "sha256": "a0e598c34aa231da5964ab0ecf6010b45d79c5dea5dc4f12971d3c3717eca603",
+      "start_seconds": 30,
+      "end_seconds": 50,
+      "review_status": "pending",
+      "target_sources": [
+        "drums",
+        "bass",
+        "vocals",
+        "guitar",
+        "piano",
+        "other"
+      ],
+      "guitar_parts_split": false
+    },
+    {
+      "candidate_id": "06_solo_destaque_01",
+      "track_id": "06",
+      "proposed_role": "solo_destaque",
+      "priority": 1,
+      "input": "repertorio/fase_1/06/trechos/candidato_solo_destaque_01_0200s.wav",
+      "sha256": "944aa29f525bc992072e7931b60daf2324f96fa5d6ec9b9c9f5216fde725effb",
+      "start_seconds": 200,
+      "end_seconds": 220,
+      "review_status": "pending",
+      "target_sources": [
+        "drums",
+        "bass",
+        "vocals",
+        "guitar",
+        "piano",
+        "other"
+      ],
+      "guitar_parts_split": false
+    },
+    {
+      "candidate_id": "06_solo_destaque_02",
+      "track_id": "06",
+      "proposed_role": "solo_destaque",
+      "priority": 2,
+      "input": "repertorio/fase_1/06/trechos/candidato_solo_destaque_02_0110s.wav",
+      "sha256": "8e25264a18fee6cdd0c2d220c879b4b1cbb80ed2600284b7a3815d4ec7d736d0",
+      "start_seconds": 110,
+      "end_seconds": 130,
+      "review_status": "pending",
+      "target_sources": [
+        "drums",
+        "bass",
+        "vocals",
+        "guitar",
+        "piano",
+        "other"
+      ],
+      "guitar_parts_split": false
+    }
+  ]
+}

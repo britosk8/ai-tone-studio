@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "candidate_id": "04_solo_destaque_01",
+  "input": "repertorio/fase_1/04/trechos/candidato_solo_destaque_01_0060s.wav",
+  "input_sha256": "8f599e0541c1e14fc284753beaf360f09bc26940e1f2ac82540dff35ae7c88c3",
+  "source_original": "repertorio/fase_1/04/original/Alexisonfire - This Could Be Anywhere In The World.m4a",
+  "start_seconds": 60,
+  "end_seconds": 80,
+  "model": "htdemucs_6s",
+  "demucs_version": "4.0.1",
+  "model_sources": [
+    "drums",
+    "bass",
+    "other",
+    "vocals",
+    "guitar",
+    "piano"
+  ],
+  "seed": 0,
+  "shifts": 0,
+  "segment_seconds": 4,
+  "overlap": 0.25,
+  "threads": 2,
+  "device": "cpu",
+  "sample_rate": 44100,
+  "load_seconds": 0.22000541794113815,
+  "inference_seconds": 27.417769578052685,
+  "realtime_factor": 1.3708884789026343,
+  "reconstruction_error_relative_rms": 0.08739153617399628,
+  "stems": [
+    {
+      "source": "drums",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/04_solo_destaque_01/drums.wav",
+      "sha256": "1864f5ff0c4932a133e1477f60e5ba009b91037a68541a9c95dd32b253fd0455",
+      "peak": 0.35000285506248474,
+      "rms": 0.028427242471740756
+    },
+    {
+      "source": "bass",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/04_solo_destaque_01/bass.wav",
+      "sha256": "1fe6d3447275f8fd1380b596233898a23549f42849fada88de33f91c6390a281",
+      "peak": 0.11981294304132462,
+      "rms": 0.03998649038374026
+    },
+    {
+      "source": "other",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/04_solo_destaque_01/other.wav",
+      "sha256": "84554f6129924573c8225326ff8c50d9c660c829a42fecac4fb1c44ccb867412",
+      "peak": 0.01058092713356018,
+      "rms": 0.0005712249660354635
+    },
+    {
+      "source": "vocals",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/04_solo_destaque_01/vocals.wav",
+      "sha256": "17956a4788281a00dbe61c7488ad67e279609162ca6e6a13189f6bea1319f71e",
+      "peak": 0.31596803665161133,
+      "rms": 0.05857742661844844
+    },
+    {
+      "source": "guitar",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/04_solo_destaque_01/guitar.wav",
+      "sha256": "98063e7e75961100f47ce32b8eaaf0cf13874b96aa5b8e9471cb1442b3daab38",
+      "peak": 0.3196350336074829,
+      "rms": 0.05804359059201334
+    },
+    {
+      "source": "piano",
+      "file": "repertorio/fase_2/piloto_htdemucs_6s/04_solo_destaque_01/piano.wav",
+      "sha256": "b11cc0e806e9cca7aa96c2cf29c173f5fee5083f9eab6ea25e27f3a7d7bf6b44",
+      "peak": 0.038296978920698166,
+      "rms": 0.004010242979718538
+    }
+  ],
+  "review_status": "pendente_de_escuta",
+  "limitations": [
+    "Guitar inclui quaisquer guitarras presentes; não separa base de solo.",
+    "Não há stems verdadeiros para medir SDR ou fidelidade da separação.",
+    "Erro de reconstrução não comprova pureza nem preservação do timbre.",
+    "Vazamento e artefatos precisam ser avaliados por audição.",
+    "Modelo experimental de referência; sem integração ao app."
+  ],
+  "model_checkpoints": [
+    {
+      "name": "5c90dfd2-34c22ccb.th",
+      "sha256": "34c22ccb381c6f9fdbf324f04e1e2fe21aaaf293f5ded163a162697ff9a02ddd"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+# Material de avaliação local; manter documentação e fichas disponíveis.
+/fase_1/*/original/**
+/fase_1/*/trechos/**
+/fase_1/*/gravacoes_pedal/**
+
+# Ambiente experimental e artefatos grandes; não empacotados no aplicativo.
+/laboratorio/.venv/
+/laboratorio/cache/
+/laboratorio/**/__pycache__/
+/laboratorio/relatorios/*.log
+/fase_2/piloto_htdemucs_6s/**/*.wav
+
+/fase_2/infest_comparacao/**/*.wav

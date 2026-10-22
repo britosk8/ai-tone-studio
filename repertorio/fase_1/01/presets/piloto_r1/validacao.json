@@ -1,0 +1,13 @@
+{
+  "preset_names": [
+    "Infest Base R1",
+    "Infest Solo R1"
+  ],
+  "references_independent": true,
+  "catalog": "0.4.0",
+  "parameters_complete_and_bounded": true,
+  "native_name_limits_valid": true,
+  "app_fixture_matches_generated_pair": true,
+  "hardware_write_performed": false,
+  "fidelity_audition": "pending"
+}

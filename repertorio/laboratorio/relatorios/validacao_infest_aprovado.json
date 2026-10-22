@@ -1,0 +1,20 @@
+{
+  "approved_references": [
+    "01_base_01",
+    "01_solo_destaque_01"
+  ],
+  "contextual_extractions": 2,
+  "context_stems_checked": 12,
+  "rms_matched_previews_checked": 6,
+  "preview_rms_max_difference_db": 4.967920652632074e-07,
+  "duration_seconds": 20,
+  "sample_rate": 44100,
+  "channels": 2,
+  "sample_peak_ceiling_dbfs": -1,
+  "approval_preserved_after_regeneration": true,
+  "html_audio_and_guide_links_valid": true,
+  "javascript_syntax_valid": true,
+  "pedal_captures_received": false,
+  "musical_quality_assessment": "pending",
+  "preview_rms_difference_limit_db": 0.001
+}

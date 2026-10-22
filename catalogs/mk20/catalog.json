@@ -1,0 +1,226 @@
+{
+  "_meta": {
+    "device": "M-VAVE MK20",
+    "catalog_version": "0.3.0",
+    "last_updated": "2026-10-09",
+    "verification_status": "COMMUNITY",
+    "sources": [
+      "MK-20 Owner's Manual PDF (https://manualf.oss-cn-hongkong.aliyuncs.com/manual/Combined-Effect-Pedals/MK-20.pdf)",
+      "MK-20 Preset Guide PDF (https://community.m-vave.com/bbs/api/software?file=MK20_en.pdf)",
+      "MK20 Firmware Release Notes V085",
+      "https://github.com/jpfaria/mvave (protocolo SysEx — testado somente no MK300)"
+    ],
+    "warnings": [
+      "Protocolo SysEx (jpfaria/mvave) testado no MK300. MK20 usa protocolo similar mas NÃO confirmado.",
+      "MK20 tem 150 presets (75 fábrica + 75 usuário). Diferente do MK300 (160 presets).",
+      "MK20 tem 10 módulos de efeito vs 11 do MK300.",
+      "BLE UUID padrão BLE MIDI capturado. Protocolo proprietário M-EFCS por cima não documentado para MK20.",
+      "Transferência direta via Android: NÃO testada. Exportar JSON/guia para configuração manual."
+    ]
+  },
+  "device_info": {
+    "model": "MK20",
+    "max_presets": 150,
+    "factory_presets": 75,
+    "user_presets": 75,
+    "factory_preset_slots": "1–66 guitarra elétrica, 67–75 baixo",
+    "bank_size": 3,
+    "effect_modules": 10,
+    "supports_ble": true,
+    "ble_version": "Não especificada (MK300 usa BT 5.0)",
+    "supports_usb_midi": true,
+    "supports_35mm_trs_midi_in": true,
+    "battery_mah": 3000,
+    "battery_hours_approx": 8,
+    "dimensions_mm": "271.5×136.5×51",
+    "weight_g": 795
+  },
+  "connectivity": {
+    "ble_midi": {
+      "service_uuid": "03B80E5A-EDE8-4B33-A751-6CE34EC4C700",
+      "characteristic_uuid": "7772E5DB-3868-4112-A1A9-F2669D106BF3",
+      "cccd_uuid": "0x2902",
+      "note": "UUIDs padrão BLE MIDI (MIDI Association / Bluetooth SIG). O M-EFCS usa protocolo proprietário sobre esses UUIDs.",
+      "verification_status": "STANDARD_SPEC - protocolo proprietário por cima não documentado para MK20"
+    },
+    "usb_midi": {
+      "chipset": "JieLi Technology",
+      "device_name": "USB Composite Device (pode variar por firmware)",
+      "verification_status": "INFERRED - baseado em MK300 e BlackBox reverse-engineering"
+    }
+  },
+  "signal_chain": {
+    "module_count": 10,
+    "modules": ["FX", "NS", "DS", "AMP", "CAB", "EQ", "MOD", "DLY", "REV", "VOL"],
+    "note": "Ordem totalmente reconfigurável por preset. Drum sempre no final (fora da cadeia).",
+    "diff_vs_mk300": "MK300 tem 11 módulos (adiciona WAH como módulo separado). MK20 tem WAH dentro do FX."
+  },
+  "amp_models": {
+    "verification_status": "VERIFIED - MK-20 Preset Guide PDF oficial",
+    "total": 120,
+    "guitar_slots": "1–90",
+    "acoustic_slots": "dentro de 1–90",
+    "bass_slots": "91–120",
+    "note": "MESMOS 120 AMPs que o MK300. Nomes internos verificados.",
+    "models": [
+      {"id": 1, "name": "CL1_410H", "type": "clean", "based_on": "Marshall JVM410H"},
+      {"id": 2, "name": "CL2_410H", "type": "clean", "based_on": "Marshall JVM410H"},
+      {"id": 3, "name": "CR1_410H", "type": "crunch", "based_on": "Marshall JVM410H"},
+      {"id": 4, "name": "CR2_410H", "type": "crunch", "based_on": "Marshall JVM410H"},
+      {"id": 5, "name": "CR3_410H", "type": "crunch", "based_on": "Marshall JVM410H"},
+      {"id": 6, "name": "OD1_410H", "type": "overdrive", "based_on": "Marshall JVM410H"},
+      {"id": 7, "name": "OD2_410H", "type": "overdrive", "based_on": "Marshall JVM410H"},
+      {"id": 8, "name": "OD3_410H", "type": "overdrive", "based_on": "Marshall JVM410H"},
+      {"id": 9, "name": "OD_AXE1", "type": "overdrive", "based_on": "Danelectro Wasabi AX-1"},
+      {"id": 10, "name": "OD1_BLUE", "type": "overdrive", "based_on": "BOSS BD-2 Blues Driver"},
+      {"id": 11, "name": "OD2_BLUE", "type": "overdrive", "based_on": "BOSS BD-2 Blues Driver"},
+      {"id": 12, "name": "DARK_MATTER1", "type": "overdrive", "based_on": "TC Electronic Dark Matter"},
+      {"id": 13, "name": "CL1_FenDi", "type": "clean", "based_on": "Fender 65 Deluxe Reverb"},
+      {"id": 14, "name": "CL2_FenDi", "type": "clean", "based_on": "Fender 65 Deluxe Reverb"},
+      {"id": 15, "name": "CL3_FenDi", "type": "clean", "based_on": "Fender 65 Deluxe Reverb"},
+      {"id": 16, "name": "HORIZON_1", "type": "overdrive", "based_on": "Horizon Devices"},
+      {"id": 17, "name": "HORIZON_2", "type": "overdrive", "based_on": "Horizon Devices"},
+      {"id": 18, "name": "HVMetal_1", "type": "high_gain", "based_on": "BOSS Metal Zone"},
+      {"id": 19, "name": "CL1_J900", "type": "clean", "based_on": "Marshall JCM900"},
+      {"id": 20, "name": "CL2_J900", "type": "clean", "based_on": "Marshall JCM900"},
+      {"id": 21, "name": "CL3_J900", "type": "clean", "based_on": "Marshall JCM900"},
+      {"id": 22, "name": "OD1_J900", "type": "overdrive", "based_on": "Marshall JCM900"},
+      {"id": 23, "name": "DS1_J900", "type": "high_gain", "based_on": "Marshall JCM900"},
+      {"id": 24, "name": "DS2_J900", "type": "high_gain", "based_on": "Marshall JCM900"},
+      {"id": 25, "name": "CL1_JC120", "type": "clean", "based_on": "Roland JC-120 Jazz Chorus"},
+      {"id": 26, "name": "CL2_JC120", "type": "clean", "based_on": "Roland JC-120 Jazz Chorus"},
+      {"id": 48, "name": "CH1_ME", "type": "overdrive", "based_on": "Mesa Boogie JP-2C"},
+      {"id": 49, "name": "CH2_ME", "type": "overdrive", "based_on": "Mesa Boogie JP-2C"},
+      {"id": 50, "name": "DS1_metal", "type": "high_gain", "based_on": "Blackstar HT Metal 60"},
+      {"id": 51, "name": "OD1_MS2203", "type": "overdrive", "based_on": "Marshall JCM800 2203"},
+      {"id": 57, "name": "OD1_RAT", "type": "overdrive", "based_on": "Pro Co RAT"},
+      {"id": 58, "name": "OD2_RAT", "type": "overdrive", "based_on": "Pro Co RAT"},
+      {"id": 59, "name": "DS1_RAT", "type": "high_gain", "based_on": "Pro Co RAT"},
+      {"id": 64, "name": "DS1_XC", "type": "high_gain", "based_on": "Bogner XTC Ecstasy"},
+      {"id": 65, "name": "DS2_XC", "type": "high_gain", "based_on": "Bogner XTC Ecstasy"},
+      {"id": 69, "name": "OD1_meas", "type": "overdrive", "based_on": "Mesa Boogie Triple Rectifier"},
+      {"id": 70, "name": "OD2_meas", "type": "overdrive", "based_on": "Mesa Boogie Triple Rectifier"},
+      {"id": 71, "name": "CL1_meas", "type": "clean", "based_on": "Mesa Boogie Triple Rectifier"},
+      {"id": 74, "name": "OD_ENGL120", "type": "overdrive", "based_on": "ENGL Savage 120"},
+      {"id": 75, "name": "DS_ENGL120", "type": "high_gain", "based_on": "ENGL Savage 120"},
+      {"id": 76, "name": "CL_SoldSolo100", "type": "clean", "based_on": "Soldano SLO-100"},
+      {"id": 77, "name": "OD_SoldSolo100", "type": "overdrive", "based_on": "Soldano SLO-100"},
+      {"id": 78, "name": "DS_SoldSolo100", "type": "lead", "based_on": "Soldano SLO-100"},
+      {"id": 79, "name": "OD_5150III", "type": "overdrive", "based_on": "EVH 5150"},
+      {"id": 80, "name": "DS_5150III", "type": "high_gain", "based_on": "EVH 5150"},
+      {"id": 81, "name": "CL_VOSAC30", "type": "clean", "based_on": "VOX AC30"},
+      {"id": 82, "name": "OD_VOSAC30", "type": "crunch", "based_on": "VOX AC30"},
+      {"id": 83, "name": "CL_DiezzlVH4", "type": "clean", "based_on": "Diezel VH4"},
+      {"id": 84, "name": "OD_DiezzlVH4", "type": "overdrive", "based_on": "Diezel VH4"},
+      {"id": 85, "name": "DS_DiezzlVH4", "type": "high_gain", "based_on": "Diezel VH4"},
+      {"id": 86, "name": "OD_JCM800", "type": "overdrive", "based_on": "Marshall JCM800"},
+      {"id": 87, "name": "DS_JCM800", "type": "high_gain", "based_on": "Marshall JCM800"},
+      {"id": 88, "name": "OD_Peavev6505", "type": "overdrive", "based_on": "Peavey 6505"},
+      {"id": 89, "name": "DS_Peavev6505", "type": "high_gain", "based_on": "Peavey 6505"},
+      {"id": 90, "name": "DS1_TONE", "type": "high_gain", "based_on": "IK Multimedia TONEX"}
+    ],
+    "amp_parameters": {
+      "Gain": {"min": 0, "max": 100, "default": 50},
+      "Level": {"min": 0, "max": 100, "default": 70},
+      "Bass": {"min": 0, "max": 100, "default": 50, "flat": 50},
+      "Middle": {"min": 0, "max": 100, "default": 50, "flat": 50},
+      "Treble": {"min": 0, "max": 100, "default": 50, "flat": 50},
+      "Reso": {"min": 0, "max": 100, "default": 50},
+      "Pres": {"min": 0, "max": 100, "default": 50},
+      "Bright": {"min": 0, "max": 100, "default": 50}
+    }
+  },
+  "ds_models": {
+    "verification_status": "VERIFIED - MK-20 Preset Guide PDF",
+    "total": 40,
+    "models": [
+      {"id": 0, "name": "BLUES_OD", "type": "overdrive", "based_on": "Ibanez BD-2 Blues Driver"},
+      {"id": 1, "name": "TS8", "type": "distortion", "based_on": "Ibanez TS808 Tube Screamer"},
+      {"id": 2, "name": "DS1", "type": "distortion", "based_on": "BOSS DS-1"},
+      {"id": 3, "name": "DS2", "type": "overdrive", "based_on": "BOSS DS-2 Turbo Distortion"},
+      {"id": 4, "name": "M-VAVE_OD", "type": "overdrive", "based_on": "M-VAVE Custom OD"},
+      {"id": 5, "name": "M-VAVE_DS", "type": "distortion", "based_on": "M-VAVE Custom DS"},
+      {"id": 10, "name": "RAT", "type": "distortion", "based_on": "Pro Co RAT 2"},
+      {"id": 14, "name": "MT_1", "type": "distortion", "based_on": "BOSS MT-2 Metal Zone"},
+      {"id": 19, "name": "HIGAIN", "type": "high_gain", "based_on": "Friedman BE-OD Clone"},
+      {"id": 21, "name": "TS-9", "type": "overdrive", "based_on": "Ibanez TS9 Tube Screamer"},
+      {"id": 22, "name": "BIG-DR", "type": "distortion", "based_on": "Big Muff Pi"},
+      {"id": 35, "name": "SuperOD", "type": "overdrive", "based_on": "Maxon Super OD-9"},
+      {"id": 38, "name": "BIG-MUFF", "type": "boost", "based_on": "EHX Big Muff Pi Boost"}
+    ],
+    "ds_parameters": {
+      "Gain": {"min": 0, "max": 100, "default": 50},
+      "Level": {"min": 0, "max": 100, "default": 70},
+      "Bass": {"min": 0, "max": 100, "default": 50, "flat": 50},
+      "Middle": {"min": 0, "max": 100, "default": 50, "flat": 50},
+      "Treble": {"min": 0, "max": 100, "default": 50, "flat": 50},
+      "Reso": {"min": 0, "max": 100, "default": 50},
+      "Pres": {"min": 0, "max": 100, "default": 50},
+      "Bright": {"min": 0, "max": 100, "default": 50}
+    }
+  },
+  "cab_models": {
+    "verification_status": "VERIFIED - MK-20 Preset Guide PDF",
+    "total": 100,
+    "note": "MESMOS 100 CABs que o MK300.",
+    "guitar_slots": "1–70",
+    "acoustic_slots": "71–75",
+    "bass_slots": "76–100",
+    "selected_models": [
+      {"id": 1, "name": "BogUber412A", "config": "4x12", "based_on": "Bogner Ubercab 412, SM57"},
+      {"id": 10, "name": "FdTR65R212A", "config": "2x12", "based_on": "Fender Twin Reverb 65 Reissue, U87"},
+      {"id": 33, "name": "Mar60A412A", "config": "4x12", "based_on": "Marshall 1960A 412, MD421"},
+      {"id": 36, "name": "Mar60B412A", "config": "4x12", "based_on": "Marshall 1960B 412, U87"},
+      {"id": 46, "name": "MbOS412A", "config": "4x12", "based_on": "Mesa Boogie OS 412, SM57"},
+      {"id": 61, "name": "RJ120azz212", "config": "2x12", "based_on": "Roland JC 120 212, U87"},
+      {"id": 64, "name": "VAC30TBC212", "config": "2x12", "based_on": "Vox AC 30 TopBoost 212, MD421"}
+    ],
+    "cab_parameters": {
+      "Level": {"min": 0, "max": 100, "default": 70},
+      "Low Cut": {"min": 20, "max": 300, "unit": "Hz", "default": 60},
+      "High Cut": {"min": 5000, "max": 18000, "unit": "Hz", "default": 12000}
+    }
+  },
+  "effect_modules": {
+    "NS": {
+      "verification_status": "VERIFIED",
+      "models": [
+        {"id": 0, "name": "AI Gate", "params": {"Gate": {"min": 0, "max": 100}, "Bias": {"min": 0, "max": 100}}},
+        {"id": 1, "name": "Soft Gate", "params": {"Thd": {"min": -80, "max": -30, "unit": "dB"}, "Rel": {"min": 0, "max": 100}, "Kw": {"min": 0, "max": 100}}},
+        {"id": 2, "name": "Hard Gate", "params": {"Thd": {"min": -80, "max": -30, "unit": "dB"}, "Attack": {"min": 0, "max": 100}}},
+        {"id": 3, "name": "Pro Gate", "params": {"Att": {"min": 0, "max": 100}, "Gain": {"min": 0, "max": 100}, "Thd": {"min": 0, "max": 100}}},
+        {"id": 4, "name": "Compress", "params": {"Sustain": {"min": 0, "max": 100}, "Knee": {"min": 0, "max": 100}, "Ratio": {"min": 0, "max": 100}, "Attack": {"min": 0, "max": 100}, "Level": {"min": 0, "max": 100}}},
+        {"id": 5, "name": "Compress Pro", "params": {"Ratio": {"min": 0, "max": 100}, "Blend": {"min": 0, "max": 100}, "Attack": {"min": 0, "max": 100}, "Level": {"min": 0, "max": 100}}}
+      ]
+    },
+    "MOD": {
+      "verification_status": "VERIFIED",
+      "models": [
+        {"id": 0, "name": "Chorus", "params": {"Speed": {"min": 0, "max": 100}, "Depth": {"min": 0, "max": 100}, "Mix": {"min": 0, "max": 100}}},
+        {"id": 1, "name": "Tri Chorus", "params": {"Speed": {"min": 0, "max": 100}, "Depth": {"min": 0, "max": 100}, "Mix": {"min": 0, "max": 100}}},
+        {"id": 2, "name": "Flanger", "params": {"Speed": {"min": 0, "max": 100}, "Depth": {"min": 0, "max": 100}, "Fb": {"min": 0, "max": 100}, "Mix": {"min": 0, "max": 100}}},
+        {"id": 3, "name": "Tremolo", "params": {"Speed": {"min": 0, "max": 100}, "Depth": {"min": 0, "max": 100}, "Level": {"min": 0, "max": 100}}},
+        {"id": 4, "name": "Phaser", "params": {"Speed": {"min": 0, "max": 100}, "Depth": {"min": 0, "max": 100}, "Mix": {"min": 0, "max": 100}}}
+      ]
+    },
+    "DLY": {
+      "verification_status": "VERIFIED",
+      "models": [
+        {"id": 0, "name": "Analog", "params": {"Time": {"min": 0, "max": 2000, "unit": "ms"}, "Fb": {"min": 0, "max": 100}, "Mix": {"min": 0, "max": 100}}},
+        {"id": 1, "name": "Digital", "params": {"Time": {"min": 0, "max": 2000, "unit": "ms"}, "Fb": {"min": 0, "max": 100}, "Mix": {"min": 0, "max": 100}}},
+        {"id": 2, "name": "Echo", "params": {"Time": {"min": 0, "max": 2000, "unit": "ms"}, "Fb": {"min": 0, "max": 100}, "Mix": {"min": 0, "max": 100}}},
+        {"id": 3, "name": "Tape", "params": {"Time": {"min": 0, "max": 2000, "unit": "ms"}, "Fb": {"min": 0, "max": 100}, "Mix": {"min": 0, "max": 100}}}
+      ]
+    },
+    "REV": {
+      "verification_status": "VERIFIED",
+      "models": [
+        {"id": 0, "name": "Room", "params": {"Decay": {"min": 0, "max": 100}, "Mix": {"min": 0, "max": 100}}},
+        {"id": 1, "name": "Hall", "params": {"Decay": {"min": 0, "max": 100}, "Mix": {"min": 0, "max": 100}}},
+        {"id": 2, "name": "Plate", "params": {"Decay": {"min": 0, "max": 100}, "Mix": {"min": 0, "max": 100}, "Damping": {"min": 0, "max": 100, "unit": "%"}}},
+        {"id": 3, "name": "Spring", "params": {"Decay": {"min": 0, "max": 100}, "Mix": {"min": 0, "max": 100}}},
+        {"id": 4, "name": "Shimmer", "params": {"Decay": {"min": 0, "max": 100}, "Mix": {"min": 0, "max": 100}, "Tone": {"min": 0, "max": 100}, "Pitch": {"min": 0, "max": 100}, "Amount": {"min": 0, "max": 100}}}
+      ]
+    }
+  }
+}

@@ -1,0 +1,171 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../models/preset_pair.dart';
+
+class ApiException implements Exception {
+  final int? statusCode;
+  final String message;
+  ApiException(this.message, {this.statusCode});
+  @override
+  String toString() => 'ApiException($statusCode): $message';
+}
+
+class ApiService {
+  String _baseUrl = 'http://192.168.15.8:8000';
+
+  String get baseUrl => _baseUrl;
+
+  Future<void> loadSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    final saved = prefs.getString("backend_url");
+    if (saved != null && saved.isNotEmpty) setBaseUrl(saved);
+  }
+
+  void setBaseUrl(String url) {
+    _baseUrl = url.trimRight().replaceAll(RegExp(r'/$'), '');
+  }
+
+  Future<Map<String, dynamic>> _get(String path) async {
+    final uri = Uri.parse('$_baseUrl$path');
+    final response = await http.get(uri).timeout(const Duration(seconds: 30));
+    return _handleResponse(response);
+  }
+
+  Map<String, dynamic> _handleResponse(http.Response response) {
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final body = utf8.decode(response.bodyBytes);
+      return json.decode(body) as Map<String, dynamic>;
+    }
+    final body = utf8.decode(response.bodyBytes);
+    String message = 'Erro ${response.statusCode}';
+    try {
+      final decoded = json.decode(body) as Map<String, dynamic>;
+      message = decoded['detail']?.toString() ?? message;
+    } catch (_) {}
+    throw ApiException(message, statusCode: response.statusCode);
+  }
+
+  Future<Map<String, dynamic>> checkHealth() async {
+    return _get('/api/v1/health');
+  }
+
+  Future<Map<String, dynamic>> listDevices() async {
+    return _get('/api/v1/devices');
+  }
+
+  Future<AnalysisJob> submitAnalysis({
+    required File audioFile,
+    required String rhythmDevice,
+    required String leadDevice,
+    String? artist,
+    String? songTitle,
+    String? originalFileName,
+    String sourceKind = 'mix',
+    double excerptStart = 0,
+    double? excerptDuration,
+  }) async {
+    final uri = Uri.parse('$_baseUrl/api/v1/analyze');
+    final request = http.MultipartRequest('POST', uri);
+
+    request.fields['rhythm_device'] = rhythmDevice;
+    request.fields['lead_device'] = leadDevice;
+    request.fields['source_kind'] = sourceKind;
+    request.fields['excerpt_start'] = excerptStart.toString();
+    if (excerptDuration != null) {
+      request.fields['excerpt_duration'] = excerptDuration.toString();
+    }
+    if (artist != null && artist.isNotEmpty) request.fields['artist'] = artist;
+    if (songTitle != null && songTitle.isNotEmpty) {
+      request.fields['song_title'] = songTitle;
+    }
+
+    final ext = audioFile.path.split('.').last.toLowerCase();
+    final mime = _mimeForExt(ext);
+    request.files.add(await http.MultipartFile.fromPath(
+      'file',
+      audioFile.path,
+      filename: originalFileName,
+      contentType: MediaType.parse(mime),
+    ));
+
+    final streamed = await request.send().timeout(const Duration(seconds: 60));
+    final response = await http.Response.fromStream(streamed);
+    final body = _handleResponse(response);
+    return AnalysisJob.fromJson(body);
+  }
+
+  Future<AnalysisJob> getJobStatus(String jobId) async {
+    final body = await _get('/api/v1/jobs/$jobId');
+    return AnalysisJob.fromJson(body);
+  }
+
+  Future<PresetPair> getPresets(String pairId) async {
+    final body = await _get('/api/v1/presets/$pairId');
+    return PresetPair.fromJson(body);
+  }
+
+  Future<String> exportGuide(String pairId) async {
+    final uri = Uri.parse('$_baseUrl/api/v1/presets/$pairId/export/guide');
+    final response = await http.get(uri).timeout(const Duration(seconds: 15));
+    if (response.statusCode == 200) {
+      return utf8.decode(response.bodyBytes);
+    }
+    throw ApiException('Falha ao exportar guia',
+        statusCode: response.statusCode);
+  }
+
+  Future<Map<String, dynamic>> exportJson(String pairId) async {
+    return _get('/api/v1/presets/$pairId/export/json');
+  }
+
+  Future<Map<String, dynamic>> compareTone(
+      {required File recording,
+      required PresetData preset,
+      required String pairId,
+      required String inputKind,
+      File? reference,
+      double referenceStart = 0,
+      String referenceKind = 'mix'}) async {
+    final request = http.MultipartRequest(
+        'POST', Uri.parse('$_baseUrl/api/v1/compare-tone'));
+    request.fields.addAll({
+      'pair_id': pairId,
+      'preset_json': jsonEncode(preset.toJson()),
+      'input_kind': inputKind,
+      'reference_start': referenceStart.toString(),
+      'reference_kind': referenceKind
+    });
+    request.files
+        .add(await http.MultipartFile.fromPath('file', recording.path));
+    if (reference != null) {
+      request.files.add(
+          await http.MultipartFile.fromPath('reference_file', reference.path));
+    }
+    final response = await http.Response.fromStream(await request.send())
+        .timeout(const Duration(seconds: 120));
+    return _handleResponse(response);
+  }
+
+  String _mimeForExt(String ext) {
+    switch (ext) {
+      case 'mp3':
+        return 'audio/mpeg';
+      case 'wav':
+        return 'audio/wav';
+      case 'flac':
+        return 'audio/flac';
+      case 'ogg':
+        return 'audio/ogg';
+      case 'm4a':
+      case 'm4':
+        return 'audio/m4a';
+      case 'mp4':
+        return 'video/mp4';
+      default:
+        return 'audio/mpeg';
+    }
+  }
+}

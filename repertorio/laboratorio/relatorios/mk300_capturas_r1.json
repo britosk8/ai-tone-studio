@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "device": "MK300",
+  "track_id": "01",
+  "purpose": "qualidade_tecnica_da_captura_sem_score_de_fidelidade",
+  "limitations": [
+    "Nome do arquivo não confirma guitarra, preset ou rota física.",
+    "Pico de amostra e proximidade ao full scale não provam clipping analógico; AAC pode ultrapassar 0 dBFS na decodificação.",
+    "RMS inclui pausas; atividade por limiar é apenas triagem, sem segmentação musical.",
+    "Sem DI pareada/reamp validado, estas capturas não treinam uma resposta causal dos controles.",
+    "Sem alinhamento e controle de execução, diferenças não podem ser atribuídas apenas ao preset."
+  ],
+  "captures": [
+    {
+      "file": "repertorio/fase_1/01/gravacoes_pedal/1_base_Konig_mk300_piloto_r1_t01.m4a",
+      "sha256": "8aca483934520bf444a768f21eb87523014d77d240a76967087c48380c569539",
+      "codec": "aac",
+      "sample_rate_hz": 48000,
+      "channels": 2,
+      "decoded_duration_seconds": 16.213333333333335,
+      "channel_metrics": [
+        {
+          "channel": 1,
+          "sample_peak_dbfs": -28.466442927185426,
+          "rms_dbfs": -41.42229613653808,
+          "crest_db": 12.95585320935265,
+          "fraction_abs_ge_0_99": 0.0,
+          "fraction_abs_gt_1": 0.0,
+          "activity_threshold_dbfs": -55.45100878395709,
+          "first_active_window_seconds": 1.1,
+          "last_active_window_end_seconds": 13.6,
+          "active_window_fraction": 0.7469135802469136
+        },
+        {
+          "channel": 2,
+          "sample_peak_dbfs": -82.06503649903036,
+          "rms_dbfs": -93.47521546599441,
+          "crest_db": 11.410178966964072,
+          "fraction_abs_ge_0_99": 0.0,
+          "fraction_abs_gt_1": 0.0,
+          "activity_threshold_dbfs": -60.0,
+          "first_active_window_seconds": null,
+          "last_active_window_end_seconds": null,
+          "active_window_fraction": 0.0
+        }
+      ],
+      "capture_metadata_status": "NEEDS_CAPTURE_DATA",
+      "confirmed_preset_parameters": null,
+      "confirmed_guitar_and_pickup": null,
+      "firmware": null,
+      "auditory_verdict": "pending"
+    },
+    {
+      "file": "repertorio/fase_1/01/gravacoes_pedal/1_solo_Konig_mk300_piloto_r1_t01.m4a",
+      "sha256": "43bcc90a5e3b2dc85bc4109721f53a5d2fcb5957ce493cba6ae225d6c7741a34",
+      "codec": "aac",
+      "sample_rate_hz": 48000,
+      "channels": 2,
+      "decoded_duration_seconds": 20.736,
+      "channel_metrics": [
+        {
+          "channel": 1,
+          "sample_peak_dbfs": -33.63547091997828,
+          "rms_dbfs": -48.33433707086451,
+          "crest_db": 14.698866150886234,
+          "fraction_abs_ge_0_99": 0.0,
+          "fraction_abs_gt_1": 0.0,
+          "activity_threshold_dbfs": -60.0,
+          "first_active_window_seconds": 2.2,
+          "last_active_window_end_seconds": 20.7,
+          "active_window_fraction": 0.7101449275362319
+        },
+        {
+          "channel": 2,
+          "sample_peak_dbfs": -82.75549907905491,
+          "rms_dbfs": -93.66781405532898,
+          "crest_db": 10.912314976274063,
+          "fraction_abs_ge_0_99": 0.0,
+          "fraction_abs_gt_1": 0.0,
+          "activity_threshold_dbfs": -60.0,
+          "first_active_window_seconds": null,
+          "last_active_window_end_seconds": null,
+          "active_window_fraction": 0.0
+        }
+      ],
+      "capture_metadata_status": "NEEDS_CAPTURE_DATA",
+      "confirmed_preset_parameters": null,
+      "confirmed_guitar_and_pickup": null,
+      "firmware": null,
+      "auditory_verdict": "pending"
+    }
+  ]
+}

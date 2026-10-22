@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "active_track": "01",
+  "title": "Papa Roach — Infest",
+  "planning_only": true,
+  "pedal": "MK300",
+  "roles": [
+    "base",
+    "solo_destaque"
+  ],
+  "other_tracks": "material_preparado_em_espera",
+  "current_step": "validar_baseline_e_capturas_mk300",
+  "candidate_ids": [
+    "01_base_01",
+    "01_base_02",
+    "01_solo_destaque_01",
+    "01_solo_destaque_02"
+  ],
+  "pending": [
+    "confirmar_metadados_das_capturas",
+    "avaliar_guitarra_separada",
+    "obter_preset_anterior_satisfatorio_se_disponivel",
+    "validar_schema_no_equipamento",
+    "comparar_candidatos_por_escuta",
+    "validar_reamp",
+    "calibrar_resposta_antes_da_otimizacao"
+  ],
+  "approved_candidate_ids": [
+    "01_base_01",
+    "01_solo_destaque_01"
+  ],
+  "approval_record": "repertorio/fase_1/01/APROVACAO_REFERENCIAS.json",
+  "preset_round": "piloto_r1",
+  "preset_import_file": "repertorio/fase_1/01/presets/piloto_r1/Infest_MK300_Piloto_R1.json",
+  "architecture_plan": "docs/architecture/EVOLUCAO_MOTOR_MK300.md",
+  "preset_round_status": "r1_testado_usuario_relatou_distorcoes_ruins",
+  "capture_report": "repertorio/laboratorio/relatorios/mk300_capturas_r1.json"
+}

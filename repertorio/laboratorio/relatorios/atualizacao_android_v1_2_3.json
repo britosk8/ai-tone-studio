@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-22",
+  "android_version": "1.2.3+8",
+  "backend_version": "1.2.2",
+  "reason": "Importação local para testar o par experimental sem sobrescrever a biblioteca; sem mudanças no protocolo de envio ou backend.",
+  "changes": {
+    "README.md": {
+      "before": "09196022a2662688aaefea66ad8eeaabf421673de32152d088c282ed424d4dd9",
+      "after": "78643da0ec413977a1ec6f623c9fbdff2ae043cf208e99d1fe3668c78702c130"
+    },
+    "android/lib/screens/home_screen.dart": {
+      "before": "9baa458c8596f0221d3b013f4f3fcd639c662a0bb135dea92220a9ea9e447a55",
+      "after": "9d596f0ad703f929bc24b04cbe367f36eec56d0bad550e28675855b95376157c"
+    },
+    "android/lib/screens/settings_screen.dart": {
+      "before": "dbb64a06cf6c5dbbce81ae0e04fdbb686a1f13e5cf94460af75e12f55484f811",
+      "after": "c8c9b383c399c14529b48c6648527b92cb538256bdec8a509d0458d9408e14dd"
+    },
+    "android/pubspec.yaml": {
+      "before": "54e4e8ac86aba4c4c2f990c1ba5a671c74f13005fcf2ce3e851b117cce1ce4cf",
+      "after": "4044f6172b2279ad85d055ba594b9559da170ddc35c2688c9f418620d5f7a1d5"
+    }
+  }
+}
