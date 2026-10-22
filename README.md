@@ -1,5 +1,7 @@
 # Evolução em develop — piloto automático MK300
 
+Android **1.3.2+11**: [importar um preset da MK300 por USB e comparar com o preset gerado pela música](docs/REFERENCIA_PEDAL_V1_3_2.md). Referência auxiliar, sem escrita no pedal e sem substituir a geração a partir do áudio.
+
 Android **1.3.1+10**: [limpeza das rodadas antigas e geração sem duplicatas](docs/LIMPEZA_PILOTO_V1_3_1.md). A limpeza solicitada acontece uma vez ao abrir a atualização; análises de origem são preservadas.
 
 Android **1.3.0+9**: geração de candidatos de Infest pelo app, com envio pelo fluxo existente e preservação da biblioteca. A `main` permanece no baseline V1.2.3. Consulte [fluxo, limites e validação](docs/PILOTO_AUTOMATICO_MK300_V1_3_0.md). A documentação anterior abaixo registra as versões de origem.

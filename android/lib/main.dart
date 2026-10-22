@@ -10,6 +10,7 @@ import 'screens/transfer_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/tone_comparison_screen.dart';
 import 'screens/mk300_pilot_screen.dart';
+import 'screens/pedal_reference_screen.dart';
 import 'services/api_service.dart';
 import 'services/preset_store.dart';
 import 'theme/app_theme.dart';
@@ -42,6 +43,11 @@ class AiToneStudioApp extends StatelessWidget {
       initialRoute: '/',
       onGenerateRoute: (settings) {
         switch (settings.name) {
+          case '/pedal-reference':
+            final args = settings.arguments as Map<String, dynamic>;
+            return MaterialPageRoute(
+                builder: (_) =>
+                    PedalReferenceScreen(pairId: args['pair_id'] as String));
           case '/mk300-pilot':
             return MaterialPageRoute(builder: (_) => const Mk300PilotScreen());
           case '/':

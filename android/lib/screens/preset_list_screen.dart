@@ -152,6 +152,15 @@ class _PresetListScreenState extends State<PresetListScreen> {
                   icon: const Icon(Icons.mic),
                   label: const Text("Gravar e comparar meu timbre"))),
           _ExportCard(pair: pair),
+          if (pair.rhythm.device == 'MK300' || pair.lead.device == 'MK300')
+            Padding(
+                padding: const EdgeInsets.all(16),
+                child: OutlinedButton.icon(
+                    onPressed: () => Navigator.pushNamed(
+                        context, '/pedal-reference',
+                        arguments: {'pair_id': pair.id}),
+                    icon: const Icon(Icons.compare_arrows),
+                    label: const Text('Importar preset do pedal e comparar'))),
           const SizedBox(height: 24),
         ],
       ),

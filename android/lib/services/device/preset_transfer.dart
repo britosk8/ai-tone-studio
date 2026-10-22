@@ -117,6 +117,16 @@ class Mk300TransferSession {
     }
   }
 
+  /// Leitura de flash somente; não seleciona slot, não envia escrita/commit.
+  Future<Uint8List> readSlot(int slot) => _exclusive(() async {
+        if (!verified || slot < 0 || slot >= 160) {
+          throw StateError('Conexão não verificada ou slot inválido');
+        }
+        final image = await _read(slot * 448, 448, 0);
+        Mk300Protocol.validateImage(image, counts);
+        return Uint8List.fromList(image);
+      });
+
   Uint8List buildImage(PresetData preset, String name, Uint8List original) {
     validateName(name);
     if (preset.device != 'MK300' || preset.catalogVersion != '0.4.0') {
