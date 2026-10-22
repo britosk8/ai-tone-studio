@@ -32,4 +32,6 @@ Para desfazer um commit publicado preservando o histórico, primeiro deixe o tra
 
 Manter cópia independente de `backend/data/`, músicas, capturas, pesos e APKs desejados. Git recupera código e presets versionados; não restaura a biblioteca SQLite, os dados salvos no celular nem slots gravados na pedaleira. Preservar o backup do slot antes de cada envio continua necessário.
 
+Desde a V1.3.4, `backend/data/recordings/` também contém capturas da guitarra enviadas pelo app. Preservar essa pasta junto com o SQLite, ou todo o diretório configurado em `TONE_DATA_DIR`. As gravações não são incluídas no Git.
+
 Os presets R1 e os registros de calibração ficam versionados para permitir comparação entre rodadas. Cada evolução deve registrar código, parâmetros, motivo da mudança e resultado observado antes da expansão para outras músicas.

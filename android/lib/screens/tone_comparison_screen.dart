@@ -227,8 +227,9 @@ class _ToneComparisonScreenState extends State<ToneComparisonScreen>
           }
           if (!mounted) return;
           setState(() {
-            _status =
-                'Selecione o áudio original da música. O preset está no celular, mas o backend não tem seu perfil de áudio.';
+            _status = error.recordingId != null
+                ? 'Sua gravação já está salva no backend. Selecione a música original para concluir a comparação.'
+                : 'Selecione o áudio original da música. O preset está no celular, mas o backend não tem seu perfil de áudio.';
             _report = null;
           });
           final selected = await _chooseAudio();

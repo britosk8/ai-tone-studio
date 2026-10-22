@@ -89,6 +89,7 @@ void main() {
                 inputKind: 'file'),
             throwsA(isA<ApiException>()
                 .having((e) => e.errorCode, 'code', 'reference_required')
+                .having((e) => e.recordingId, 'recording', 'saved-capture')
                 .having((e) => e.message, 'message',
                     'Selecione o áudio original')));
       },
@@ -97,7 +98,9 @@ void main() {
                 'detail': {
                   'code': 'reference_required',
                   'message': 'Selecione o áudio original'
-                }
+                },
+                'recording_saved': true,
+                'recording_id': 'saved-capture'
               }),
               400,
               headers: {'content-type': 'application/json; charset=utf-8'})));

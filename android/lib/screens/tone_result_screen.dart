@@ -116,6 +116,12 @@ class _ToneResultScreenState extends State<ToneResultScreen> {
                 style: Theme.of(context).textTheme.titleLarge),
             Text(
                 '${widget.role == 'lead' ? 'Solo' : 'Base'} — ${widget.preset.device}'),
+            if (widget.report['recording_saved'] == true)
+              const Text(
+                  'Gravação da guitarra salva no backend. Não precisa enviar o arquivo manualmente.'),
+            if (widget.report['reference_source'] == 'saved_excerpt_profile')
+              const Text(
+                  'Referência: perfil do trecho original salvo no backend.'),
             if (widget.report['reference_source'] == 'saved_track_profile')
               const Text(
                   'Referência: perfil geral da música. Para comparar a mesma passagem, selecione o áudio original e o início do trecho.'),

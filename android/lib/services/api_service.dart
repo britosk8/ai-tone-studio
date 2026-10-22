@@ -10,9 +10,12 @@ class ApiException implements Exception {
   final int? statusCode;
   final String message;
   final String? errorCode;
-  ApiException(this.message, {this.statusCode, this.errorCode});
+  final String? recordingId;
+  ApiException(this.message,
+      {this.statusCode, this.errorCode, this.recordingId});
   @override
-  String toString() => 'ApiException($statusCode): $message';
+  String toString() =>
+      'ApiException($statusCode): $message${recordingId == null ? '' : ' Gravação preservada no backend.'}';
 }
 
 class ApiService {
@@ -44,9 +47,13 @@ class ApiService {
     final body = utf8.decode(response.bodyBytes);
     String message = 'Erro ${response.statusCode}';
     String? code;
+    String? recordingId;
     try {
       final decoded = json.decode(body) as Map<String, dynamic>;
       final detail = decoded['detail'];
+      if (decoded['recording_saved'] == true) {
+        recordingId = decoded['recording_id'] as String?;
+      }
       if (detail is Map) {
         message = detail['message']?.toString() ?? message;
         code = detail['code']?.toString();
@@ -55,7 +62,9 @@ class ApiService {
       }
     } catch (_) {}
     throw ApiException(message,
-        statusCode: response.statusCode, errorCode: code);
+        statusCode: response.statusCode,
+        errorCode: code,
+        recordingId: recordingId);
   }
 
   Future<Map<String, dynamic>> checkHealth() async {

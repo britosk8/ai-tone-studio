@@ -44,7 +44,7 @@ def _get_pipeline() -> ToneAnalysisPipeline:
 @router.get("/health")
 async def health():
     """Health check."""
-    return {"status": "ok", "service": "AI Tone Studio API", "version": "1.3.3"}
+    return {"status": "ok", "service": "AI Tone Studio API", "version": "1.3.4"}
 
 
 @router.get("/devices")
@@ -366,6 +366,7 @@ async def compare_tone(
     import json
     import math
     from ..services.audio_analysis.tone_comparison import measure, compare
+    from ..core.recordings import archive_recording, finish_recording
     from ..services.device_catalog.loader import CatalogLoader
     if input_kind not in {'usb','microphone','file'} or reference_kind not in {'mix','isolated'}:
         raise HTTPException(400,'Tipo de captura/referência inválido.')
@@ -378,6 +379,18 @@ async def compare_tone(
     if not 1 <= len(pair_id) <= 200 or preset.get('role') not in {'rhythm', 'lead'}:
         raise HTTPException(400, 'Análise ou função do preset inválida.')
     work_dir=Path(tempfile.mkdtemp(prefix='tone_comparison_'))
+    recording_id = None
+    recorded = None
+    reference = None
+    def capture_error(status, detail):
+        if recording_id is None:
+            raise HTTPException(status, detail)
+        try:
+            finish_recording(recording_id, error=detail, measured=recorded)
+        except Exception:
+            logger.exception('Falha ao atualizar estado da gravação preservada')
+        return JSONResponse(status_code=status, content={'detail': detail,
+            'recording_id': recording_id, 'recording_saved': True})
     async def save_upload(upload, name, limit):
         suffix=Path(upload.filename or '').suffix.lower()
         if suffix not in ALLOWED_FORMATS:raise HTTPException(400,'Formato de áudio não suportado.')
@@ -392,6 +405,7 @@ async def compare_tone(
         return path
     try:
         recording_path=await save_upload(file,'recording',10*1024*1024)
+        recording_id = archive_recording(recording_path, pair_id, preset, input_kind, file.filename)
         recorded=await asyncio.to_thread(measure,recording_path)
         if recorded['duration_seconds']>30.1:raise HTTPException(400,'A gravação deve ter entre 3 e 30 segundos.')
         if reference_file is not None:
@@ -415,11 +429,15 @@ async def compare_tone(
                 'start_seconds': reference_start, 'duration_seconds': recorded['duration_seconds']})
         if source=='saved_track_profile':result['limitations'].append('Comparação com o perfil geral da música, não com o mesmo trecho. Selecione o áudio original e o início do trecho para uma referência mais útil.')
         if source=='saved_excerpt_profile':result['limitations'].append('Comparação com o perfil do trecho original salvo para esta função. Toque a mesma passagem; selecione novamente o áudio original se mudar de trecho.')
+        result['recording_id'] = recording_id
+        result['recording_saved'] = True
+        result['recording_audio_url'] = f'/api/v1/recordings/{recording_id}/audio'
+        finish_recording(recording_id, result=result, measured=recorded, reference=reference)
         return result
-    except HTTPException:raise
-    except (ValueError,KeyError,TypeError) as error:raise HTTPException(400,str(error))
+    except HTTPException as error:return capture_error(error.status_code, error.detail)
+    except (ValueError,KeyError,TypeError) as error:return capture_error(400,str(error))
     except Exception:
         logger.exception('Falha na comparação de timbre')
-        raise HTTPException(422,'Não foi possível ler/comparar os áudios. Confira os arquivos e grave novamente.')
+        return capture_error(422,'Não foi possível ler/comparar os áudios. Confira os arquivos e grave novamente.')
     finally:
         shutil.rmtree(work_dir,ignore_errors=True)

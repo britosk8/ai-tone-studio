@@ -1,4 +1,4 @@
-"""Persistência local dos resultados da V1, sem armazenar os arquivos de áudio."""
+"""Persistência SQLite; gravações de guitarra usam arquivos no mesmo volume de dados."""
 from contextlib import contextmanager
 import json
 import os
@@ -8,7 +8,7 @@ from pathlib import Path
 
 @contextmanager
 def _connect():
-    path = Path(os.environ.get("TONE_DATA_DIR", str(Path(__file__).resolve().parents[2] / "data")))
+    path = data_directory()
     path.mkdir(parents=True, exist_ok=True)
     connection = sqlite3.connect(path / "tone-studio.sqlite3", timeout=30)
     connection.execute("CREATE TABLE IF NOT EXISTS records (kind TEXT, id TEXT, data TEXT, PRIMARY KEY (kind, id))")
@@ -36,3 +36,7 @@ def list_records(kind: str, limit: int = 100):
         rows = connection.execute(
             "SELECT data FROM records WHERE kind=? ORDER BY id LIMIT ?", (kind, limit)).fetchall()
     return [json.loads(row[0]) for row in rows]
+
+
+def data_directory():
+    return Path(os.environ.get("TONE_DATA_DIR", str(Path(__file__).resolve().parents[2] / "data")))

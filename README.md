@@ -1,5 +1,7 @@
 # Evolução em develop — piloto automático MK300
 
+Android/API **1.3.4**: [gravações USB da guitarra preservadas no backend](docs/GRAVACOES_BACKEND_V1_3_4.md), com preset selecionado, análise e download do áudio original.
+
 Android/API **1.3.3**: [referências sincronizadas no backend e correção da comparação dos presets locais](docs/SINCRONIZACAO_REFERENCIAS_V1_3_3.md). A importação anterior do Gohth pode sincronizar ao abrir o app atualizado com o backend disponível.
 
 Android **1.3.2+11**: [importar um preset da MK300 por USB e comparar com o preset gerado pela música](docs/REFERENCIA_PEDAL_V1_3_2.md). Referência auxiliar, sem escrita no pedal e sem substituir a geração a partir do áudio.

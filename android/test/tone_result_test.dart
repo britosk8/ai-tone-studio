@@ -99,6 +99,20 @@ void main() {
     await reveal(tester, 'Voltar e gravar novamente');
     expect(store.pairs.single.lead.toJson(), before);
   });
+  testWidgets('Resultado confirma que a gravação está preservada no backend',
+      (tester) async {
+    final data = report()
+      ..['recording_saved'] = true
+      ..['recording_id'] = 'saved-capture'
+      ..['reference_source'] = 'saved_excerpt_profile';
+    await setup(tester, data);
+    expect(
+        find.text(
+            'Gravação da guitarra salva no backend. Não precisa enviar o arquivo manualmente.'),
+        findsOneWidget);
+    expect(find.text('Referência: perfil do trecho original salvo no backend.'),
+        findsOneWidget);
+  });
   testWidgets('Sem alterações diferencia EQ compatível de timbre idêntico',
       (tester) async {
     final data = report()..['suggestions'] = [];
