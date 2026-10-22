@@ -8,6 +8,8 @@ O app V1.2.3 continua operacional. O gerador atual é heurístico; separação n
 
 O prompt é uma referência arquitetural, não evidência das escalas físicas dos aparelhos. Não adotar seus exemplos de frequências, pesos de loss ou scores como especificações verificadas.
 
+O fluxo operacional vigente é automático pelo app em `develop`: [Piloto V1.3.0](../PILOTO_AUTOMATICO_MK300_V1_3_0.md). Nenhuma etapa exige que o usuário configure knobs manualmente; testes no equipamento usam geração e envio pelo aplicativo.
+
 ## Etapa A — baseline e validação da captura (iniciada)
 
 Entregas: inventário com hashes e métricas por canal, registro das condições de execução e comparação auditiva dos presets. O script `repertorio/laboratorio/scripts/avaliar_capturas_mk300.py` apenas decodifica e mede; não altera áudio, presets ou equipamento. Seu relatório não atribui fidelidade.

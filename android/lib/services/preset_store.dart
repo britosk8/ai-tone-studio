@@ -61,6 +61,27 @@ class PresetStore extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> saveNewBatch(List<PresetPair> pairs) async {
+    await load();
+    final ids = pairs.map((p) => p.id).toSet();
+    if (pairs.isEmpty ||
+        ids.length != pairs.length ||
+        ids.contains('') ||
+        _pairs.any((p) => ids.contains(p.id))) {
+      throw StateError('Candidatos sem identidade nova ou duplicados');
+    }
+    final original = List<PresetPair>.from(_pairs);
+    _pairs.insertAll(0, pairs);
+    try {
+      await _persist();
+    } catch (_) {
+      _pairs.clear();
+      _pairs.addAll(original);
+      rethrow;
+    }
+    notifyListeners();
+  }
+
   Future<void> remove(String pairId) async {
     await load();
     final original = List<PresetPair>.from(_pairs);

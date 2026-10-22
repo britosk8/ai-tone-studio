@@ -2,6 +2,8 @@
 
 Repositório: https://github.com/britosk8/ai-tone-studio.git
 
+`main` preserva o baseline 56fbfbf. A evolução acontece em `develop`, incluindo os registros posteriores ao baseline e o piloto automático do app. Publicar em `develop` não atualiza a `main`; uma integração futura deve ser revisada antes de merge.
+
 O baseline inicial contém fontes Android/backend, catálogos, documentação, scripts, metadados do laboratório e presets JSON. Áudios, modelos de IA, ambientes virtuais, caches, banco SQLite, configurações locais, credenciais e APKs ficam fora do Git. Os arquivos locais não são apagados por essa exclusão.
 
 ## Pontos de recuperação

@@ -40,6 +40,11 @@ class PresetImport {
       if (raw['name'] is! String || (raw['name'] as String).trim().isEmpty) {
         throw const FormatException('Preset sem nome.');
       }
+      final volume = raw['preset_volume'];
+      if ((volume != null && (volume is! int || volume < 0 || volume > 100)) ||
+          (raw['center_pan'] != null && raw['center_pan'] is! bool)) {
+        throw const FormatException('Volume ou panorama de preset inválido.');
+      }
       final blocks = raw['effect_chain'];
       if (blocks is! List || blocks.isEmpty || blocks.length > 11) {
         throw const FormatException('Cadeia de efeitos inválida.');

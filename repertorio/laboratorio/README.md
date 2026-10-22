@@ -2,6 +2,8 @@
 
 ## Evolução do motor — MK300 primeiro
 
+O piloto operacional agora acontece pelo aplicativo, na branch `develop`: [Android V1.3.0](../../docs/PILOTO_AUTOMATICO_MK300_V1_3_0.md). A proposta anterior de configuração manual foi substituída. A `main` preserva o baseline V1.2.3; arquivos antigos de experiência permanecem como histórico.
+
 O plano vigente está em [EVOLUCAO_MOTOR_MK300.md](../../docs/architecture/EVOLUCAO_MOTOR_MK300.md): baseline/captura → schema e busca sonora controlada → dataset/calibração → modelo de resposta → otimização → integração no app. R1 recebeu relato de distorções ruins e permanece preservado como baseline experimental.
 
 Para inventariar capturas sem normalização ou escrita na pedaleira:

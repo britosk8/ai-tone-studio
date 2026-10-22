@@ -9,6 +9,7 @@ import 'screens/preset_editor_screen.dart';
 import 'screens/transfer_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/tone_comparison_screen.dart';
+import 'screens/mk300_pilot_screen.dart';
 import 'services/api_service.dart';
 import 'services/preset_store.dart';
 import 'theme/app_theme.dart';
@@ -41,6 +42,8 @@ class AiToneStudioApp extends StatelessWidget {
       initialRoute: '/',
       onGenerateRoute: (settings) {
         switch (settings.name) {
+          case '/mk300-pilot':
+            return MaterialPageRoute(builder: (_) => const Mk300PilotScreen());
           case '/':
             return MaterialPageRoute(builder: (_) => const HomeScreen());
           case '/upload':

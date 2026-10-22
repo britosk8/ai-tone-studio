@@ -127,6 +127,14 @@ class Mk300TransferSession {
     final image = Uint8List.fromList(
         original); // Preserva footswitches e todos os campos não documentados.
     final bytes = ByteData.sublistView(image);
+    if (preset.presetVolume != null) {
+      final volume = preset.presetVolume!;
+      if (volume < 0 || volume > 100) {
+        throw StateError('Volume do preset fora da escala');
+      }
+      bytes.setUint16(24, volume, Endian.little);
+    }
+    if (preset.centerPan) bytes.setInt16(28, 0, Endian.little);
     image.fillRange(0, 20, 0);
     image.setRange(0, name.length, name.codeUnits);
     image.fillRange(43, 54, 0);

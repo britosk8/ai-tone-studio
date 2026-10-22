@@ -9,7 +9,7 @@
     "solo_destaque"
   ],
   "other_tracks": "material_preparado_em_espera",
-  "current_step": "comparacao_manual_candidatos_r2_mk300",
+  "current_step": "testar_candidatos_automaticos_no_app_mk300",
   "candidate_ids": [
     "01_base_01",
     "01_base_02",
@@ -17,10 +17,9 @@
     "01_solo_destaque_02"
   ],
   "pending": [
-    "confirmar_metadados_das_capturas",
-    "conferir_escalas_exibidas_cab_eq_mk300",
-    "comparar_A_B_e_A_C_com_Konig",
-    "selecionar_candidato_por_escuta",
+    "testar_geracao_e_envio_no_app",
+    "registrar_preferencia_sonora_dos_candidatos",
+    "validar_escalas_fisicas_cab_eq",
     "validar_reamp",
     "calibrar_resposta_antes_da_otimizacao"
   ],
@@ -34,5 +33,6 @@
   "architecture_plan": "docs/architecture/EVOLUCAO_MOTOR_MK300.md",
   "preset_round_status": "r1_testado_usuario_relatou_distorcoes_ruins",
   "capture_report": "repertorio/laboratorio/relatorios/mk300_capturas_r1.json",
-  "manual_candidate_manifest": "repertorio/fase_1/01/presets/piloto_r2_manual/candidatos.json"
+  "automatic_pilot_document": "docs/PILOTO_AUTOMATICO_MK300_V1_3_0.md",
+  "manual_configuration_required": false
 }

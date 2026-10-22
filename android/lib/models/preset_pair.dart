@@ -114,6 +114,9 @@ class PresetData {
   final String catalogVersion;
   final String sourceFileName;
   final double? bpm;
+  final Map<String, dynamic> generationMetadata;
+  final int? presetVolume;
+  final bool centerPan;
 
   const PresetData({
     required this.id,
@@ -127,6 +130,9 @@ class PresetData {
     this.catalogVersion = "",
     this.sourceFileName = "",
     this.bpm,
+    this.generationMetadata = const {},
+    this.presetVolume,
+    this.centerPan = false,
   });
 
   factory PresetData.fromJson(Map<String, dynamic> json) {
@@ -145,6 +151,10 @@ class PresetData {
       catalogVersion: json['catalog_version'] as String? ?? '',
       sourceFileName: json['source_file_name'] as String? ?? '',
       bpm: (json['bpm'] as num?)?.toDouble(),
+      generationMetadata:
+          Map<String, dynamic>.from(json['generation_metadata'] as Map? ?? {}),
+      presetVolume: json['preset_volume'] as int?,
+      centerPan: json['center_pan'] as bool? ?? false,
     );
   }
 
@@ -160,6 +170,9 @@ class PresetData {
         'catalog_version': catalogVersion,
         'source_file_name': sourceFileName,
         'bpm': bpm,
+        'generation_metadata': generationMetadata,
+        'preset_volume': presetVolume,
+        'center_pan': centerPan,
       };
 
   PresetData copyWith({List<EffectBlock>? effectChain, String? name}) {
@@ -175,6 +188,9 @@ class PresetData {
       catalogVersion: catalogVersion,
       sourceFileName: sourceFileName,
       bpm: bpm,
+      generationMetadata: generationMetadata,
+      presetVolume: presetVolume,
+      centerPan: centerPan,
     );
   }
 }

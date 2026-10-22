@@ -102,6 +102,10 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('AI Tone Studio'),
         actions: [
           IconButton(
+              tooltip: 'Piloto Infest — MK300',
+              icon: const Icon(Icons.science_outlined),
+              onPressed: () => Navigator.pushNamed(context, '/mk300-pilot')),
+          IconButton(
               tooltip: 'Importar presets MK300 (JSON)',
               icon: const Icon(Icons.file_open_outlined),
               onPressed: _importing ? null : _importPresets),

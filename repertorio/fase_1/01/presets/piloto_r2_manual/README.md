@@ -1,5 +1,7 @@
 # Infest R2 — comparação manual na MK300
 
+> Histórico: este roteiro foi substituído pelo fluxo automático do app em `develop`. Não executar configuração manual. Consulte [Piloto automático V1.3.0](../../../../../docs/PILOTO_AUTOMATICO_MK300_V1_3_0.md). Os arquivos desta pasta preservam apenas a proposta inicial de candidatos.
+
 Rodada de base com Konig SSS, passagem 00:50–01:10. Primeiro encontrar um timbre aprovado para esta combinação; depois avaliar solo/destaque e guitarra HH. Não confundir estes candidatos com presets já aprovados. Não é necessário instalar outro APK.
 
 ## Candidatos
