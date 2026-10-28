@@ -105,7 +105,14 @@ def select_region(pair_id, role, start, duration, *, register=True):
         samples = audio.read(round(duration * sr), dtype="float32", always_2d=True)
     channel = int(np.argmax(np.mean(samples.astype(float) ** 2, axis=0)))
     mono = samples[:, channel]
-    profile = fingerprint(librosa.resample(mono, orig_sr=sr, target_sr=22050), 22050)
+    analysis_audio = librosa.resample(mono, orig_sr=sr, target_sr=22050)
+    if float(np.sqrt(np.mean(analysis_audio.astype(float) ** 2))) < 0.001:
+        raise ValueError(
+            "O trecho da guitarra de referência está muito baixo ou silencioso. "
+            "Escolha outro início dentro da música, onde a guitarra esteja tocando. "
+            "Este aviso se refere à música separada, não à sua gravação USB."
+        )
+    profile = fingerprint(analysis_audio, 22050)
     profile["source_kind"] = "separated_guitar"
     record = {
         "profile": profile,

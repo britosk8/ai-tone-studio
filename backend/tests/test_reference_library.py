@@ -156,3 +156,21 @@ def test_explicit_saved_role_is_reused_for_same_original(client):
     save_record("pair", second, record)
     assert reference_info(second, "lead")["start_seconds"] == 4
     assert reference_info(second, "rhythm")["start_seconds"] == 0
+
+
+def test_silent_reference_does_not_blame_usb_or_save_invalid_selection(client):
+    pair_id, target = seed_library()
+    path = target / 'guitar.wav'
+    samples, sr = sf.read(path, always_2d=True)
+    samples[:4*sr] = 0
+    sf.write(path,samples,sr,subtype='FLOAT')
+    manifest = json.loads((target/'manifest.json').read_text())
+    manifest['stem_sha256']['guitar'] = hashlib.sha256(path.read_bytes()).hexdigest()
+    (target/'manifest.json').write_text(json.dumps(manifest))
+    response = client.put(f'/api/v1/presets/{pair_id}/reference/rhythm',json={'start_seconds':0,'duration_seconds':3})
+    assert response.status_code == 400
+    assert 'guitarra de referência' in response.json()['detail']
+    assert 'não à sua gravação USB' in response.json()['detail']
+    assert load_record('comparison_reference',json.dumps([pair_id,'rhythm'])) is None
+    valid = client.put(f'/api/v1/presets/{pair_id}/reference/rhythm',json={'start_seconds':4,'duration_seconds':4})
+    assert valid.status_code == 200,valid.text

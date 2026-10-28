@@ -51,3 +51,7 @@ Foi executado o fluxo completo com o arquivo real Infest em diretório de dados 
 A qualidade sonora do preset, o medidor em uma MK300 real e o efeito da redução global sobre a USB ainda precisam do teste físico do usuário. A comparação continua DSP heurística e não apresenta percentual de fidelidade. Como próxima evolução, uma escuta A/B com volume de reprodução equiparado ajudará a revisar as referências e comparar o som sem confundir diferença de volume com diferença de timbre; ela não faz parte desta entrega.
 
 Validação final: **97 testes backend e 67 testes Flutter** passaram; `flutter analyze` sem problemas. APK release Android **1.4.2+16** compilado com o mesmo applicationId/certificado debug das entregas anteriores. Hash em `releases/ai-tone-studio-v1.4.2-develop.apk.sha256`. API local `/health` responde 1.4.2.
+
+### Correção de mensagem de referência silenciosa — 28/10/2026
+
+Ao salvar um trecho sem sinal suficiente no stem da música, a API agora informa **guitarra de referência silenciosa**, em vez de atribuir o problema à captura USB. O trecho inválido continua rejeitado e não substitui uma referência salva. Na versão enviada de State Of Grace, os primeiros segundos do stem estão próximos do silêncio; há sinal audível por volta de 20 s. O intervalo precisa corresponder à passagem tocada pelo usuário, e não é identificado automaticamente como solo. Cinco testes do módulo de referências passaram, incluindo silêncio e seleção válida posterior. Correção somente no backend, sem novo APK.
