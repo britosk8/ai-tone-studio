@@ -1,5 +1,7 @@
 # Evolução em develop — piloto automático MK300
 
+Android/API **1.5.0**: [detecção de estados limpos/distorcidos, variantes por função e pesquisa de equipamento com fontes](docs/TIMBRES_E_PESQUISA_V1_5_0.md). [APK atualizado](releases/ai-tone-studio-v1.5.0-develop.apk).
+
 Android/API **1.4.2**: [biblioteca de músicas separadas, referência automática por parte e medidor de saturação USB](docs/REFERENCIAS_E_NIVEL_USB_V1_4_2.md). [APK atualizado](releases/ai-tone-studio-v1.4.2-develop.apk).
 
 Android **1.4.1**: [MK300 como padrão para base e solo e comparação por parte](docs/BASE_MK300_COMPARACAO_V1_4_1.md). [APK atualizado](releases/ai-tone-studio-v1.4.1-develop.apk). Backend API 1.4.0.
@@ -96,14 +98,14 @@ O processamento DSP ocorre em thread para não bloquear as consultas de status. 
 ## Limitações e pendências
 
 - As estimativas de áudio são heurísticas, sem métrica calibrada de precisão ou similaridade. Não identificam o equipamento original nem reproduzem o timbre exatamente.
-- Base e solo derivam da mesma análise com regras distintas; não há isolamento independente de duas guitarras, segmentação de música ou seleção de trecho.
+- Base/solo são funções dos trechos escolhidos; o separador não isola duas guitarras simultâneas. A V1.5.0 propõe estados temporais e gera variantes por função, com rótulos heurísticos revisáveis.
 - Reprodução do arquivo dentro do aplicativo ainda não foi implementada.
-- Demucs é opcional e desabilitado nas dependências padrão. O adaptador usa `htdemucs` e o stem `other`, que pode conter guitarra e outros instrumentos. GPU não é requisito do MVP; não foi validada a execução do Demucs nesta revisão.
+- O motor de guitarra usa Demucs `htdemucs_6s` em ambiente separado, validado no piloto. O stem `guitar` pode conter vazamentos e guitarras sobrepostas; consulte a documentação V1.4.0 para dependências e limites.
 - Os catálogos estão marcados como `COMMUNITY`; a MK20 é parcial e a MK300 tem os 359 modelos enumerados da referência V73. Limitar valores ao catálogo não comprova que nomes, IDs e escalas correspondem ao firmware físico. Veja [catálogos](catalogs/README.md).
 - Presets antigos sem metadados de escala são exibidos, mas seus parâmetros ficam sem controle de edição. Gere novamente para obter as escalas. Presets já perdidos/sobrescritos por versões anteriores não podem ser recuperados.
 - BLE/USB e backup/leitura de retorno foram implementados para testar com MK300. Gravação MK20 e identificação automática de firmware não estão disponíveis. A seleção de firmware é informada pelo usuário.
 - Existe código de struct/SysEx MK300 baseado na referência comunitária `jpfaria/mvave`; os testes locais verificam software, não comunicação física. Nenhum comando foi enviado a uma pedaleira nesta revisão.
-- Regeneração assistida, troca de modelo de efeito, histórico de versões, comparação de gravações e implantação AWS permanecem pendentes.
+- Comparação de gravações, sugestões revisáveis e variantes estão implementadas. Renderer calibrado do pedal, otimização acústica validada, histórico unificado de edições e implantação AWS permanecem pendentes.
 - Backend destinado ao desenvolvimento local, sem autenticação. Os jobs usam BackgroundTasks, sem fila durável ou retomada. Use um único worker; jobs interrompidos exigem reenvio. Não exponha esta configuração diretamente à internet.
 
 ## Executar o backend

@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "sources": [
+    {
+      "artist": "Foo Fighters",
+      "song": "Everlong",
+      "url": "https://producelikeapro.com/blog/foo-fighters-everlong-inside-the-song/",
+      "title": "Everlong: Inside the Song — entrevista com Bradley Cook",
+      "context": "song_recording",
+      "verification": "primary_interview",
+      "note": "Entrevista com o engenheiro da gravação. Esta ficha não confirma modelos ou knobs a partir do vídeo não transcrito.",
+      "gear_hints": [],
+      "reviewed_on": "2026-10-28"
+    },
+    {
+      "artist": "Foo Fighters",
+      "song": null,
+      "url": "https://www.premierguitar.com/podcast/shred-with-shifty/foo-fighters-tones-like-these",
+      "title": "Foo Fighters: Tones Like These — entrevista com os guitarristas (2024)",
+      "context": "artist_live",
+      "verification": "primary_interview",
+      "note": "Relato de equipamento ao vivo e evolução do rig; não comprova a gravação de Everlong.",
+      "gear_hints": [
+        {
+          "block": "amp",
+          "family": "mesa",
+          "model": "Mesa/Boogie Dual Rectifier"
+        },
+        {
+          "block": "amp",
+          "family": "fender",
+          "model": "Fender Tone Master"
+        },
+        {
+          "block": "cabinet",
+          "family": "412",
+          "model": "Gabinete 4x12 (marca não confirmada no trecho)"
+        }
+      ],
+      "reviewed_on": "2026-10-28"
+    }
+  ]
+}

@@ -40,7 +40,8 @@ class _ToneComparisonScreenState extends State<ToneComparisonScreen>
   Map<String, dynamic>? _report, _savedReference;
   double _peakDbfs = -120, _clippedFraction = 0;
   bool get _v2Reference =>
-      _preset?.generationMetadata['generator'] == 'guitar-v2-heuristic';
+      (_preset?.generationMetadata['generator'] as String? ?? '')
+          .startsWith('guitar-v');
   PresetData? get _preset => _role == 'lead' ? _pair?.lead : _pair?.rhythm;
   @override
   void initState() {
@@ -70,7 +71,16 @@ class _ToneComparisonScreenState extends State<ToneComparisonScreen>
     try {
       final info =
           await context.read<ApiService>().referenceInfo(widget.pairId, role);
-      if (mounted && _role == role) setState(() => _savedReference = info);
+      if (mounted && _role == role) {
+        setState(() {
+          _savedReference = info;
+          final length = (info['duration_seconds'] as num?)?.toDouble();
+          if (length != null && length >= 3 && _seconds > length) {
+            _seconds =
+                [3, 5, 10, 20, 30].where((seconds) => seconds <= length).last;
+          }
+        });
+      }
     } catch (_) {
       if (mounted && _role == role) setState(() => _savedReference = null);
     }
@@ -453,7 +463,7 @@ class _ToneComparisonScreenState extends State<ToneComparisonScreen>
               DropdownButtonFormField<int>(
                   value: _seconds,
                   decoration: const InputDecoration(labelText: 'Duração'),
-                  items: [5, 10, 20, 30]
+                  items: [3, 5, 10, 20, 30]
                       .map((s) => DropdownMenuItem(
                           value: s, child: Text('$s segundos')))
                       .toList(),

@@ -26,6 +26,7 @@ class GuitarToneEngine:
         duration,
         progress,
         cached_reference=None,
+        preferred_channel=None,
     ):
         if cached_reference:
             from .separation import crop_saved_stems
@@ -55,13 +56,15 @@ class GuitarToneEngine:
                 separation = self.provider.separate_guitar(prepared)
                 target = separation.guitar_stem
         progress(70, "Medindo espectro, dinâmica e ataque da guitarra...")
-        features = GuitarToneFeatureExtractor().extract(target)
+        features = GuitarToneFeatureExtractor().extract(target, channel=preferred_channel)
         descriptor = describe(features)
         # O stem dedicado ainda contém possíveis vazamentos; não o declarar isolado pelo usuário.
         import soundfile as sf
 
         samples, sample_rate = sf.read(target, dtype="float32", always_2d=True)
-        channel = int(np.argmax(np.mean(samples.astype(float) ** 2, axis=0)))
+        channel = int(np.argmax(np.mean(samples.astype(float) ** 2, axis=0))) if preferred_channel is None else preferred_channel
+        if channel < 0 or channel >= samples.shape[1]:
+            raise ValueError("Canal indisponível na guitarra salva")
         analysis_path = work_dir / "analysis_channel.wav"
         sf.write(analysis_path, samples[:, channel], sample_rate, subtype="FLOAT")
         analysis = AudioAnalyzer(

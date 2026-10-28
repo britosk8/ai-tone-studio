@@ -266,6 +266,13 @@ class _PairList extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 4),
+                for (final preset in [pair.rhythm, pair.lead])
+                  if (preset.generationMetadata['generator'] ==
+                      'guitar-v3-state')
+                    Text(preset.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontSize: 12)),
                 Text('Base: ${pair.rhythm.device} · Solo: ${pair.lead.device}',
                     style: const TextStyle(
                         fontSize: 12, color: AppTheme.textSecondary)),

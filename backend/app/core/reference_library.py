@@ -38,6 +38,7 @@ def saved_source(pair_id, role):
     duration = sf.info(guitar).duration
     return {
         "cache_id": cache,
+        "analysis_channel":details.get("analysis_channel"),
         "cache_start_seconds": start,
         "available_duration": duration,
         "original_sha256": diagnostics.get("original_sha256"),
@@ -103,7 +104,8 @@ def select_region(pair_id, role, start, duration, *, register=True):
         sr = audio.samplerate
         audio.seek(round(relative * sr))
         samples = audio.read(round(duration * sr), dtype="float32", always_2d=True)
-    channel = int(np.argmax(np.mean(samples.astype(float) ** 2, axis=0)))
+    preferred=source.get("analysis_channel")
+    channel = preferred if isinstance(preferred,int) and 0<=preferred<samples.shape[1] else int(np.argmax(np.mean(samples.astype(float) ** 2, axis=0)))
     mono = samples[:, channel]
     analysis_audio = librosa.resample(mono, orig_sr=sr, target_sr=22050)
     if float(np.sqrt(np.mean(analysis_audio.astype(float) ** 2))) < 0.001:

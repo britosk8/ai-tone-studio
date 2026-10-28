@@ -1,0 +1,56 @@
+{
+  "song": "Foo Fighters — Everlong",
+  "source_pair_id": "e6ad101a-8b4f-489e-a157-a8b5a579de8a",
+  "validation": "isolated SQLite snapshot; actual cached guitar; no pedal connected",
+  "variants": [
+    {
+      "role": "rhythm",
+      "state": "clean",
+      "preset": "Base Limpo - Everlong",
+      "amp": "1J120_CL",
+      "cab": "1AC-SeVin",
+      "gain": 15.0,
+      "reference_start": 192.0,
+      "reference_duration": 12.0,
+      "channel": 0,
+      "reused_on_repeat": true
+    },
+    {
+      "role": "lead",
+      "state": "clean",
+      "preset": "Solo Limpo - Everlong",
+      "amp": "1J120_CL",
+      "cab": "1AC-SeVin",
+      "gain": 15.0,
+      "reference_start": 192.0,
+      "reference_duration": 12.0,
+      "channel": 0,
+      "reused_on_repeat": true
+    },
+    {
+      "role": "rhythm",
+      "state": "distorted",
+      "preset": "Base Distorcido - Everlong",
+      "amp": "4J900_HV",
+      "cab": "2JVM_1960_57",
+      "gain": 65.0,
+      "reference_start": 117.0,
+      "reference_duration": 12.0,
+      "channel": 0,
+      "reused_on_repeat": true
+    },
+    {
+      "role": "lead",
+      "state": "distorted",
+      "preset": "Solo Distorcido - Everlong",
+      "amp": "4J900_HV",
+      "cab": "2JVM_1960_57",
+      "gain": 65.0,
+      "reference_start": 117.0,
+      "reference_duration": 12.0,
+      "channel": 0,
+      "reused_on_repeat": true
+    }
+  ],
+  "original_preserved": true
+}

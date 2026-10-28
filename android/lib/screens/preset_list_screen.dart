@@ -11,6 +11,7 @@ import '../theme/app_theme.dart';
 import '../widgets/confidence_badge.dart';
 import '../widgets/spectral_chart.dart';
 import '../widgets/delete_preset_pair.dart';
+import '../widgets/tone_states_panel.dart';
 
 class PresetListScreen extends StatefulWidget {
   final String pairId;
@@ -194,6 +195,17 @@ class _PresetListScreenState extends State<PresetListScreen> {
       body: ListView(
         children: [
           _AnalysisSummaryCard(analysis: pair.analysis),
+          ToneStatesPanel(
+              pairId: pair.id,
+              artist: pair.rhythm.artist,
+              songTitle: pair.rhythm.songTitle,
+              rhythmDevice: pair.rhythm.device,
+              leadDevice: pair.lead.device,
+              onGenerated: (id, role) async {
+                await Navigator.pushNamed(context, '/transfer',
+                    arguments: {'pair_id': id, 'role': role});
+                if (mounted) await _loadPair();
+              }),
           _PresetCard(
             preset: pair.rhythm,
             deviceColor: AppTheme.accentBlue,
@@ -445,6 +457,28 @@ class _PresetCard extends StatelessWidget {
               label: Text(preset.role == 'rhythm'
                   ? 'Gravar e comparar esta base'
                   : 'Gravar e comparar este solo')),
+          if (preset.generationMetadata['tone_character'] != null)
+            Padding(
+                padding: const EdgeInsets.all(12),
+                child: Text(
+                    'Estado: ${preset.generationMetadata['tone_character']}. O drive pode vir do AMP mesmo com o bloco DS desligado.')),
+          if (preset.generationMetadata['model_selection'] is Map)
+            ExpansionTile(
+                title: const Text('Como AMP e CAB foram escolhidos'),
+                children: [
+                  for (final entry
+                      in (preset.generationMetadata['model_selection'] as Map)
+                          .entries)
+                    ListTile(
+                        title: Text(
+                            '${entry.key}: ${(entry.value as Map)['model']}'),
+                        subtitle: Text(
+                            '${entry.value['basis']}\nFontes aplicadas: ${((entry.value['evidence'] as List?) ?? []).map((item) => item['source_url']).join(', ')}')),
+                  const Padding(
+                      padding: EdgeInsets.all(12),
+                      child: Text(
+                          'Famílias documentais ajudam a escolher candidatos; não demonstram equivalência com o equipamento original.')),
+                ]),
           ...preset.effectChain.where((b) => b.enabled).map(
                 (block) => _EffectRow(block: block),
               ),

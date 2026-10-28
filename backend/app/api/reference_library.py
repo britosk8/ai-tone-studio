@@ -30,6 +30,8 @@ class SavedAnalysis(BaseModel):
     lead_device: DeviceModel = DeviceModel.MK300
     rhythm_region: Optional[Region] = None
     lead_region: Optional[Region] = None
+    analyze_states: bool = False
+    reference_version: str = "unknown"
 
 
 @router.get("/reference-library")
@@ -59,6 +61,8 @@ async def update_reference(pair_id: str, role: str, region: Region):
 async def analyze_saved(body: SavedAnalysis, background_tasks: BackgroundTasks):
     from .routes import _jobs, _run_analysis_job
 
+    if body.reference_version not in {"unknown","studio","live","acoustic"}:
+        raise HTTPException(400,"Versão inválida")
     if DeviceModel.UNKNOWN in {body.rhythm_device, body.lead_device}:
         raise HTTPException(400, "Dispositivo inválido")
     try:
@@ -108,6 +112,8 @@ async def analyze_saved(body: SavedAnalysis, background_tasks: BackgroundTasks):
     identity = {
         "version": "saved-guitar-v1",
         "sha": sha,
+        "analyze_states":body.analyze_states,
+        "reference_version":body.reference_version,
         "devices": [body.rhythm_device.value, body.lead_device.value],
         "regions": regions,
         "caches": {r: s["cache_id"] for r, s in sources.items()},
@@ -153,5 +159,7 @@ async def analyze_saved(body: SavedAnalysis, background_tasks: BackgroundTasks):
         regions["lead"]["start_seconds"],
         regions["lead"]["duration_seconds"],
         sources,
+        body.analyze_states,
+        body.reference_version,
     )
     return {"job_id": job_id, "status": "queued", "reused": False}

@@ -11,6 +11,7 @@ librosa==0.10.2
 numpy==1.26.4
 soundfile==0.12.1
 scipy==1.13.1
+scikit-learn==1.9.1  # agrupamento de estados de timbre
 
 # Separação de fontes (opcional — pesado)
 # demucs==4.0.1  # Descomente quando GPU disponível

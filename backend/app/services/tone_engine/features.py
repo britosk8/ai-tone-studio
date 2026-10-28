@@ -17,13 +17,28 @@ BANDS = [
 
 
 class GuitarToneFeatureExtractor:
-    def extract(self, path):
-        raw, native_sr = sf.read(path, dtype="float32", always_2d=True)
+    def extract(self, path, start=0, duration=None, channel=None):
+        with sf.SoundFile(path) as audio:
+            native_sr = audio.samplerate
+            audio.seek(round(start * native_sr))
+            raw = audio.read(
+                -1 if duration is None else round(duration * native_sr),
+                dtype="float32",
+                always_2d=True,
+            )
+        if len(raw) < native_sr or not np.isfinite(raw).all():
+            raise ValueError("Trecho de guitarra inválido ou curto demais")
         peak = float(np.max(np.abs(raw)))
         rms = float(np.sqrt(np.mean(raw.astype(float) ** 2)))
         # Evita cancelamento de fase entre guitarras L/R ao escolher canal representativo.
         channel_rms = np.sqrt(np.mean(raw.astype(float) ** 2, axis=0))
-        mono = raw[:, int(np.argmax(channel_rms))]
+        selected_channel = int(np.argmax(channel_rms)) if channel is None else channel
+        if selected_channel < 0 or selected_channel >= raw.shape[1]:
+            raise ValueError("Canal indisponível")
+        mono = raw[:, selected_channel]
+        if channel is not None:
+            peak = float(np.max(np.abs(mono)))
+            rms = float(np.sqrt(np.mean(mono.astype(float) ** 2)))
         y = librosa.resample(mono, orig_sr=native_sr, target_sr=32000)
         sr = 32000
         S = np.abs(librosa.stft(y, n_fft=2048, hop_length=512))
@@ -89,6 +104,7 @@ class GuitarToneFeatureExtractor:
         )
         return {
             "version": "guitar-features-v1",
+            "analysis_channel": selected_channel,
             "sample_rate": sr,
             "duration_seconds": len(raw) / native_sr,
             "rms_dbfs": float(20 * np.log10(max(rms, 1e-12))),

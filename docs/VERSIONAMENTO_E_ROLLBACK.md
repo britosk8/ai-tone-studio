@@ -39,3 +39,5 @@ Os presets R1 e os registros de calibração ficam versionados para permitir com
 Na V1.4.0, incluir também `generation_inputs/` e `separations/` no backup de dados. O ponto imediatamente anterior à evolução do motor é o commit `2f2025c` (V1.3.4). A `main` e o baseline inicial permanecem preservados.
 
 Antes da V1.4.2: commit `5bbb726` (Android 1.4.1/API 1.4.0). A V1.4.2 acrescenta seleções de referências e jobs idempotentes no SQLite, além de recortes persistidos em `separations/`; manter backup integral de dados. Reverter código não deve apagar capturas, instrumentos ou seleções já salvas.
+
+Antes da V1.5.0: commit `e95ffae` (Android/API 1.4.2 com mensagem de referência silenciosa corrigida). A V1.5.0 acrescenta estados, pesquisa e variantes em registros SQLite, sem apagar os pares anteriores. Recortes e referências exigem o mesmo backup integral de dados; detalhes em [estados sonoros e pesquisa](TIMBRES_E_PESQUISA_V1_5_0.md).

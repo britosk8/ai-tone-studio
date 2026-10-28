@@ -44,7 +44,7 @@ def _get_pipeline() -> ToneAnalysisPipeline:
 @router.get("/health")
 async def health():
     """Health check."""
-    return {"status": "ok", "service": "AI Tone Studio API", "version": "1.4.2"}
+    return {"status": "ok", "service": "AI Tone Studio API", "version": "1.5.0"}
 
 
 @router.get("/devices")
@@ -79,12 +79,16 @@ async def analyze_audio(
     engine_mode: str = Form("legacy"),
     lead_start: Optional[float] = Form(None),
     lead_duration: Optional[float] = Form(None),
+    analyze_states: bool = Form(False),
+    reference_version: str = Form("unknown"),
 ):
     """
     Inicia análise assíncrona de áudio e geração de presets.
     Retorna job_id para polling de status.
     """
     import math
+    if reference_version not in {"unknown","studio","live","acoustic"}:
+        raise HTTPException(400,"Versão de referência inválida")
     if engine_mode not in {'legacy','guitar_v2'}:
         raise HTTPException(400, "Motor de análise inválido")
     if (lead_start is None) != (lead_duration is None):
@@ -147,7 +151,7 @@ async def analyze_audio(
     # Processa em background
     background_tasks.add_task(
         _run_analysis_job,
-        job_id, file_bytes, suffix, rhythm_dev, lead_dev, artist, song_title, original_name, source_kind, excerpt_start, excerpt_duration, engine_mode, lead_start, lead_duration
+        job_id, file_bytes, suffix, rhythm_dev, lead_dev, artist, song_title, original_name, source_kind, excerpt_start, excerpt_duration, engine_mode, lead_start, lead_duration, None, analyze_states, reference_version
     )
 
     return {"job_id": job_id, "status": "queued"}
@@ -169,6 +173,8 @@ async def _run_analysis_job(
     lead_start: Optional[float] = None,
     lead_duration: Optional[float] = None,
     cached_sources=None,
+    analyze_states=False,
+    reference_version="unknown",
 ):
     """Executa o pipeline de análise em background."""
     work_dir = Path(tempfile.mkdtemp(prefix=f"toneai_{job_id[:8]}_"))
@@ -246,6 +252,15 @@ async def _run_analysis_job(
             import json
             save_record('comparison_reference',json.dumps([pair_id,role]), {'profile':profile})
         save_record("pair", pair_id, {"pair": preset_pair.model_dump(mode="json"), "analysis": _analyses[pair_id]})
+
+        if analyze_states and analysis.source_separation_available:
+            _jobs[job_id].update(progress_percent=90,progress='Detectando mudanças de timbre e pesquisando fontes...')
+            try:
+                from .tone_states import analyze_states as detect_tone_states
+                await asyncio.to_thread(detect_tone_states,pair_id,reference_version)
+            except Exception:
+                logger.exception('Não foi possível completar estados/pesquisa; presets e áudio preservados')
+                analysis.limitations.append('Análise adicional de estados indisponível. Tente novamente na tela de presets.')
 
         _jobs[job_id].update({
             "status": "completed",

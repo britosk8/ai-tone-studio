@@ -83,6 +83,8 @@ class ApiService {
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode({
               'pair_id': pairId,
+              'analyze_states': true,
+              'reference_version': 'unknown',
               'rhythm_device': rhythmDevice,
               'lead_device': leadDevice,
               'rhythm_region': {
@@ -96,6 +98,42 @@ class ApiService {
             }))
         .timeout(const Duration(seconds: 60));
     return AnalysisJob.fromJson(_handleResponse(response));
+  }
+
+  Future<Map<String, dynamic>> toneStates(String pairId) =>
+      _get('/api/v1/presets/$pairId/tone-states');
+  Future<Map<String, dynamic>> analyzeToneStates(String pairId, String version,
+      {bool refresh = false, String? artist, String? songTitle}) async {
+    final response = await http
+        .post(Uri.parse('$_baseUrl/api/v1/presets/$pairId/tone-states/analyze'),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({
+              'version': version,
+              'refresh_research': refresh,
+              'artist': artist,
+              'song_title': songTitle
+            }))
+        .timeout(const Duration(seconds: 240));
+    return _handleResponse(response);
+  }
+
+  Future<Map<String, dynamic>> generateToneState(String pairId, String stateId,
+      String role, String device, String character, String? researchId,
+      {String? researchRevision}) async {
+    final response = await http
+        .post(
+            Uri.parse(
+                '$_baseUrl/api/v1/presets/$pairId/tone-states/$stateId/generate'),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({
+              'role': role,
+              'device': device,
+              'character': character,
+              'research_id': researchId,
+              'research_revision': researchRevision
+            }))
+        .timeout(const Duration(seconds: 120));
+    return _handleResponse(response);
   }
 
   Future<Map<String, dynamic>> _get(String path) async {
@@ -160,6 +198,8 @@ class ApiService {
     request.fields['lead_device'] = leadDevice;
     request.fields['source_kind'] = sourceKind;
     request.fields['engine_mode'] = 'guitar_v2';
+    request.fields['analyze_states'] = 'true';
+    request.fields['reference_version'] = 'unknown';
     if (leadStart != null && leadDuration != null) {
       request.fields['lead_start'] = leadStart.toString();
       request.fields['lead_duration'] = leadDuration.toString();
