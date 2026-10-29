@@ -62,7 +62,9 @@ class Mk20Diagnostics {
         final frame = Mk300Protocol.parse(bytes);
         if (!response.isCompleted &&
             frame.cls == 13 &&
-            (frame.command == 0x41 || frame.command == 0x101) &&
+            (frame.command == 0x41 ||
+                frame.command == 0x101 ||
+                frame.command == 0x41 + 8 * size) &&
             frame.field == field &&
             frame.space == space &&
             frame.length == size &&

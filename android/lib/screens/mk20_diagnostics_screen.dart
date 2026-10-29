@@ -83,9 +83,11 @@ class _Mk20DiagnosticsScreenState extends State<Mk20DiagnosticsScreen> {
       final result =
           await context.read<ApiService>().saveMk20Diagnostic(report);
       if (mounted) {
+        final summary = result['status'] == 'read_layout_confirmed'
+            ? 'Backend confirmou as duas leituras MK20 preservadas no diagnóstico.'
+            : _localResult(report);
         setState(() {
-          _status =
-              '${_localResult(report)} Diagnóstico salvo no backend: ${result['id']}. '
+          _status = '$summary Diagnóstico salvo no backend: ${result['id']}. '
               'Envio de preset MK20 ainda indisponível.';
         });
       }

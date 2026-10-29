@@ -61,11 +61,12 @@ void main() {
   });
   test('Timeout, checksum inválido e USB desconectada ficam no diagnóstico',
       () async {
-    for (final mode in ['silent', 'corrupt', 'disconnect']) {
+    for (final mode in ['silent', 'corrupt', 'disconnect', 'unknown_command']) {
       final pedal = ReadOnlyPedal()
         ..respond = mode != 'silent'
         ..corrupt = mode == 'corrupt'
-        ..failSend = mode == 'disconnect';
+        ..failSend = mode == 'disconnect'
+        ..replyCommand = mode == 'unknown_command' ? 0xD22 : 0x41;
       final report = await Mk20Diagnostics(pedal,
               timeout: const Duration(milliseconds: 10))
           .run(slot: 1, deviceName: 'USB', firmware: 'V085');
@@ -79,14 +80,17 @@ void main() {
       await pedal.close();
     }
   });
-  test('Resposta de leitura em bloco 01 02 também é aceita', () async {
-    final pedal = ReadOnlyPedal()..replyCommand = 0x101;
-    final report = await Mk20Diagnostics(pedal)
-        .run(slot: 1, deviceName: 'USB', firmware: '?');
-    expect(
-        (report['reads'] as List).every((r) => r['decoded'] != null), isTrue);
-    await pedal.close();
-  });
+  for (final command in [0x101, 0xD21]) {
+    test('Resposta de leitura em bloco ${command.toRadixString(16)} é aceita',
+        () async {
+      final pedal = ReadOnlyPedal()..replyCommand = command;
+      final report = await Mk20Diagnostics(pedal)
+          .run(slot: 1, deviceName: 'USB', firmware: '?');
+      expect(
+          (report['reads'] as List).every((r) => r['decoded'] != null), isTrue);
+      await pedal.close();
+    });
+  }
   test('Não aceita 448 bytes ou slots MK300 151 a 160', () async {
     expect(() => Mk20Diagnostics.decode(Uint8List(448)), throwsFormatException);
     final pedal = ReadOnlyPedal();

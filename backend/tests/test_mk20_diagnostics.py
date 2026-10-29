@@ -148,14 +148,70 @@ def test_layout_rejects_mk300_size_duplicate_chain_and_invalid_states():
         decode_image(image() + bytes(36))
 
 
-def test_block_read_reply_command_is_supported(client):
+@pytest.mark.parametrize("reply_command", [0x101, 0xD21])
+def test_block_read_reply_command_is_supported(client, reply_command):
     data = report()
     for entry in data["trace"]:
         if entry["direction"] == "rx":
             old = codec.parse(base64.b64decode(entry["bytes_base64"]))
             entry["bytes_base64"] = base64.b64encode(
-                codec.build(13, 0x101, old.field, old.length, old.space, old.payload)
+                codec.build(
+                    13, reply_command, old.field, old.length, old.space, old.payload
+                )
             ).decode()
     result = client.post("/api/v1/mk20/diagnostics", json={"report": data})
     assert result.status_code == 200, result.text
     assert result.json()["status"] == "read_layout_confirmed"
+
+
+def test_historical_timeout_is_reviewed_without_altering_capture(client):
+    from app.core.storage import save_record, load_record
+
+    data = report()
+    for entry in data["trace"]:
+        if entry["direction"] == "rx":
+            old = codec.parse(base64.b64decode(entry["bytes_base64"]))
+            entry["bytes_base64"] = base64.b64encode(
+                codec.build(13, 0xD21, old.field, old.length, old.space, old.payload)
+            ).decode()
+    for read in data["reads"]:
+        read.pop("decoded")
+        read["error"] = "Timeout no leitor antigo"
+    import hashlib, json
+
+    record_id = hashlib.sha256(json.dumps(data, sort_keys=True).encode()).hexdigest()
+    saved = {
+        "id": record_id,
+        "summary": {"status": "read_incomplete"},
+        "report": data,
+    }
+    save_record("mk20_diagnostic", record_id, saved)
+    reviewed = client.get("/api/v1/mk20/diagnostics/" + record_id).json()
+    assert reviewed["summary"]["status"] == "read_layout_confirmed"
+    assert reviewed["capture_status"] == "read_incomplete"
+    assert reviewed["report"] == data
+    assert (
+        client.post("/api/v1/mk20/diagnostics", json={"report": data}).json()["status"]
+        == "read_layout_confirmed"
+    )
+    assert load_record("mk20_diagnostic", record_id) == saved
+    assert (
+        client.get("/api/v1/mk20/diagnostics").json()["diagnostics"][0]["status"]
+        == "read_layout_confirmed"
+    )
+
+
+def test_unknown_reply_command_does_not_confirm_read(client):
+    data = report()
+    for entry in data["trace"]:
+        if entry["direction"] == "rx":
+            old = codec.parse(base64.b64decode(entry["bytes_base64"]))
+            entry["bytes_base64"] = base64.b64encode(
+                codec.build(13, 0xD22, old.field, old.length, old.space, old.payload)
+            ).decode()
+    for read in data["reads"]:
+        read.pop("decoded")
+        read["error"] = "Resposta desconhecida"
+    result = client.post("/api/v1/mk20/diagnostics", json={"report": data})
+    assert result.status_code == 200
+    assert result.json()["status"] == "read_incomplete"

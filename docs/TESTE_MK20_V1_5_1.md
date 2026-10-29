@@ -59,3 +59,17 @@ Nenhuma MK20 foi conectada ao ambiente de desenvolvimento, e nenhum comando foi 
 Versão Android **1.5.1+18** e API **1.5.1**. Ponto anterior em `develop`: `8b9fb5d` (V1.5.0). `main` permanece em `56fbfbf`. APK e hash na pasta `releases/`; assinatura e applicationId preservados para atualização sobre o app existente.
 
 Resultado automatizado: **117 testes backend e 75 testes Flutter aprovados**, com análise estática sem problemas. O teste de interface usa largura de celular e exercita também a sincronização após falha de rede.
+
+## Resposta física recebida e correção V1.5.2 — 29/10/2026
+
+A coleta USB/OTG do usuário recebeu duas respostas completas: edit buffer (espaço 1/offset 0) e slot 150 (espaço 0/offset 61388), ambas de 412 bytes, com checksum válido, nome `USER PRESET 150` e imagens idênticas. Os dez estados de bloco estavam desligados. O teste foi somente de leitura; não houve envio de preset ou alteração do pedal. O firmware foi informado como desconhecido e continua sem identificação automática.
+
+O app 1.5.1 marcou timeout porque aceitava comandos de resposta `41` e `01 02`, enquanto a MK20 retornou `21 1A 00 00` (inteiro base-128 `0xD21`, equivalente a `0x41 + 8 × 412`). Os bytes já estavam preservados pelo diagnóstico. A versão 1.5.2 aceita também essa resposta, mantendo as conferências de classe, offset, espaço, tamanho, checksum e estrutura. O comando de consulta não mudou e nenhum código de escrita foi habilitado.
+
+O backend reinterpreta os relatórios salvos com o leitor atualizado, sem alterar a captura original. A consulta completa distingue `capture_status` histórico de `summary.status` atual e identifica `decoder_version=mk20-read-v2`. Essa coleta passou de `read_incomplete` histórico a `read_layout_confirmed` na interpretação atual. Reenviar um relatório existente preserva o registro original; a resposta da API informa a validação atual. O app mostra a confirmação do backend ao sincronizar, inclusive quando recupera uma captura anterior.
+
+A captura física completa fica somente no armazenamento local do projeto, fora do Git. Os testes versionados reproduzem o código de resposta observado usando imagens sintetizadas, não divulgam o conteúdo do preset do usuário. Também rejeitam códigos desconhecidos e verificam reinterpretação de um timeout antigo sem modificar os dados originais.
+
+Android **1.5.2+19**, API **1.5.2**; APK `releases/ai-tone-studio-v1.5.2-develop.apk`. Ponto anterior: `74373a0` em `develop`. A leitura física foi confirmada nesta coleta; mapeamento de modelos e escrita MK20 continuam pendentes.
+
+Validação da V1.5.2: 120 testes backend e 76 Flutter aprovados; análise estática sem problemas. Após o ajuste da mensagem de sincronização e da preservação do registro original, os 14 testes específicos backend e os 7 testes específicos Flutter da MK20 também passaram. Duas coletas reais recebidas foram reinterpretadas com ambas as leituras confirmadas; a análise dessas capturas foi somente de dados já salvos.

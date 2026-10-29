@@ -22,7 +22,7 @@ class DiagnosticApi extends ApiService {
       Map<String, dynamic> report) async {
     if (offline) throw StateError('Offline');
     reports.add(report);
-    return {'id': 'receipt-mk20'};
+    return {'id': 'receipt-mk20', 'status': 'read_layout_confirmed'};
   }
 }
 
@@ -100,6 +100,8 @@ void main() {
     expect(api.reports.single['slot'], 150);
     expect(api.reports.single['write_enabled'], isFalse);
     expect(find.textContaining('receipt-mk20'), findsOneWidget);
+    expect(find.textContaining('Backend confirmou as duas leituras'),
+        findsOneWidget);
     await tester.pumpWidget(const SizedBox());
     await tester.pumpAndSettle();
     messenger.setMockMethodCallHandler(paths, null);

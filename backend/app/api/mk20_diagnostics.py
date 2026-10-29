@@ -113,7 +113,7 @@ def validate_report(report):
             expected
             and key in requests
             and frame.cls == 13
-            and frame.cmd in {0x41, 0x101}
+            and frame.cmd in {0x41, 0x101, 0x41 + 8 * SIZE}
             and frame.length == SIZE
             and len(frame.payload) == SIZE
         ):
@@ -166,10 +166,22 @@ async def receive(body: DiagnosticBody):
     except (ValueError, TypeError, KeyError) as exc:
         raise HTTPException(400, str(exc)) from exc
     key = hashlib.sha256(json.dumps(body.report, sort_keys=True).encode()).hexdigest()
-    save_record(
-        "mk20_diagnostic", key, {"id": key, "summary": summary, "report": body.report}
-    )
+    if not load_record("mk20_diagnostic", key):
+        save_record(
+            "mk20_diagnostic",
+            key,
+            {"id": key, "summary": summary, "report": body.report},
+        )
     return {"id": key, **summary}
+
+
+def reviewed(record):
+    # Preserve the capture as received; show the current interpretation separately.
+    result = dict(record)
+    result["capture_status"] = record["summary"]["status"]
+    result["summary"] = validate_report(record["report"])
+    result["decoder_version"] = "mk20-read-v2"
+    return result
 
 
 @router.get("")
@@ -182,7 +194,8 @@ async def index():
                 "device_name": r["report"]["device_name"],
                 **r["summary"],
             }
-            for r in list_records("mk20_diagnostic", 100)
+            for original in list_records("mk20_diagnostic", 100)
+            for r in [reviewed(original)]
         ]
     }
 
@@ -192,4 +205,4 @@ async def retrieve(report_id: str):
     result = load_record("mk20_diagnostic", report_id)
     if not result:
         raise HTTPException(404, "Diagnóstico MK20 não encontrado")
-    return result
+    return reviewed(result)
