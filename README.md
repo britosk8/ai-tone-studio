@@ -1,4 +1,6 @@
-# Evolução em develop — piloto automático MK300
+# Evolução em develop — geração automática MK300/MK20
+
+Android/API **1.5.5**: [envio completo MK20 por USB em teste no slot 150, catálogo AM4 e restauração recuperável pelo app](docs/ENVIO_MK20_V1_5_5.md). [APK atualizado](releases/ai-tone-studio-v1.5.5-develop.apk). O primeiro envio completo ainda precisa da confirmação física no pedal.
 
 Android/API **1.5.4**: [correção da restauração MK20 após truncamento do nome, preservando o backup anterior](docs/TESTE_ESCRITA_MK20_V1_5_3.md#correção-de-restauração-v154--29102026). [APK atualizado](releases/ai-tone-studio-v1.5.4-develop.apk).
 

@@ -17,13 +17,23 @@ class PreparedTransfer {
       this.original, this.image);
 }
 
-class Mk300TransferSession {
+abstract class PedalTransferSession {
+  bool get verified;
+  Future<String> probe();
+  Future<PreparedTransfer> prepare(
+      PresetData preset, String name, int slot, Directory backupDirectory);
+  Future<void> send(PreparedTransfer transfer, {required bool confirmed});
+  Future<void> close();
+}
+
+class Mk300TransferSession implements PedalTransferSession {
   final DeviceTransport transport;
   final Map<int, Map<String, dynamic>> catalog;
   final String deviceLabel;
   final Future<void> Function(Duration) pause;
   final Object _identity = Object();
   bool _busy = false;
+  @override
   bool verified = false;
   bool _closed = false;
   Mk300TransferSession(this.transport, this.catalog,
@@ -101,6 +111,7 @@ class Mk300TransferSession {
         timeout: const Duration(seconds: 6));
   }
 
+  @override
   Future<String> probe() => _exclusive(() async {
         verified = false;
         final image = await _read(0, 448);
@@ -232,6 +243,7 @@ class Mk300TransferSession {
     return image;
   }
 
+  @override
   Future<PreparedTransfer> prepare(PresetData preset, String name, int slot,
           Directory backupDirectory) =>
       _exclusive(() async {
@@ -266,6 +278,7 @@ class Mk300TransferSession {
         return PreparedTransfer(_identity, slot, name, file.path,
             Uint8List.fromList(original), image);
       });
+  @override
   Future<void> send(PreparedTransfer transfer, {required bool confirmed}) =>
       _exclusive(() async {
         if (!confirmed ||
@@ -301,6 +314,7 @@ class Mk300TransferSession {
         throw StateError(
             'Gravação não confirmada por leitura. Não repita o envio; confira o pedal. Backup preservado em ${transfer.backupPath}.');
       });
+  @override
   Future<void> close() async {
     _closed = true;
     verified = false;

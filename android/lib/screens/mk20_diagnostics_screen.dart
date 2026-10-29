@@ -88,7 +88,7 @@ class _Mk20DiagnosticsScreenState extends State<Mk20DiagnosticsScreen> {
             : _localResult(report);
         setState(() {
           _status = '$summary Diagnóstico salvo no backend: ${result['id']}. '
-              'Envio de preset MK20 ainda indisponível.';
+              'Para enviar um preset MK20 atualizado, use a tela Enviar para pedaleira.';
         });
       }
     } catch (error) {

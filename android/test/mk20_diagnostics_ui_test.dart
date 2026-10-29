@@ -110,7 +110,7 @@ void main() {
   });
 
   testWidgets(
-      'Conectar preset MK20 abre diagnóstico sem usar protocolo de escrita MK300',
+      'MK20 mantém acesso ao diagnóstico separado do envio completo',
       (tester) async {
     SharedPreferences.setMockInitialValues({});
     final raw = fixture();
@@ -132,12 +132,12 @@ void main() {
         )));
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
-        find.text('Abrir teste de leitura MK20'), 300,
+        find.text('Testar MK20 por USB'), 300,
         scrollable: find
             .descendant(
                 of: find.byType(ListView), matching: find.byType(Scrollable))
             .first);
-    await tester.tap(find.text('Abrir teste de leitura MK20'));
+    await tester.tap(find.text('Testar MK20 por USB'));
     await tester.pumpAndSettle();
     expect(find.text('Coleta MK20'), findsOneWidget);
     expect(tester.takeException(), isNull);

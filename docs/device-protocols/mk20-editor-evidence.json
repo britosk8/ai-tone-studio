@@ -45,7 +45,32 @@
     {
       "name": "buildMk20EffectParams",
       "address": "0x691ad0",
-      "finding": "FX, NS, DS, AMP, CAB, EQ, MOD, DLY, REV, VOL; names/knob mapping not yet validated for generation"
+      "finding": "FX, NS, DS, AMP, CAB, EQ, MOD, DLY, REV, VOL. Reviewed transfer subset in catalog MK20 0.4.0; FX and additional temporal models excluded."
+    },
+    {
+      "name": "MK20Data._initIrAmpDs → initializeGForwardAmpDsResources",
+      "address": "0x685480 → 0x6854b8",
+      "finding": "MK20 explicitly calls shared AMP/DS resource initialization; eight common controls, Dzh-style CAB parameters."
+    },
+    {
+      "name": "PatchFields effpara",
+      "address": "0x691764",
+      "finding": "10 rows × 12 int16 controls at byte 60; blocks 0..9; bytes 300..411 preserved."
+    },
+    {
+      "name": "kDzhStyleCabParams",
+      "address": "0x685adc; objects 0x924431 / 0x9245b1",
+      "finding": "Level 0..100; Low Cut 20..300 Hz; High Cut raw 50..180, display raw ×0.1 kHz. Physical Infest raw [80,80,75] matches 80/80Hz/7.5kHz."
+    },
+    {
+      "name": "buildMk20EffectParams → _buildEqChildTypes → _eqParam",
+      "address": "0x691d08 → 0x68ddc4 → 0x68e1ec / 0x68e258",
+      "finding": "Explicit shared EQ builder; six guitar bands, raw -48..48 displayed ×0.5 dB. Catalog accepts display -24..24 step 0.5, serializer ×2."
+    },
+    {
+      "name": "buildMk20EffectParams temporal builders",
+      "address": "0x691d74 / 0x691de0 / 0x691e4c",
+      "finding": "Explicit calls to shared MOD/DLY/REV builders. Initial transfer subset only Chorus/Clean/Room, with every known knob explicitly initialized."
     }
   ],
   "pilot": {
@@ -60,13 +85,23 @@
     "changed_bytes": "name 0–19 only",
     "hardware_write_verified": true,
     "hardware_write_scope": "Name-only rename confirmed by ACKs and 412-byte readback in user capture on 2026-10-29",
-    "hardware_restore_verified": false,
+    "hardware_restore_verified": true,
     "full_preset_transfer_verified": false,
-    "observed_name_normalization": "Legacy 17-char test name later read as exact 16-char prefix; all bytes outside name unchanged. V1.5.4 accepts this narrowly on restore and uses 12 chars for new tests."
+    "observed_name_normalization": "Legacy 17-char test name later read as exact 16-char prefix; all bytes outside name unchanged. V1.5.4 accepts this narrowly on restore and uses 12 chars for new tests.",
+    "hardware_restore_scope": "Name-only exact original restoration confirmed in backend report 186de1f0619d0df02cc14d0b8664e6a245b181148b856a4dc651ed19e6986728 at 2026-10-29T21:54:37.831119Z; user confirmed."
   },
   "limits": [
     "Static interoperability analysis, not an official programming API.",
     "No vendor binaries or assembly dumps are redistributed.",
-    "MK20 full generated-preset transfer remains disabled pending mappings and physical write verification."
-  ]
+    "Complete-preset USB pilot enabled only for slot 150. Full-preset physical readback and acoustic validation remain pending; prior physical verification covers name-only write/restore."
+  ],
+  "catalog_profile": {
+    "version": "0.4.0",
+    "resource_sha256": "6fb43175c4cab658cacf0d529a2a0cfc7690cf03461b530bf0256cc9b353cff6",
+    "guitar_amp_models": 90,
+    "drive_models": 40,
+    "cab_models": 100,
+    "id_basis": "Factory AM4 resource headers, number prefix minus one. Physical slot-76 Infest confirmed DS21 / AMP69 / CAB53. No MK300 AMP/CAB table reuse.",
+    "scope": "Factory AM4 only. User custom resource replacements cannot be identified by model index."
+  }
 }

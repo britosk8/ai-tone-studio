@@ -139,6 +139,10 @@ def generate_variant(pair_id, state_id, body):
         "research": research.get("id"),
         "research_revision": research.get("revision"),
     }
+    if body.device.value == "MK20":
+        from ..services.device_catalog.loader import CatalogLoader
+
+        identity["catalog_version"] = CatalogLoader().get_catalog_version(body.device)
     unique = json.dumps(identity, sort_keys=True)
     variant_id = str(uuid.uuid5(uuid.NAMESPACE_URL, unique))
     existing = load_record("pair", variant_id)

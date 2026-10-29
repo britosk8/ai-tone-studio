@@ -1,7 +1,7 @@
 name: ai_tone_studio
 description: Análise de áudio e geração de presets para pedaleiras M-VAVE MK20 e MK300.
 publish_to: 'none'
-version: 1.5.4+21
+version: 1.5.5+22
 
 environment:
   sdk: '>=3.3.0 <4.0.0'
@@ -52,6 +52,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - assets/mk20_catalog.json
     - assets/mk300_catalog.json
     - assets/mk300_import_catalog.json
     - assets/mvave_LICENSE.txt

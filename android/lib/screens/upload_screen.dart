@@ -530,7 +530,7 @@ class _TransferNote extends StatelessWidget {
           Expanded(
             child: Text(
               'MK300: envio USB/OTG e BLE em validação física, com backup e confirmação. '
-              'MK20: utilize o guia manual enquanto o perfil de comunicação é verificado.',
+              'MK20: envio USB em teste no slot 150, com backup e verificação por leitura.',
               style: TextStyle(fontSize: 12, color: AppTheme.warnYellow),
             ),
           ),

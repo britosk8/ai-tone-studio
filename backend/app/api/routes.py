@@ -44,7 +44,7 @@ def _get_pipeline() -> ToneAnalysisPipeline:
 @router.get("/health")
 async def health():
     """Health check."""
-    return {"status": "ok", "service": "AI Tone Studio API", "version": "1.5.4"}
+    return {"status": "ok", "service": "AI Tone Studio API", "version": "1.5.5"}
 
 
 @router.get("/devices")

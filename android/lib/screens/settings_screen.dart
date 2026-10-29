@@ -141,8 +141,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           const _LimitationItem(
             'Transferência automática',
-            'MK300: USB/OTG e BLE em teste físico. MK20: envio bloqueado. '
-                'Use o guia de configuração manual.',
+            'MK300: USB/OTG e BLE em teste físico. MK20: envio USB em teste no slot 150. '
+                'O guia manual também está disponível.',
           ),
           const _LimitationItem(
             'Identificação de equipamento',

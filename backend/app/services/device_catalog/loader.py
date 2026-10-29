@@ -1,4 +1,5 @@
 """Carregador e validador de catálogos de dispositivos."""
+
 import json
 import logging
 from pathlib import Path
@@ -96,7 +97,9 @@ class CatalogLoader:
         cat = self._catalogs.get(device, {})
         return cat.get("_meta", {}).get("catalog_version", "unknown")
 
-    def get_amp_model(self, device: DeviceModel, gain_char: GainCharacter) -> Optional[dict]:
+    def get_amp_model(
+        self, device: DeviceModel, gain_char: GainCharacter
+    ) -> Optional[dict]:
         """Retorna modelo de amp adequado para o timbre."""
         cat = self._catalogs.get(device, {})
 
@@ -118,12 +121,12 @@ class CatalogLoader:
                 if amp_type == ptype:
                     # Adiciona parâmetros do catálogo
                     params = self._get_amp_params(cat)
-                    return {**amp, "parameters": params}
+                    return {**amp, "parameters": {**params, **amp.get("params", {})}}
 
         # Fallback: primeiro da lista
         if amps:
             params = self._get_amp_params(cat)
-            return {**amps[0], "parameters": params}
+            return {**amps[0], "parameters": {**params, **amps[0].get("params", {})}}
         return None
 
     def _get_amp_params(self, cat: dict) -> dict:
@@ -135,7 +138,9 @@ class CatalogLoader:
             params = cat.get("amp_models", {}).get("amp_parameters", {})
         return params
 
-    def get_drive_model(self, device: DeviceModel, gain_char: GainCharacter) -> Optional[dict]:
+    def get_drive_model(
+        self, device: DeviceModel, gain_char: GainCharacter
+    ) -> Optional[dict]:
         """Retorna modelo de drive/overdrive para o timbre, ou None se clean."""
         if gain_char == GainCharacter.CLEAN:
             return None
@@ -158,19 +163,29 @@ class CatalogLoader:
             return None
 
         preferred_types = GAIN_TO_DS_TYPES.get(gain_char, [])
-        params = ds_block.get("ds_parameters", ds_block.get("knob_ranges", ds_block.get("parameters", {})))
+        params = ds_block.get(
+            "ds_parameters", ds_block.get("knob_ranges", ds_block.get("parameters", {}))
+        )
 
         for ptype in preferred_types:
             for drive in drives:
                 drive_type = drive.get("type", "").lower()
                 if drive_type == ptype:
-                    return {**drive, "parameters": params}
+                    return {
+                        **drive,
+                        "parameters": {**params, **drive.get("params", {})},
+                    }
 
         if drives:
-            return {**drives[0], "parameters": params}
+            return {
+                **drives[0],
+                "parameters": {**params, **drives[0].get("params", {})},
+            }
         return None
 
-    def get_cabinet_model(self, device: DeviceModel, gain_char: GainCharacter) -> Optional[dict]:
+    def get_cabinet_model(
+        self, device: DeviceModel, gain_char: GainCharacter
+    ) -> Optional[dict]:
         """Retorna cabinet adequado para o timbre."""
         cat = self._catalogs.get(device, {})
 
@@ -186,16 +201,23 @@ class CatalogLoader:
         if not cabs:
             return None
 
-        params = cab_block.get("cab_parameters", cab_block.get("knob_ranges", cab_block.get("parameters", {})))
+        params = cab_block.get(
+            "cab_parameters",
+            cab_block.get("knob_ranges", cab_block.get("parameters", {})),
+        )
 
         # Prefere cabs que tenham "412" no nome para high gain
         preferred_sizes = GAIN_TO_CAB_PREFERENCE.get(gain_char, ["412"])
         for size in preferred_sizes:
             for cab in cabs:
                 if size in cab.get("name", "") or size in cab.get("config", ""):
-                    return {**cab, "parameters": params}
+                    return {**cab, "parameters": {**params, **cab.get("params", {})}}
 
-        return {**cabs[0], "parameters": params} if cabs else None
+        return (
+            {**cabs[0], "parameters": {**params, **cabs[0].get("params", {})}}
+            if cabs
+            else None
+        )
 
     def get_effect_model(
         self, device: DeviceModel, effect_type: EffectType, model_index: int = 0
@@ -212,13 +234,22 @@ class CatalogLoader:
 
         # Tenta effect_modules.<KEY> (catálogo MK20)
         if not block_data:
-            module_key = "NS" if device == DeviceModel.MK20 and block_key == "GATE" else block_key
+            module_key = (
+                "NS"
+                if device == DeviceModel.MK20 and block_key == "GATE"
+                else block_key
+            )
             block_data = cat.get("effect_modules", {}).get(module_key, {})
 
         # Tenta effects.<key_lower> (formato antigo)
         if not block_data:
             old_key = block_key.lower()
-            key_map = {"gate": "noise_gate", "dly": "delay", "rev": "reverb", "mod": "modulation"}
+            key_map = {
+                "gate": "noise_gate",
+                "dly": "delay",
+                "rev": "reverb",
+                "mod": "modulation",
+            }
             old_key = key_map.get(old_key, old_key)
             block_data = cat.get("effects", {}).get(old_key, {})
 
@@ -227,15 +258,15 @@ class CatalogLoader:
 
         params = block_data.get(
             "knob_ranges",
-            block_data.get("common_knob_ranges",
-            block_data.get("parameters",
-            {}))
+            block_data.get("common_knob_ranges", block_data.get("parameters", {})),
         )
 
         models = block_data.get("models", block_data.get("mono_models", None))
         if models and model_index < len(models):
             if effect_type == EffectType.COMPRESSOR:
-                matches = [model for model in models if model.get("name", "") == "Compress"]
+                matches = [
+                    model for model in models if model.get("name", "") == "Compress"
+                ]
                 if not matches:
                     return None
                 model = matches[0]
@@ -258,7 +289,9 @@ class CatalogLoader:
         """Valida e clipa parâmetros nos limites do catálogo."""
         model = self.get_effect_model(device, effect_type)
         if not model:
-            return params, [f"Modelo de {effect_type.value} não encontrado no catálogo de {device.value}"]
+            return params, [
+                f"Modelo de {effect_type.value} não encontrado no catálogo de {device.value}"
+            ]
 
         validated = {}
         warnings = []
@@ -274,13 +307,17 @@ class CatalogLoader:
             elif lookup in specs_lower:
                 canonical_name, spec = specs_lower[lookup]
             else:
-                warnings.append(f"Parâmetro '{name}' ignorado — não existe no catálogo de {device.value}")
+                warnings.append(
+                    f"Parâmetro '{name}' ignorado — não existe no catálogo de {device.value}"
+                )
                 continue
             p_min = spec.get("min", 0)
             p_max = spec.get("max", 100)
             clamped = max(p_min, min(float(value), p_max))
             if clamped != float(value):
-                warnings.append(f"Parâmetro '{name}' ajustado de {value} para {clamped} (limite: {p_min}-{p_max})")
+                warnings.append(
+                    f"Parâmetro '{name}' ajustado de {value} para {clamped} (limite: {p_min}-{p_max})"
+                )
             validated[canonical_name] = clamped
 
         return validated, warnings

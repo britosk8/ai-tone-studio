@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart';
@@ -10,6 +11,7 @@ import '../services/preset_store.dart';
 import '../services/device/device_transport.dart';
 import '../services/device/preset_transfer.dart';
 import '../services/device/mk300_protocol.dart';
+import '../services/device/mk20_transfer.dart';
 
 class TransferScreen extends StatefulWidget {
   final String pairId;
@@ -29,7 +31,8 @@ class _TransferScreenState extends State<TransferScreen> {
   String? _deviceId;
   final _name = TextEditingController(),
       _slot = TextEditingController(text: '160');
-  Mk300TransferSession? _session;
+  PedalTransferSession? _session;
+  PreparedTransfer? _recovery;
   NativeDeviceTransport? _transport;
   PreparedTransfer? _prepared;
   bool _busy = false, _confirmedModel = false;
@@ -72,9 +75,8 @@ class _TransferScreenState extends State<TransferScreen> {
     final preset = _preset;
     if (preset == null) return;
     final text = preset.name.replaceAll(RegExp(r'[^\x20-\x7e]'), '-');
-    _name.text = preset.device == 'MK300' && text.length > 19
-        ? text.substring(0, 19)
-        : text;
+    final limit = preset.device == 'MK20' ? 16 : 19;
+    _name.text = text.length > limit ? text.substring(0, limit) : text;
     _slot.text = preset.device == 'MK300' ? '160' : '150';
     _prepared = null;
   }
@@ -94,6 +96,9 @@ class _TransferScreenState extends State<TransferScreen> {
         if (selected.device != previousDevice) {
           await _disconnect();
           _confirmedModel = false;
+          _devices = [];
+          _deviceId = null;
+          if (selected.device == 'MK20') _kind = 'usb';
         }
         if (mounted) {
           setState(() {
@@ -123,8 +128,8 @@ class _TransferScreenState extends State<TransferScreen> {
   String? _blockReason(PresetData? preset) {
     if (_busy) return 'Aguarde a operação em andamento.';
     if (preset == null) return 'Escolha um preset da biblioteca.';
-    if (preset.device != 'MK300') {
-      return 'Envio MK20 ainda indisponível. Use Testar MK20 por USB para coletar a leitura do pedal.';
+    if (preset.device == 'MK20' && _kind != 'usb') {
+      return 'MK20: use USB/OTG para o envio.';
     }
     if (preset.catalogVersion != '0.4.0') {
       return 'Envio bloqueado pelo preset antigo. Toque em Gerar preset atualizado ou selecione uma análise recente.';
@@ -137,13 +142,22 @@ class _TransferScreenState extends State<TransferScreen> {
       return 'MTU Bluetooth insuficiente. Use USB/OTG.';
     }
     final slot = int.tryParse(_slot.text);
-    if (slot == null || slot < 1 || slot > 160) {
-      return 'Informe um slot entre 1 e 160.';
+    if (slot == null ||
+        slot < 1 ||
+        slot > 160 ||
+        (preset.device == 'MK20' && slot != 150)) {
+      return preset.device == 'MK20'
+          ? 'Primeiro teste MK20: destino fixo no slot 150.'
+          : 'Informe um slot entre 1 e 160.';
     }
     try {
-      Mk300TransferSession.validateName(_name.text.trim());
+      if (preset.device == 'MK20') {
+        Mk20TransferSession.validateName(_name.text.trim());
+      } else {
+        Mk300TransferSession.validateName(_name.text.trim());
+      }
     } catch (_) {
-      return 'Informe um nome de 1 a 19 caracteres sem acentos.';
+      return 'Informe um nome de 1 a ${preset.device == 'MK20' ? 16 : 19} caracteres sem acentos.';
     }
     return null;
   }
@@ -171,6 +185,7 @@ class _TransferScreenState extends State<TransferScreen> {
     _session = null;
     _transport = null;
     _prepared = null;
+    _recovery = null;
     _mtu = null;
     if (session != null) {
       await session.close();
@@ -206,11 +221,8 @@ class _TransferScreenState extends State<TransferScreen> {
         }
       });
   Future<void> _connect() => _run(() async {
-        if (_preset?.device == 'MK20') {
-          await _disconnect();
-          if (!mounted) return;
-          await Navigator.pushNamed(context, '/mk20-diagnostics');
-          return;
+        if (_preset?.device == 'MK20' && _kind != 'usb') {
+          throw StateError('MK20: conecte por USB/OTG.');
         }
         if (_deviceId == null || !_confirmedModel) {
           throw StateError(
@@ -222,15 +234,25 @@ class _TransferScreenState extends State<TransferScreen> {
         final info = await transport.connect();
         _mtu = (info['mtu'] as num?)?.toInt();
         try {
-          final session = Mk300TransferSession(
-              transport, await Mk300TransferSession.loadCatalog(),
-              deviceLabel:
-                  '$_kind:${_deviceId!}; firmware informado $_firmware');
+          final PedalTransferSession session = _preset?.device == 'MK20'
+              ? Mk20TransferSession(
+                  transport, await Mk20TransferSession.loadCatalog(),
+                  deviceLabel: 'usb:${_deviceId!}')
+              : Mk300TransferSession(
+                  transport, await Mk300TransferSession.loadCatalog(),
+                  deviceLabel:
+                      '$_kind:${_deviceId!}; firmware informado $_firmware');
           _session = session;
           final current = await session.probe();
+          if (session is Mk20TransferSession) {
+            final directory = await getApplicationDocumentsDirectory();
+            _recovery = await session
+                .recover(Directory('${directory.path}/pedal_backups'));
+            await _syncMk20Reports();
+          }
           if (mounted) {
             setState(() => _status =
-                'MK300: layout e leitura conferidos. Preset ativo: $current. Firmware informado: $_firmware.${_mtu != null ? ' MTU BLE: $_mtu.' : ''}');
+                '${_preset?.device}: layout e leitura conferidos. Preset ativo: $current.${_preset?.device == 'MK300' ? ' Firmware informado: $_firmware.' : ' Envio completo de teste no slot 150.'}${_mtu != null ? ' MTU BLE: $_mtu.' : ''}');
           }
         } catch (_) {
           await _disconnect();
@@ -263,8 +285,13 @@ class _TransferScreenState extends State<TransferScreen> {
               'MTU BLE insuficiente para a imagem completa. Use USB/OTG.');
         }
         final value = int.tryParse(_slot.text);
-        if (value == null || value < 1 || value > 160) {
-          throw ArgumentError('Escolha slot de 1 a 160.');
+        if (value == null ||
+            value < 1 ||
+            value > 160 ||
+            (preset.device == 'MK20' && value != 150)) {
+          throw ArgumentError(preset.device == 'MK20'
+              ? 'MK20: use o slot 150.'
+              : 'Escolha slot de 1 a 160.');
         }
         final directory = await getApplicationDocumentsDirectory();
         final prepared = await session.prepare(preset, _name.text.trim(),
@@ -272,6 +299,7 @@ class _TransferScreenState extends State<TransferScreen> {
         if (mounted) {
           setState(() {
             _prepared = prepared;
+            if (session is Mk20TransferSession) _recovery = prepared;
             _status =
                 'Backup salvo. Slot $value contém "${Mk300Protocol.name(prepared.original)}". Revise e confirme o envio.';
           });
@@ -279,7 +307,7 @@ class _TransferScreenState extends State<TransferScreen> {
       });
   Future<void> _send() => _run(() async {
         final prepared = _prepared, session = _session;
-        if (prepared == null || session == null) {
+        if (prepared == null || session == null || !_confirmedModel) {
           throw StateError('Prepare o backup novamente.');
         }
         final confirmation = await showDialog<bool>(
@@ -288,7 +316,7 @@ class _TransferScreenState extends State<TransferScreen> {
             builder: (ctx) => AlertDialog(
                   title: const Text('Substituir preset no pedal?'),
                   content: Text(
-                      'MK300 — slot ${prepared.slot + 1}\nAtual: ${Mk300Protocol.name(prepared.original)}\nNovo nome: ${prepared.name}\n\nO backup já foi salvo. Confirme que os modelos de fábrica usados não foram substituídos por NAM/IR. O envio ainda precisa de validação física no seu equipamento.'),
+                      '${_preset?.device} — slot ${prepared.slot + 1}\nAtual: ${Mk300Protocol.name(prepared.original)}\nNovo nome: ${prepared.name}\n\nO backup já foi salvo. Confirme que os modelos de fábrica usados não foram substituídos por NAM/IR. O envio ainda precisa de validação física no seu equipamento.'),
                   actions: [
                     TextButton(
                         onPressed: () => Navigator.pop(ctx, false),
@@ -301,7 +329,11 @@ class _TransferScreenState extends State<TransferScreen> {
         if (confirmation != true || !mounted) return;
         setState(() => _status =
             'Enviando e aguardando confirmação por leitura. Mantenha o cabo/Bluetooth e a energia.');
-        await session.send(prepared, confirmed: true);
+        try {
+          await session.send(prepared, confirmed: true);
+        } finally {
+          if (session is Mk20TransferSession) await _syncMk20Reports();
+        }
         if (!mounted) return;
         final message = 'Preset ${prepared.name} enviado com sucesso';
         try {
@@ -314,11 +346,68 @@ class _TransferScreenState extends State<TransferScreen> {
         messenger.showSnackBar(SnackBar(
             content: Text(message), duration: const Duration(seconds: 5)));
       });
+  Future<void> _syncMk20Reports() async {
+    if (!mounted) return;
+    final api = context.read<ApiService>();
+    try {
+      final documents = await getApplicationDocumentsDirectory();
+      final directory = Directory('${documents.path}/pedal_backups');
+      if (!await directory.exists()) return;
+      final files = await directory
+          .list()
+          .where((f) =>
+              f is File &&
+              RegExp(r'/mk20-transfer-[0-9]+\.json$').hasMatch(f.path))
+          .toList();
+      for (final entry in files) {
+        final marker = File('${entry.path}.synced');
+        if (await marker.exists()) continue;
+        final report = Map<String, dynamic>.from(
+            jsonDecode(await File(entry.path).readAsString()) as Map);
+        await api.saveMk20Transfer(report);
+        await marker.writeAsString('saved', flush: true);
+      }
+    } catch (_) {
+      /* Offline reports remain on the phone for the next connection. */
+    }
+  }
+
+  Future<void> _restoreMk20() => _run(() async {
+        final session = _session, backup = _recovery;
+        if (session is! Mk20TransferSession || backup == null) return;
+        final confirmed = await showDialog<bool>(
+            context: context,
+            builder: (ctx) => AlertDialog(
+                    title: const Text('Restaurar original da MK20?'),
+                    content: Text(
+                        'Slot 150: restaurar "${Mk300Protocol.name(backup.original)}". O preset atual só será substituído se corresponder ao envio salvo.'),
+                    actions: [
+                      TextButton(
+                          onPressed: () => Navigator.pop(ctx, false),
+                          child: const Text('Cancelar')),
+                      FilledButton(
+                          onPressed: () => Navigator.pop(ctx, true),
+                          child: const Text('Confirmar restauração'))
+                    ]));
+        if (confirmed != true) return;
+        try {
+          await session.restore(backup, confirmed: true);
+        } finally {
+          await _syncMk20Reports();
+        }
+        if (mounted) {
+          setState(() {
+            _prepared = null;
+            _status =
+                'Original do slot 150 restaurado e confirmado por leitura.';
+          });
+        }
+      });
   Future<void> _shareBackup() => _run(() async {
         final file = _prepared?.backupPath;
         if (file == null) return;
         await Share.shareXFiles([XFile(file)],
-            subject: 'Backup original MK300');
+            subject: 'Backup original ${_preset?.device}');
       });
   @override
   void dispose() {
@@ -381,7 +470,7 @@ class _TransferScreenState extends State<TransferScreen> {
                       _busy ? null : (role) => _selectPreset(_pair!, role!)),
               Text(
                   'Áudio: ${preset!.songTitle.isNotEmpty ? preset.songTitle : "Nome não registrado nesta análise antiga"}'),
-              if (preset.device == 'MK300' && preset.catalogVersion != '0.4.0')
+              if (preset.catalogVersion != '0.4.0')
                 Card(
                     color: Theme.of(context).colorScheme.errorContainer,
                     child: Padding(
@@ -405,7 +494,7 @@ class _TransferScreenState extends State<TransferScreen> {
                       labelText: 'Nome do preset no envio',
                       helperText: preset.device == 'MK300'
                           ? 'Até 19 caracteres sem acentos. O nome do áudio não muda.'
-                          : 'Nome para biblioteca e guia manual.'),
+                          : 'Até 16 caracteres sem acentos. O nome do áudio não muda.'),
                   onChanged: (_) => setState(() => _prepared = null)),
               TextButton(
                   onPressed: _busy ? null : _renameLocal,
@@ -415,7 +504,7 @@ class _TransferScreenState extends State<TransferScreen> {
                     child: Padding(
                         padding: EdgeInsets.all(12),
                         child: Text(
-                            'MK20: primeiro colete a leitura no teste USB abaixo. O formato e o catálogo diferem da MK300; envio ainda indisponível.'))),
+                            'MK20: envio completo de teste por USB para o slot 150. O app salva o original antes de gravar e confere o resultado por leitura. O slot 76 permanece preservado.'))),
               if (preset.device == 'MK20')
                 OutlinedButton.icon(
                   icon: const Icon(Icons.usb),
@@ -432,6 +521,7 @@ class _TransferScreenState extends State<TransferScreen> {
                 ),
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(
+                  isExpanded: true,
                   value: _kind,
                   decoration: const InputDecoration(labelText: 'Conexão'),
                   items: const [
@@ -477,6 +567,7 @@ class _TransferScreenState extends State<TransferScreen> {
                           }),
               if (preset.device == 'MK300')
                 DropdownButtonFormField<String>(
+                    isExpanded: true,
                     value: _firmware,
                     decoration: const InputDecoration(
                         labelText: 'Firmware informado por você'),
@@ -503,14 +594,10 @@ class _TransferScreenState extends State<TransferScreen> {
                   title: Text(
                       'Confirmo que o equipamento conectado é ${preset.device} e fechei o M-EFCS.')),
               FilledButton(
-                  onPressed: _busy ||
-                          (preset.device == 'MK300' &&
-                              (_deviceId == null || !_confirmedModel))
+                  onPressed: _busy || _deviceId == null || !_confirmedModel
                       ? null
                       : _connect,
-                  child: Text(preset.device == 'MK20'
-                      ? 'Abrir teste de leitura MK20'
-                      : 'Conectar e conferir leitura')),
+                  child: const Text('Conectar e conferir leitura')),
               const SizedBox(height: 12),
               TextField(
                   controller: _slot,
@@ -518,7 +605,7 @@ class _TransferScreenState extends State<TransferScreen> {
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                       labelText: preset.device == 'MK20'
-                          ? 'Slot MK20: use o teste de leitura acima'
+                          ? 'Destino MK20: slot 150 (primeiro teste completo)'
                           : 'Slot de destino (1–160 na MK300)'),
                   onChanged: (_) => setState(() => _prepared = null)),
               const SizedBox(height: 12),
@@ -531,6 +618,10 @@ class _TransferScreenState extends State<TransferScreen> {
                     child: Text(blockReason,
                         style: TextStyle(
                             color: Theme.of(context).colorScheme.error))),
+              if (_session is Mk20TransferSession && _recovery != null)
+                OutlinedButton(
+                    onPressed: _busy ? null : _restoreMk20,
+                    child: const Text('Restaurar backup MK20 do slot 150')),
               if (_prepared != null) ...[
                 TextButton(
                     onPressed: _busy ? null : _shareBackup,

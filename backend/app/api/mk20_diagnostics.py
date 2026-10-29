@@ -180,7 +180,18 @@ def reviewed(record):
     result = dict(record)
     result["capture_status"] = record["summary"]["status"]
     result["summary"] = validate_report(record["report"])
-    result["decoder_version"] = "mk20-read-v2"
+    result["decoder_version"] = "mk20-read-v3"
+    from ..transport.protocol_mk20 import controls
+
+    result["mapped_reads"] = [
+        {
+            "space": read["space"],
+            "field": read["field"],
+            "controls": controls(decode64(read["decoded"]["image_base64"], SIZE)),
+        }
+        for read in record["report"]["reads"]
+        if read.get("decoded")
+    ]
     return result
 
 

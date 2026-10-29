@@ -56,13 +56,19 @@ class GuitarToneEngine:
                 separation = self.provider.separate_guitar(prepared)
                 target = separation.guitar_stem
         progress(70, "Medindo espectro, dinâmica e ataque da guitarra...")
-        features = GuitarToneFeatureExtractor().extract(target, channel=preferred_channel)
+        features = GuitarToneFeatureExtractor().extract(
+            target, channel=preferred_channel
+        )
         descriptor = describe(features)
         # O stem dedicado ainda contém possíveis vazamentos; não o declarar isolado pelo usuário.
         import soundfile as sf
 
         samples, sample_rate = sf.read(target, dtype="float32", always_2d=True)
-        channel = int(np.argmax(np.mean(samples.astype(float) ** 2, axis=0))) if preferred_channel is None else preferred_channel
+        channel = (
+            int(np.argmax(np.mean(samples.astype(float) ** 2, axis=0)))
+            if preferred_channel is None
+            else preferred_channel
+        )
         if channel < 0 or channel >= samples.shape[1]:
             raise ValueError("Canal indisponível na guitarra salva")
         analysis_path = work_dir / "analysis_channel.wav"
@@ -97,7 +103,7 @@ class GuitarToneEngine:
             "Motor v2 em modo heurístico; sem modelo calibrado da MK300/MK20 nem percentual de similaridade.",
             "Base e solo são partes indicadas pelos trechos; o separador não desmembra guitarras simultâneas.",
             "Efeitos temporais permanecem desligados sem evidência suficiente.",
-            "Cortes do gabinete mantêm valores iniciais do catálogo; a escala física ainda não foi calibrada.",
+            "Cortes do gabinete usam pontos iniciais do catálogo, sem calibração acústica para sua cadeia.",
         ]
         if separation:
             analysis.limitations += separation.metadata.get(
@@ -210,6 +216,6 @@ class GuitarToneEngine:
                 analysis.engine_diagnostics.get("separation") or {}
             ).get("cache_id"),
         }
-        preset.preset_volume = 40 if preset.device_model.value == "MK300" else None
+        preset.preset_volume = 40
         validate_preset(catalog, preset)
         return preset
