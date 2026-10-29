@@ -124,12 +124,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ]),
           ],
           const SizedBox(height: 32),
+          ListTile(
+              leading: const Icon(Icons.archive_outlined),
+              title: const Text('Presets arquivados'),
+              subtitle: const Text('Restaurar presets dos testes anteriores'),
+              onTap: () => Navigator.pushNamed(context, '/archived-presets')),
+          ExpansionTile(
+              title: const Text('Diagnóstico e recuperação'),
+              children: [
+                ListTile(
+                    title: const Text('Leitura de diagnóstico MK20'),
+                    onTap: () =>
+                        Navigator.pushNamed(context, '/mk20-diagnostics')),
+                ListTile(
+                    title: const Text('Recuperar backup do teste de nome MK20'),
+                    subtitle:
+                        const Text('Somente para backups do piloto antigo'),
+                    onTap: () =>
+                        Navigator.pushNamed(context, '/mk20-name-pilot')),
+              ]),
+          const SizedBox(height: 24),
           const _SectionDivider('Sobre o aplicativo'),
           const SizedBox(height: 12),
-          const _InfoRow('Versão', '1.2.3 — importação de presets'),
-          const _InfoRow('Backend', 'Python 3.11 + FastAPI'),
-          const _InfoRow('Análise', 'librosa 0.10.2'),
-          const _InfoRow('Separação', 'Demucs htdemucs (opcional)'),
+          const _InfoRow('Versão', '1.5.6'),
+          const _InfoRow('Separação por IA', 'Demucs htdemucs_6s'),
           const _InfoRow('Protocolo SysEx', 'Baseado em jpfaria/mvave (MIT)'),
           const SizedBox(height: 32),
           const _SectionDivider('Limitações conhecidas'),
@@ -141,7 +159,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           const _LimitationItem(
             'Transferência automática',
-            'MK300: USB/OTG e BLE em teste físico. MK20: envio USB em teste no slot 150. '
+            'MK300 e MK20: envio USB/OTG com backup e leitura de retorno. MK20: destino no slot 150. '
                 'O guia manual também está disponível.',
           ),
           const _LimitationItem(

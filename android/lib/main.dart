@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'screens/home_screen.dart';
+import 'screens/archived_presets_screen.dart';
+import 'services/preset_archive.dart';
 import 'screens/mk20_diagnostics_screen.dart';
 import 'screens/mk20_name_pilot_screen.dart';
 import 'screens/upload_screen.dart';
@@ -22,11 +24,23 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final api = ApiService();
   await api.loadSettings();
+  final store = PresetStore();
+  await store.load();
+  try {
+    final archived = await PresetArchive.archiveOnce(store);
+    if (archived > 0) {
+      store.libraryNotice =
+          '$archived análises de teste foram arquivadas. Você pode restaurá-las em Ajustes → Presets arquivados.';
+    }
+  } catch (_) {
+    store.libraryNotice =
+        'Não foi possível concluir o arquivamento. Os dados salvos foram preservados.';
+  }
   runApp(
     MultiProvider(
       providers: [
         Provider<ApiService>.value(value: api),
-        ChangeNotifierProvider(create: (_) => PresetStore()),
+        ChangeNotifierProvider<PresetStore>.value(value: store),
       ],
       child: const AiToneStudioApp(),
     ),
@@ -45,6 +59,9 @@ class AiToneStudioApp extends StatelessWidget {
       initialRoute: '/',
       onGenerateRoute: (settings) {
         switch (settings.name) {
+          case '/archived-presets':
+            return MaterialPageRoute(
+                builder: (_) => const ArchivedPresetsScreen());
           case '/pedal-reference':
             final args = settings.arguments as Map<String, dynamic>;
             return MaterialPageRoute(
@@ -52,7 +69,7 @@ class AiToneStudioApp extends StatelessWidget {
                     PedalReferenceScreen(pairId: args['pair_id'] as String));
           case '/mk20-name-pilot':
             return MaterialPageRoute(
-                builder: (_) => const Mk20NamePilotScreen());
+                builder: (_) => const Mk20NamePilotScreen(recoveryOnly: true));
           case '/mk20-diagnostics':
             return MaterialPageRoute(
                 builder: (_) => const Mk20DiagnosticsScreen());

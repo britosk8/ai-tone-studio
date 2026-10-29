@@ -7,6 +7,7 @@ import 'mk300_pilot.dart';
 class PresetStore extends ChangeNotifier {
   final List<PresetPair> _pairs = [];
   bool _loaded = false;
+  String? libraryNotice;
   Future<void>? _loading;
   Future<void>? _pilotQueue;
   static const pilotCleanupKey = 'mk300_pilot_cleanup_v1_done';

@@ -199,7 +199,7 @@ class _Mk20DiagnosticsScreenState extends State<Mk20DiagnosticsScreen> {
                 ? null
                 : () => Navigator.pushNamed(context, '/mk20-name-pilot'),
             icon: const Icon(Icons.drive_file_rename_outline),
-            label: const Text('Etapa 2: testar gravação do nome'),
+            label: const Text('Recuperar backup do teste antigo de nome'),
           ),
           const Text('Primeiro teste da MK20',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),

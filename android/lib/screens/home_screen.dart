@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import '../services/preset_import.dart';
 import 'package:provider/provider.dart';
 import '../services/preset_store.dart';
+import '../services/preset_archive.dart';
 import '../services/api_service.dart';
 import '../theme/app_theme.dart';
 import '../models/preset_pair.dart';
@@ -54,7 +55,11 @@ class _HomeScreenState extends State<HomeScreen> {
     final store = context.read<PresetStore>();
     try {
       await store.load();
-      await api.syncSavedPedalReferences(store.pairs);
+      final saved = {
+        for (final pair in await PresetArchive.load()) pair.id: pair,
+        for (final pair in store.pairs) pair.id: pair
+      };
+      await api.syncSavedPedalReferences(saved.values.toList());
     } catch (_) {
       /* Os dados locais permanecem disponíveis para sincronizar depois. */
     }
@@ -115,19 +120,11 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('AI Tone Studio'),
         actions: [
           IconButton(
-              icon: const Icon(Icons.usb),
-              tooltip: 'Testar MK20 por USB',
-              onPressed: () =>
-                  Navigator.pushNamed(context, '/mk20-diagnostics')),
-          IconButton(
-              tooltip: 'Piloto Infest — MK300',
-              icon: const Icon(Icons.science_outlined),
-              onPressed: () => Navigator.pushNamed(context, '/mk300-pilot')),
-          IconButton(
               tooltip: 'Importar presets MK300 (JSON)',
               icon: const Icon(Icons.file_open_outlined),
               onPressed: _importing ? null : _importPresets),
           IconButton(
+            tooltip: 'Ajustes',
             icon: const Icon(Icons.settings_outlined),
             onPressed: () => Navigator.pushNamed(context, '/settings')
                 .then((_) => _checkBackend()),
@@ -137,6 +134,16 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: [
           _BackendStatusBar(checking: _checking, ok: _backendOk),
+          if (store.libraryNotice != null)
+            MaterialBanner(content: Text(store.libraryNotice!), actions: [
+              TextButton(
+                  onPressed: () =>
+                      Navigator.pushNamed(context, '/archived-presets'),
+                  child: const Text('Ver arquivados')),
+              TextButton(
+                  onPressed: () => setState(() => store.libraryNotice = null),
+                  child: const Text('Fechar')),
+            ]),
           Expanded(
             child: store.pairs.isEmpty
                 ? _EmptyState(backendOk: _backendOk, onAnalyze: _openUpload)
@@ -209,7 +216,8 @@ class _EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Padding(
+      child: SingleChildScrollView(
+          child: Padding(
         padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -217,12 +225,12 @@ class _EmptyState extends StatelessWidget {
             const Icon(Icons.graphic_eq,
                 size: 80, color: AppTheme.textSecondary),
             const SizedBox(height: 24),
-            Text('Nenhum preset gerado ainda',
+            Text('Nenhum preset na biblioteca ativa',
                 style: Theme.of(context).textTheme.titleLarge,
                 textAlign: TextAlign.center),
             const SizedBox(height: 12),
             const Text(
-              'Importe sua música e gere presets de base e solo para MK300 ou MK20. Escolha o pedal de cada parte.',
+              'Use uma música já separada ou importe um novo áudio para gerar presets de base e solo para MK300 ou MK20.',
               style: TextStyle(color: AppTheme.textSecondary),
               textAlign: TextAlign.center,
             ),
@@ -231,11 +239,11 @@ class _EmptyState extends StatelessWidget {
               ElevatedButton.icon(
                 onPressed: onAnalyze,
                 icon: const Icon(Icons.upload_file),
-                label: const Text('Importar música'),
+                label: const Text('Escolher música'),
               ),
           ],
         ),
-      ),
+      )),
     );
   }
 }

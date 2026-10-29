@@ -16,6 +16,7 @@ from ..models.devices import DeviceModel
 from ..services.tone_engine.segmentation import ToneStateAnalyzer
 from ..services.song_research.research import SongResearch
 from ..services.tone_engine.engine import GuitarToneEngine
+from ..services.tone_engine.reference_quality import assessed_collection
 from ..services.tone_engine.evidence_mapping import apply_state_mapping
 from ..core.pipeline import ToneAnalysisPipeline
 
@@ -71,7 +72,7 @@ def analyze_states(
         "note": "Confirme os estados propostos. Canal L/R e estado sonoro não identificam base/solo automaticamente.",
     }
     save_record("pair_tone_states", pair_id, result)
-    return result
+    return assessed_collection(result)
 
 
 @router.post("/presets/{pair_id}/tone-states/analyze")
@@ -96,7 +97,7 @@ async def states(pair_id: str):
         raise HTTPException(
             404, "Estados ainda não analisados. A guitarra salva será reutilizada."
         )
-    return result
+    return assessed_collection(result)
 
 
 def generate_variant(pair_id, state_id, body):
@@ -105,6 +106,7 @@ def generate_variant(pair_id, state_id, body):
     collection = load_record("pair_tone_states", pair_id)
     if not collection:
         raise ValueError("Analise os estados desta música primeiro")
+    collection = assessed_collection(collection)
     match = next(
         (
             (m, s)
@@ -117,6 +119,8 @@ def generate_variant(pair_id, state_id, body):
     if match is None:
         raise ValueError("Estado não pertence a esta música")
     state_map, state = match
+    if not state["reference_quality"]["eligible"]:
+        raise ValueError(state["reference_quality"]["message"])
     parent_record = load_record("pair", pair_id)
     parent = PresetPair.model_validate(parent_record["pair"])
     source = saved_source(pair_id, state_map["source_role"])

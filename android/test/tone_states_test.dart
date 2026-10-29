@@ -10,6 +10,7 @@ import 'package:ai_tone_studio/widgets/tone_states_panel.dart';
 
 class StateApi extends ApiService {
   int analyses = 0, pairFetches = 0;
+  bool weakFirst = false;
   String? generatedRole, generatedCharacter;
   @override
   Future<Map<String, dynamic>> generateToneState(String pairId, String stateId,
@@ -34,6 +35,11 @@ class StateApi extends ApiService {
             'states': [
               {
                 'id': 'clean-left',
+                'reference_quality': {
+                  'eligible': !weakFirst,
+                  'message':
+                      weakFirst ? 'Guitarra muito fraca neste trecho.' : null
+                },
                 'label': 'Limpo provável — L',
                 'character': 'clean',
                 'representative': {'start_seconds': 195, 'duration_seconds': 12}
@@ -158,5 +164,39 @@ void main() {
     expect(api.pairFetches, 0);
     expect(store.pairs.single.rhythm.name, 'Editado localmente');
     expect(tester.takeException(), isNull);
+  });
+  testWidgets(
+      'Trecho fraco fica visível com aviso e não pode gerar base nem solo',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1000, 2200));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final api = StateApi()..weakFirst = true;
+    await tester.pumpWidget(Provider<ApiService>.value(
+        value: api,
+        child: MaterialApp(
+            home: Scaffold(
+                body: SingleChildScrollView(
+                    child: ToneStatesPanel(
+                        pairId: 'infest',
+                        rhythmDevice: 'MK20',
+                        leadDevice: 'MK300',
+                        onGenerated: (_, __) async {}))))));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Timbres ao longo da música'));
+    await tester.pumpAndSettle();
+    expect(find.text('Guitarra muito fraca neste trecho.'), findsOneWidget);
+    final base = tester
+        .widgetList<OutlinedButton>(
+            find.widgetWithText(OutlinedButton, 'Gerar base deste timbre'))
+        .toList();
+    final solo = tester
+        .widgetList<OutlinedButton>(
+            find.widgetWithText(OutlinedButton, 'Gerar solo deste timbre'))
+        .toList();
+    expect(base.first.onPressed, isNull);
+    expect(solo.first.onPressed, isNull);
+    expect(base.last.onPressed, isNotNull);
+    expect(solo.last.onPressed, isNotNull);
+    expect(api.generatedRole, isNull);
   });
 }

@@ -86,14 +86,15 @@
     "hardware_write_verified": true,
     "hardware_write_scope": "Name-only rename confirmed by ACKs and 412-byte readback in user capture on 2026-10-29",
     "hardware_restore_verified": true,
-    "full_preset_transfer_verified": false,
+    "full_preset_transfer_verified": true,
     "observed_name_normalization": "Legacy 17-char test name later read as exact 16-char prefix; all bytes outside name unchanged. V1.5.4 accepts this narrowly on restore and uses 12 chars for new tests.",
-    "hardware_restore_scope": "Name-only exact original restoration confirmed in backend report 186de1f0619d0df02cc14d0b8664e6a245b181148b856a4dc651ed19e6986728 at 2026-10-29T21:54:37.831119Z; user confirmed."
+    "hardware_restore_scope": "Name-only exact original restoration confirmed in backend report 186de1f0619d0df02cc14d0b8664e6a245b181148b856a4dc651ed19e6986728 at 2026-10-29T21:54:37.831119Z; user confirmed.",
+    "full_preset_transfer_scope": "Slot 150 complete 412-byte transfer confirmed by backend report 90b3ea2b1d5724c04c092bee43e0bea806022312743c8341c01d76cdb2ed04b3 at 2026-10-29T22:32:39.584781Z and user. Acoustic result rejected; not sound-matching verification."
   },
   "limits": [
     "Static interoperability analysis, not an official programming API.",
     "No vendor binaries or assembly dumps are redistributed.",
-    "Complete-preset USB pilot enabled only for slot 150. Full-preset physical readback and acoustic validation remain pending; prior physical verification covers name-only write/restore."
+    "Complete-preset USB transfer physically confirmed for slot 150 in one user test. Catalog-wide physical validation and acoustic calibration remain incomplete. Other write destinations and BLE remain outside this validated flow."
   ],
   "catalog_profile": {
     "version": "0.4.0",

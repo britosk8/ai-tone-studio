@@ -147,7 +147,7 @@ class _TransferScreenState extends State<TransferScreen> {
         slot > 160 ||
         (preset.device == 'MK20' && slot != 150)) {
       return preset.device == 'MK20'
-          ? 'Primeiro teste MK20: destino fixo no slot 150.'
+          ? 'Envio MK20: destino no slot 150.'
           : 'Informe um slot entre 1 e 160.';
     }
     try {
@@ -215,7 +215,7 @@ class _TransferScreenState extends State<TransferScreen> {
             _devices = found;
             _deviceId = found.isEmpty ? null : found.first['id'] as String;
             _status = found.isEmpty
-                ? 'Nenhuma pedaleira encontrada. Confira energia, Bluetooth/cabo OTG e feche o M-EFCS.'
+                ? 'Nenhuma pedaleira encontrada. Confira energia, cabo OTG e feche o M-EFCS.'
                 : 'Selecione o dispositivo encontrado.';
           });
         }
@@ -252,7 +252,7 @@ class _TransferScreenState extends State<TransferScreen> {
           }
           if (mounted) {
             setState(() => _status =
-                '${_preset?.device}: layout e leitura conferidos. Preset ativo: $current.${_preset?.device == 'MK300' ? ' Firmware informado: $_firmware.' : ' Envio completo de teste no slot 150.'}${_mtu != null ? ' MTU BLE: $_mtu.' : ''}');
+                '${_preset?.device}: layout e leitura conferidos. Preset ativo: $current.${_preset?.device == 'MK300' ? ' Firmware informado: $_firmware.' : ' Envio completo para o slot 150.'}${_mtu != null ? ' MTU BLE: $_mtu.' : ''}');
           }
         } catch (_) {
           await _disconnect();
@@ -316,7 +316,7 @@ class _TransferScreenState extends State<TransferScreen> {
             builder: (ctx) => AlertDialog(
                   title: const Text('Substituir preset no pedal?'),
                   content: Text(
-                      '${_preset?.device} — slot ${prepared.slot + 1}\nAtual: ${Mk300Protocol.name(prepared.original)}\nNovo nome: ${prepared.name}\n\nO backup já foi salvo. Confirme que os modelos de fábrica usados não foram substituídos por NAM/IR. O envio ainda precisa de validação física no seu equipamento.'),
+                      '${_preset?.device} — slot ${prepared.slot + 1}\nAtual: ${Mk300Protocol.name(prepared.original)}\nNovo nome: ${prepared.name}\n\nO backup já foi salvo. Confirme que os modelos de fábrica usados não foram substituídos por NAM/IR. O app confere o preset gravado por leitura antes de confirmar o sucesso.'),
                   actions: [
                     TextButton(
                         onPressed: () => Navigator.pop(ctx, false),
@@ -328,7 +328,7 @@ class _TransferScreenState extends State<TransferScreen> {
                 ));
         if (confirmation != true || !mounted) return;
         setState(() => _status =
-            'Enviando e aguardando confirmação por leitura. Mantenha o cabo/Bluetooth e a energia.');
+            'Enviando e aguardando confirmação por leitura. Mantenha o cabo conectado e a energia.');
         try {
           await session.send(prepared, confirmed: true);
         } finally {
@@ -504,45 +504,12 @@ class _TransferScreenState extends State<TransferScreen> {
                     child: Padding(
                         padding: EdgeInsets.all(12),
                         child: Text(
-                            'MK20: envio completo de teste por USB para o slot 150. O app salva o original antes de gravar e confere o resultado por leitura. O slot 76 permanece preservado.'))),
-              if (preset.device == 'MK20')
-                OutlinedButton.icon(
-                  icon: const Icon(Icons.usb),
-                  onPressed: _busy
-                      ? null
-                      : () async {
-                          await _disconnect();
-                          if (context.mounted) {
-                            await Navigator.pushNamed(
-                                context, '/mk20-diagnostics');
-                          }
-                        },
-                  label: const Text('Testar MK20 por USB'),
-                ),
+                            'MK20: envio por USB para o slot 150, com backup e confirmação por leitura.'))),
               const SizedBox(height: 12),
-              DropdownButtonFormField<String>(
-                  isExpanded: true,
-                  value: _kind,
-                  decoration: const InputDecoration(labelText: 'Conexão'),
-                  items: const [
-                    DropdownMenuItem(
-                        value: 'usb', child: Text('USB MIDI — cabo OTG')),
-                    DropdownMenuItem(
-                        value: 'ble',
-                        child: Text('Bluetooth BLE — em validação'))
-                  ],
-                  onChanged: _busy
-                      ? null
-                      : (v) async {
-                          await _disconnect();
-                          if (mounted) {
-                            setState(() {
-                              _kind = v!;
-                              _devices = [];
-                              _deviceId = null;
-                            });
-                          }
-                        }),
+              const ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Icon(Icons.usb),
+                  title: Text('USB MIDI — cabo OTG')),
               const SizedBox(height: 12),
               OutlinedButton(
                   onPressed: _busy ? null : _scan,
@@ -605,7 +572,7 @@ class _TransferScreenState extends State<TransferScreen> {
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                       labelText: preset.device == 'MK20'
-                          ? 'Destino MK20: slot 150 (primeiro teste completo)'
+                          ? 'Destino MK20: slot 150'
                           : 'Slot de destino (1–160 na MK300)'),
                   onChanged: (_) => setState(() => _prepared = null)),
               const SizedBox(height: 12),

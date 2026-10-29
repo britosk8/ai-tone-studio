@@ -10,7 +10,8 @@ import '../services/device/mk20_diagnostics.dart';
 import '../services/device/mk20_name_pilot.dart';
 
 class Mk20NamePilotScreen extends StatefulWidget {
-  const Mk20NamePilotScreen({super.key});
+  final bool recoveryOnly;
+  const Mk20NamePilotScreen({super.key, this.recoveryOnly = false});
   @override
   State<Mk20NamePilotScreen> createState() => _Mk20NamePilotScreenState();
 }
@@ -217,13 +218,20 @@ class _Mk20NamePilotScreenState extends State<Mk20NamePilotScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(title: const Text('Teste de escrita MK20')),
+        appBar: AppBar(
+            title: Text(widget.recoveryOnly
+                ? 'Recuperar backup antigo MK20'
+                : 'Teste de escrita MK20')),
         body: ListView(padding: const EdgeInsets.all(16), children: [
-          const Text('Etapa 2 — testar nome do slot 150',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          const Text(
-              'Este teste altera apenas o nome. AMP, CAB, ganho, EQ e demais controles são preservados. '
-              'O envio dos presets gerados pela música continua em preparação.'),
+          Text(
+              widget.recoveryOnly
+                  ? 'Recuperação do teste de nome'
+                  : 'Etapa 2 — testar nome do slot 150',
+              style:
+                  const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          Text(widget.recoveryOnly
+              ? 'Use somente para restaurar um backup do teste antigo de nome. Para enviar presets completos, use Enviar para pedaleira.'
+              : 'Este teste altera apenas o nome. AMP, CAB, ganho, EQ e demais controles são preservados.'),
           OutlinedButton(
               onPressed: _busy ? null : _scan,
               child: const Text('Buscar MK20 por USB/OTG')),
@@ -253,11 +261,12 @@ class _Mk20NamePilotScreenState extends State<Mk20NamePilotScreen> {
                   ? null
                   : (value) =>
                       setState(() => _confirmedModel = value ?? false)),
-          FilledButton(
-              onPressed: _busy || !_confirmedModel || _deviceId == null
-                  ? null
-                  : _prepare,
-              child: const Text('Ler slot 150 e preparar backup')),
+          if (!widget.recoveryOnly)
+            FilledButton(
+                onPressed: _busy || !_confirmedModel || _deviceId == null
+                    ? null
+                    : _prepare,
+                child: const Text('Ler slot 150 e preparar backup')),
           if (_backup != null) ...[
             Text(
                 'Backup: ${Mk20Diagnostics.decode(base64Decode(_backup!['original_base64']))['name']} → ${Mk20Diagnostics.decode(base64Decode(_backup!['named_base64']))['name']}'),
@@ -269,14 +278,15 @@ class _Mk20NamePilotScreenState extends State<Mk20NamePilotScreen> {
                               text: 'Backup original MK20 — slot 150');
                         }),
                 child: const Text('Compartilhar backup original')),
-            FilledButton(
-                onPressed: _busy ||
-                        !_confirmedModel ||
-                        _deviceId == null ||
-                        _backup!['rename_attempted'] == true
-                    ? null
-                    : () => _perform(false),
-                child: const Text('Revisar e testar gravação do nome')),
+            if (!widget.recoveryOnly)
+              FilledButton(
+                  onPressed: _busy ||
+                          !_confirmedModel ||
+                          _deviceId == null ||
+                          _backup!['rename_attempted'] == true
+                      ? null
+                      : () => _perform(false),
+                  child: const Text('Revisar e testar gravação do nome')),
             OutlinedButton(
                 onPressed: _busy ||
                         !_confirmedModel ||

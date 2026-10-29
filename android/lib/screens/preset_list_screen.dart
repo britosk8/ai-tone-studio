@@ -226,16 +226,6 @@ class _PresetListScreenState extends State<PresetListScreen> {
             onExportStem: () => _exportStem(pair.lead),
             onCompare: () => _comparePreset(pair.lead),
           ),
-          Padding(
-              padding: const EdgeInsets.all(16),
-              child: FilledButton.icon(
-                  onPressed: () async {
-                    await Navigator.pushNamed(context, "/compare",
-                        arguments: {"pair_id": pair.id});
-                    if (mounted) await _loadPair();
-                  },
-                  icon: const Icon(Icons.mic),
-                  label: const Text("Gravar e comparar meu timbre"))),
           _ExportCard(pair: pair),
           if (pair.rhythm.device == 'MK300' || pair.lead.device == 'MK300')
             Padding(

@@ -109,8 +109,7 @@ void main() {
     messenger.setMockMethodCallHandler(NativeDeviceTransport.channel, null);
   });
 
-  testWidgets(
-      'MK20 mantém acesso ao diagnóstico separado do envio completo',
+  testWidgets('Envio não exibe mais o piloto antigo no fluxo principal',
       (tester) async {
     SharedPreferences.setMockInitialValues({});
     final raw = fixture();
@@ -120,26 +119,18 @@ void main() {
     await tester.pumpWidget(MultiProvider(
         providers: [
           Provider<ApiService>.value(value: DiagnosticApi()),
-          ChangeNotifierProvider<PresetStore>.value(value: store),
+          ChangeNotifierProvider<PresetStore>.value(value: store)
         ],
-        child: MaterialApp(
-          home: const TransferScreen(pairId: 'pair-001'),
-          onGenerateRoute: (settings) {
-            expect(settings.name, '/mk20-diagnostics');
-            return MaterialPageRoute(
-                builder: (_) => const Scaffold(body: Text('Coleta MK20')));
-          },
-        )));
+        child: const MaterialApp(
+            home: TransferScreen(pairId: 'pair-001', initialRole: 'lead'))));
     await tester.pumpAndSettle();
-    await tester.scrollUntilVisible(
-        find.text('Testar MK20 por USB'), 300,
+    expect(find.text('Testar MK20 por USB'), findsNothing);
+    expect(find.text('Abrir teste de leitura MK20'), findsNothing);
+    await tester.scrollUntilVisible(find.text('USB MIDI — cabo OTG'), 200,
         scrollable: find
             .descendant(
                 of: find.byType(ListView), matching: find.byType(Scrollable))
             .first);
-    await tester.tap(find.text('Testar MK20 por USB'));
-    await tester.pumpAndSettle();
-    expect(find.text('Coleta MK20'), findsOneWidget);
-    expect(tester.takeException(), isNull);
+    expect(find.text('USB MIDI — cabo OTG'), findsOneWidget);
   });
 }

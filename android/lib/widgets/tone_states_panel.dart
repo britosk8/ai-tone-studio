@@ -195,9 +195,19 @@ class _ToneStatesPanelState extends State<ToneStatesPanel> {
                       Builder(builder: (context) {
                         final state = raw as Map;
                         final region = state['representative'] as Map;
+                        final quality = state['reference_quality'] as Map?;
+                        final eligible = quality?['eligible'] != false;
                         return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              if (!eligible)
+                                Text(
+                                    quality?['message'] as String? ??
+                                        'Escolha outro trecho com guitarra mais audível.',
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .error)),
                               Text(state['label'] as String,
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold)),
@@ -243,13 +253,13 @@ class _ToneStatesPanelState extends State<ToneStatesPanel> {
                                               value!)),
                               Wrap(spacing: 8, children: [
                                 OutlinedButton(
-                                    onPressed: _busy
+                                    onPressed: _busy || !eligible
                                         ? null
                                         : () => _generate(state, 'rhythm'),
                                     child:
                                         const Text('Gerar base deste timbre')),
                                 OutlinedButton(
-                                    onPressed: _busy
+                                    onPressed: _busy || !eligible
                                         ? null
                                         : () => _generate(state, 'lead'),
                                     child:
