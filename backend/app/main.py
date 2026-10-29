@@ -19,7 +19,7 @@ logging.basicConfig(
 app = FastAPI(
     title="AI Tone Studio API",
     description="API para análise de áudio e geração de presets para pedaleiras M-VAVE",
-    version="1.5.3",
+    version="1.5.4",
 )
 
 app.add_middleware(
@@ -40,4 +40,4 @@ app.include_router(mk20_name_router)
 
 @app.get("/")
 async def root():
-    return {"service": "AI Tone Studio", "version": "1.5.3", "docs": "/docs"}
+    return {"service": "AI Tone Studio", "version": "1.5.4", "docs": "/docs"}

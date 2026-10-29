@@ -51,3 +51,17 @@ Os testes usam imagens sintetizadas e pedais simulados; não criam relatórios f
 Ponto anterior: `16b8e74` em `develop` (Android/API 1.5.2). `main` preservada em `56fbfbf`. Android **1.5.3+20**, API **1.5.3**; APK e SHA256 em `releases/`. Reverter código não restaura o slot; use o backup original do aplicativo e confirme por leitura.
 
 Validação final: **130 testes backend e 83 Flutter aprovados**; `flutter analyze` sem problemas. O relatório produzido pelo serviço Android durante o teste de interface foi também validado diretamente pelo backend (`rename_confirmed`), sem inserir dados sintéticos no banco real. APK release gerado com a mesma assinatura e applicationId anteriores.
+
+## Correção de restauração V1.5.4 — 29/10/2026
+
+A renomeação foi confirmada fisicamente por ACKs e leitura de retorno na coleta do usuário. Nas tentativas posteriores de restauração, o pedal devolveu `AI TONE MK20 TES` em vez de `AI TONE MK20 TEST`: somente o byte 16 mudou de `T` para NUL; os bytes 20–411 continuaram iguais ao original. O app cancelou antes de enviar qualquer escrita de restauração, por exigir igualdade com a imagem de nome com 17 caracteres. Os relatórios registram corretamente `not_attempted`, não uma restauração executada.
+
+A V1.5.4 preserva e aceita os backups existentes. Para restaurar, reconhece estritamente duas representações daquele teste antigo: nome integral de 17 caracteres ou seu prefixo exato de 16 caracteres com o restante do campo zerado. Em ambos os casos, todos os bytes fora do nome precisam corresponder integralmente ao backup. Alteração de qualquer controle continua bloqueando a escrita. Não é uma restauração forçada de um slot arbitrário.
+
+Os próximos testes usam o nome menor `AI TONE MK20` (12 caracteres). Não foi estabelecido um limite universal de nomes MK20; esta mudança evita o truncamento efetivamente observado no firmware do usuário, cuja versão continua desconhecida. O backup original `USER PRESET 150` permanece íntegro e será restaurado integralmente.
+
+Para recuperar o teste existente: instalar a V1.5.4 sobre o app atual, abrir **Etapa 2**, buscar e confirmar a MK20 e usar **Restaurar original do slot 150** diretamente. **Não preparar novo backup nem refazer a renomeação.** O backup anterior é recuperado automaticamente. O resultado da nova restauração será enviado ao backend; a correção não marca os relatórios antigos como sucesso.
+
+Android **1.5.4+21**, API **1.5.4**. Ponto anterior: `d9a61d7` em `develop`. A restauração física ainda depende do novo teste no pedal; nenhum comando foi enviado por ferramentas de desenvolvimento.
+
+Validação da V1.5.4: **132 testes backend e 85 Flutter aprovados**, análise estática sem problemas. Inclui restauração de backup legado com truncamento exato e rejeição quando outro byte de controle é diferente.

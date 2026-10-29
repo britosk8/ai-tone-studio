@@ -182,4 +182,48 @@ void main() {
     expect((await Mk20NamePilot.load(file))['restore_verified'], isTrue);
     await pedal.close();
   });
+  test(
+      'Restaura backup antigo com nome truncado em 16 caracteres e preserva controles',
+      () async {
+    final pedal = PilotPedal();
+    final original = Uint8List.fromList(pedal.image);
+    final file = await session(pedal).prepare(directory, deviceName: 'MK20');
+    final backup =
+        jsonDecode(await file.readAsString()) as Map<String, dynamic>;
+    final named = Uint8List.fromList(original)..fillRange(0, 20, 0);
+    named.setRange(
+        0, Mk20NamePilot.legacyName.length, Mk20NamePilot.legacyName.codeUnits);
+    backup['named_base64'] = base64Encode(named);
+    backup['rename_attempted'] = true;
+    await file.writeAsString(jsonEncode(backup));
+    pedal.image = Uint8List.fromList(named)..[16] = 0;
+    final restored =
+        await session(pedal).perform(file, restore: true, confirmed: true);
+    expect(restored['status'], 'confirmed');
+    expect(pedal.image, original);
+    expect(pedal.writes.length, 2);
+    await pedal.close();
+  });
+
+  test('Nome antigo truncado não libera restauração se outro byte mudou',
+      () async {
+    final pedal = PilotPedal();
+    final file = await session(pedal).prepare(directory, deviceName: 'MK20');
+    final backup =
+        jsonDecode(await file.readAsString()) as Map<String, dynamic>;
+    final named = Uint8List.fromList(pedal.image)..fillRange(0, 20, 0);
+    named.setRange(
+        0, Mk20NamePilot.legacyName.length, Mk20NamePilot.legacyName.codeUnits);
+    backup['named_base64'] = base64Encode(named);
+    backup['rename_attempted'] = true;
+    await file.writeAsString(jsonEncode(backup));
+    pedal.image = Uint8List.fromList(named)
+      ..[16] = 0
+      ..[100] = 5;
+    final result =
+        await session(pedal).perform(file, restore: true, confirmed: true);
+    expect(result['status'], 'not_attempted');
+    expect(pedal.writes, isEmpty);
+    await pedal.close();
+  });
 }

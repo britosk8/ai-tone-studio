@@ -10,7 +10,8 @@ import 'mk20_diagnostics.dart';
 /// Envelope derived from M-EFCS makeWritePacket; no MK300 bank-write call.
 class Mk20NamePilot {
   static const slot = 150, size = 412, field = (slot - 1) * size;
-  static const testName = 'AI TONE MK20 TEST';
+  static const testName = 'AI TONE MK20';
+  static const legacyName = 'AI TONE MK20 TEST';
   final DeviceTransport transport;
   final Future<void> Function(Duration) pause;
   final Duration timeout;
@@ -20,6 +21,20 @@ class Mk20NamePilot {
       {Future<void> Function(Duration)? pause,
       this.timeout = const Duration(seconds: 5)})
       : pause = pause ?? Future<void>.delayed;
+
+  static Uint8List _withName(List<int> original, String name) {
+    final output = Uint8List.fromList(original);
+    output.fillRange(0, 20, 0);
+    output.setRange(0, name.length, name.codeUnits);
+    return output;
+  }
+
+  static bool _matchesNamed(List<int> current, List<int> named) {
+    if (Mk300Protocol.same(current, named)) return true;
+    return Mk300Protocol.name(named) == legacyName &&
+        Mk300Protocol.same(
+            current, _withName(named, legacyName.substring(0, 16)));
+  }
 
   static Uint8List renamed(List<int> original) {
     Mk20Diagnostics.decode(original);
@@ -46,7 +61,8 @@ class Mk20NamePilot {
     final original = base64Decode(backup['original_base64'] as String);
     final named = base64Decode(backup['named_base64'] as String);
     Mk20Diagnostics.decode(original);
-    if (!Mk300Protocol.same(renamed(original), named) ||
+    if ((!Mk300Protocol.same(renamed(original), named) &&
+            !Mk300Protocol.same(_withName(original, legacyName), named)) ||
         Mk300Protocol.same(original, named)) {
       throw const FormatException('Backup inválido ou alteração fora do nome.');
     }
@@ -125,7 +141,8 @@ class Mk20NamePilot {
         await _read(1);
         final original = await _read();
         final named = renamed(original);
-        if (Mk300Protocol.same(original, named)) {
+        if ({testName, legacyName, legacyName.substring(0, 16)}
+            .contains(Mk300Protocol.name(original))) {
           throw StateError(
               'O slot já tem o nome do teste. Recupere e restaure o backup anterior.');
         }
@@ -191,7 +208,9 @@ class Mk20NamePilot {
               throw StateError(
                   'Restauração já tentada. Apenas leitura; não repetiremos a escrita.');
             }
-            if (!Mk300Protocol.same(current, expected)) {
+            if (!(restore
+                ? _matchesNamed(current, named)
+                : Mk300Protocol.same(current, expected))) {
               throw StateError(
                   'Slot 150 mudou desde o backup. Operação cancelada.');
             }

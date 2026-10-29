@@ -113,3 +113,26 @@ def test_original_without_write_is_recognized_on_restore(client):
         event("rx", c.build(13, 0xD21, 61388, 412, 0, image())),
     ]
     assert validate(data)["status"] == "already_original"
+
+
+@pytest.mark.parametrize("mutate_controls", [False, True])
+def test_restore_of_legacy_name_truncated_at_16_is_narrowly_allowed(
+    client, mutate_controls
+):
+    from app.api.mk20_name_pilot import LEGACY_NAME
+
+    data = report(True)
+    original = image()
+    named = LEGACY_NAME.ljust(20, b"\0") + original[20:]
+    data["backup"]["named_base64"] = base64.b64encode(named).decode()
+    current = bytearray(LEGACY_NAME[:16].ljust(20, b"\0") + original[20:])
+    if mutate_controls:
+        current[100] ^= 1
+    data["trace"][1] = event("rx", c.build(13, 0xD21, 61388, 412, 0, bytes(current)))
+    response = client.post("/api/v1/mk20/name-pilots", json={"report": data})
+    if mutate_controls:
+        assert response.status_code == 400
+    else:
+        assert response.status_code == 200, response.text
+        assert response.json()["status"] == "restore_confirmed"
+        assert response.json()["test_name"] == LEGACY_NAME.decode()

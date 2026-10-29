@@ -12,7 +12,8 @@ from .mk20_diagnostics import decode_image, decode64
 
 router = APIRouter(prefix="/api/v1/mk20/name-pilots")
 SIZE, SLOT, OFFSET = 412, 150, 149 * 412
-TEST_NAME = b"AI TONE MK20 TEST"
+TEST_NAME = b"AI TONE MK20"
+LEGACY_NAME = b"AI TONE MK20 TEST"
 
 
 def validate(report):
@@ -41,7 +42,10 @@ def validate(report):
     named = decode64(backup.get("named_base64"), SIZE)
     decoded = decode_image(original)
     expected_named = TEST_NAME.ljust(20, b"\0") + original[20:]
-    if named != expected_named or named == original:
+    if (
+        named not in {expected_named, LEGACY_NAME.ljust(20, b"\0") + original[20:]}
+        or named == original
+    ):
         raise ValueError(
             "O teste só pode alterar o nome; controles e demais bytes devem permanecer intactos"
         )
@@ -129,7 +133,12 @@ def validate(report):
                 continue
             if frame.space == 0:
                 if stage == "start":
-                    preflight = frame.payload == expected_before
+                    preflight = frame.payload == expected_before or (
+                        restore
+                        and named[:20] == LEGACY_NAME.ljust(20, b"\0")
+                        and frame.payload
+                        == LEGACY_NAME[:16].ljust(20, b"\0") + named[20:]
+                    )
                 observed_original = frame.payload == original
                 confirmed = stage == "commit_ack" and frame.payload == target
     status = (
@@ -146,7 +155,7 @@ def validate(report):
         "slot": SLOT,
         "operation": report["operation"],
         "original_name": decoded["name"],
-        "test_name": TEST_NAME.decode(),
+        "test_name": decode_image(named)["name"],
         "original_sha256": hashlib.sha256(original).hexdigest(),
         "named_sha256": hashlib.sha256(named).hexdigest(),
         "write_attempted": bank_sent,

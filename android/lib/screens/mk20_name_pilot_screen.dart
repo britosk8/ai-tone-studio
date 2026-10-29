@@ -260,7 +260,7 @@ class _Mk20NamePilotScreenState extends State<Mk20NamePilotScreen> {
               child: const Text('Ler slot 150 e preparar backup')),
           if (_backup != null) ...[
             Text(
-                'Backup: ${Mk20Diagnostics.decode(base64Decode(_backup!['original_base64']))['name']} → ${Mk20NamePilot.testName}'),
+                'Backup: ${Mk20Diagnostics.decode(base64Decode(_backup!['original_base64']))['name']} → ${Mk20Diagnostics.decode(base64Decode(_backup!['named_base64']))['name']}'),
             TextButton(
                 onPressed: _busy || _backupFile == null
                     ? null
