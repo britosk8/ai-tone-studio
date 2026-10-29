@@ -100,6 +100,16 @@ class ApiService {
     return AnalysisJob.fromJson(_handleResponse(response));
   }
 
+  Future<Map<String, dynamic>> saveMk20NamePilot(
+      Map<String, dynamic> report) async {
+    final response = await http
+        .post(Uri.parse('$_baseUrl/api/v1/mk20/name-pilots'),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({'report': report}))
+        .timeout(const Duration(seconds: 30));
+    return _handleResponse(response);
+  }
+
   Future<Map<String, dynamic>> saveMk20Diagnostic(
       Map<String, dynamic> report) async {
     final response = await http

@@ -1,5 +1,7 @@
 # Evolução em develop — piloto automático MK300
 
+Android/API **1.5.3**: [etapa 2 MK20: teste de gravação apenas do nome do slot 150, backup e restauração](docs/TESTE_ESCRITA_MK20_V1_5_3.md). [APK atualizado](releases/ai-tone-studio-v1.5.3-develop.apk). Envio de presets completos MK20 ainda pendente.
+
 Android/API **1.5.2**: [correção do leitor MK20 com a resposta USB real e recuperação dos diagnósticos anteriores](docs/TESTE_MK20_V1_5_1.md#resposta-física-recebida-e-correção-v152--29102026). [APK atualizado](releases/ai-tone-studio-v1.5.2-develop.apk).
 
 Android/API **1.5.1**: [primeiro teste MK20 por USB, leitura e diagnóstico persistido](docs/TESTE_MK20_V1_5_1.md). [APK atualizado](releases/ai-tone-studio-v1.5.1-develop.apk). Envio de presets MK20 ainda não habilitado.

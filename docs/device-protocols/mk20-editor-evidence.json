@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "reviewed_on": "2026-10-29",
+  "source_url": "https://resource.m-vave.com/software/app/M-EFCS.apk",
+  "apk_sha256": "e72ab3df88a968357db11e9554b9deeaa8b82254fa4dcc421a9cbdd77e196992",
+  "arm64_libapp_sha256": "f6ff747d26bc828428ecb415ce599245201ed3ee95a1ae42cd5c0ebe53863549",
+  "dart_version": "3.11.4",
+  "snapshot": "78da37fed6bf1489361a312568249f3f",
+  "analysis_tool": {
+    "url": "https://github.com/worawit/blutter",
+    "commit": "4a60ac648bf448c5a7596437243bcd0b9376fdf0",
+    "warning": "Analyzer warning in audio_separator/stem_cache.dart at 0x615ba8; not in reviewed save path."
+  },
+  "reviewed_functions": [
+    {
+      "name": "MK20View → ProductDataBase.savePresetToDevice",
+      "address": "0x55830c → 0x533670",
+      "finding": "MK20 invokes the common preset save path"
+    },
+    {
+      "name": "ProductDataBase.savePresetToDevice",
+      "address": "0x533798–0x5337e8",
+      "finding": "target = base + slot_index × struct_size; NativeStructBase.sendToDevice"
+    },
+    {
+      "name": "NativeStructBase.sendToDevice",
+      "address": "0x5339c4",
+      "finding": "serializes the struct and calls DeviceConnection.writeData(type=4, address, bytes)"
+    },
+    {
+      "name": "PatchWrapper constructor (MK20)",
+      "address": "0x691a64",
+      "finding": "struct size = 412"
+    },
+    {
+      "name": "makeWritePacket",
+      "address": "0x53175c",
+      "finding": "raw prefix 00 59 22; 24-bit (payload length + 8); type 04; u32 address; u24 data length; payload; checksum"
+    },
+    {
+      "name": "ProductDataBase.savePresetToDevice → DeviceConnection.save",
+      "address": "0x533818–0x53381c → 0x533968",
+      "finding": "commit address 0xf0000000, empty payload, type=4"
+    },
+    {
+      "name": "buildMk20EffectParams",
+      "address": "0x691ad0",
+      "finding": "FX, NS, DS, AMP, CAB, EQ, MOD, DLY, REV, VOL; names/knob mapping not yet validated for generation"
+    }
+  ],
+  "pilot": {
+    "transport": "USB",
+    "slot": 150,
+    "record_size": 412,
+    "bank_offset": 61388,
+    "write_class": 9,
+    "bank_command": 3361,
+    "commit_space": 15,
+    "commit_command": 65,
+    "changed_bytes": "name 0–19 only",
+    "hardware_write_verified": false
+  },
+  "limits": [
+    "Static interoperability analysis, not an official programming API.",
+    "No vendor binaries or assembly dumps are redistributed.",
+    "MK20 full generated-preset transfer remains disabled pending mappings and physical write verification."
+  ]
+}

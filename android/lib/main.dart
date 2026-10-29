@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'screens/home_screen.dart';
 import 'screens/mk20_diagnostics_screen.dart';
+import 'screens/mk20_name_pilot_screen.dart';
 import 'screens/upload_screen.dart';
 import 'screens/analysis_screen.dart';
 import 'screens/preset_list_screen.dart';
@@ -49,6 +50,9 @@ class AiToneStudioApp extends StatelessWidget {
             return MaterialPageRoute(
                 builder: (_) =>
                     PedalReferenceScreen(pairId: args['pair_id'] as String));
+          case '/mk20-name-pilot':
+            return MaterialPageRoute(
+                builder: (_) => const Mk20NamePilotScreen());
           case '/mk20-diagnostics':
             return MaterialPageRoute(
                 builder: (_) => const Mk20DiagnosticsScreen());

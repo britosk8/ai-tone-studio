@@ -45,3 +45,5 @@ Antes da V1.5.0: commit `e95ffae` (Android/API 1.4.2 com mensagem de referência
 Antes da V1.5.1: `8b9fb5d` (Android/API 1.5.0). A V1.5.1 adiciona diagnóstico de leitura MK20, com arquivos privados do app e registros `mk20_diagnostic` no SQLite. Não altera imagens no pedal nem migra presets. [Roteiro do primeiro teste](TESTE_MK20_V1_5_1.md).
 
 Antes da V1.5.2: `74373a0` (Android/API 1.5.1). A correção reconhece a resposta real de leitura MK20 e reinterpreta os relatórios antigos sem alterar sua captura. Nenhuma escrita no pedal foi habilitada.
+
+Antes da V1.5.3: `16b8e74` (Android/API 1.5.2). A V1.5.3 acrescenta piloto de nome MK20 no slot 150, com backup e restauração; relatórios em `mk20_name_pilot`. Rollback de código não desfaz gravação no pedal. [Roteiro e recuperação](TESTE_ESCRITA_MK20_V1_5_3.md).

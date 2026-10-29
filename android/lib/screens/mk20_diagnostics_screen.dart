@@ -194,6 +194,13 @@ class _Mk20DiagnosticsScreenState extends State<Mk20DiagnosticsScreen> {
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(title: const Text('Testar MK20 por USB')),
         body: ListView(padding: const EdgeInsets.all(16), children: [
+          OutlinedButton.icon(
+            onPressed: _busy
+                ? null
+                : () => Navigator.pushNamed(context, '/mk20-name-pilot'),
+            icon: const Icon(Icons.drive_file_rename_outline),
+            label: const Text('Etapa 2: testar gravação do nome'),
+          ),
           const Text('Primeiro teste da MK20',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           const Text(
