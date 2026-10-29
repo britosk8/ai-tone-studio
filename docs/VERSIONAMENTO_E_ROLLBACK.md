@@ -41,3 +41,5 @@ Na V1.4.0, incluir também `generation_inputs/` e `separations/` no backup de da
 Antes da V1.4.2: commit `5bbb726` (Android 1.4.1/API 1.4.0). A V1.4.2 acrescenta seleções de referências e jobs idempotentes no SQLite, além de recortes persistidos em `separations/`; manter backup integral de dados. Reverter código não deve apagar capturas, instrumentos ou seleções já salvas.
 
 Antes da V1.5.0: commit `e95ffae` (Android/API 1.4.2 com mensagem de referência silenciosa corrigida). A V1.5.0 acrescenta estados, pesquisa e variantes em registros SQLite, sem apagar os pares anteriores. Recortes e referências exigem o mesmo backup integral de dados; detalhes em [estados sonoros e pesquisa](TIMBRES_E_PESQUISA_V1_5_0.md).
+
+Antes da V1.5.1: `8b9fb5d` (Android/API 1.5.0). A V1.5.1 adiciona diagnóstico de leitura MK20, com arquivos privados do app e registros `mk20_diagnostic` no SQLite. Não altera imagens no pedal nem migra presets. [Roteiro do primeiro teste](TESTE_MK20_V1_5_1.md).

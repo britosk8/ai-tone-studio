@@ -115,6 +115,11 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('AI Tone Studio'),
         actions: [
           IconButton(
+              icon: const Icon(Icons.usb),
+              tooltip: 'Testar MK20 por USB',
+              onPressed: () =>
+                  Navigator.pushNamed(context, '/mk20-diagnostics')),
+          IconButton(
               tooltip: 'Piloto Infest — MK300',
               icon: const Icon(Icons.science_outlined),
               onPressed: () => Navigator.pushNamed(context, '/mk300-pilot')),

@@ -14,11 +14,12 @@ class NativeDeviceTransport implements DeviceTransport {
   static Stream<dynamic>? _events;
   final String kind;
   final String deviceId;
+  final void Function(List<int> bytes)? onRawData;
   final _frames = StreamController<Uint8List>.broadcast();
   late final PedalFramer _framer;
   StreamSubscription<dynamic>? _subscription;
   bool _closed = false;
-  NativeDeviceTransport(this.kind, this.deviceId) {
+  NativeDeviceTransport(this.kind, this.deviceId, {this.onRawData}) {
     _framer = PedalFramer(rawBle: kind == 'ble');
   }
   @override
@@ -35,6 +36,7 @@ class NativeDeviceTransport implements DeviceTransport {
     _subscription = _events!.listen((dynamic event) {
       if (_closed || event is! Map) return;
       if (event['type'] == 'data') {
+        onRawData?.call(List<int>.from(event['bytes'] as List));
         for (final frame
             in _framer.add(List<int>.from(event['bytes'] as List))) {
           _frames.add(frame);

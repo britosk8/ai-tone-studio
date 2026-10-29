@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'screens/home_screen.dart';
+import 'screens/mk20_diagnostics_screen.dart';
 import 'screens/upload_screen.dart';
 import 'screens/analysis_screen.dart';
 import 'screens/preset_list_screen.dart';
@@ -48,6 +49,9 @@ class AiToneStudioApp extends StatelessWidget {
             return MaterialPageRoute(
                 builder: (_) =>
                     PedalReferenceScreen(pairId: args['pair_id'] as String));
+          case '/mk20-diagnostics':
+            return MaterialPageRoute(
+                builder: (_) => const Mk20DiagnosticsScreen());
           case '/mk300-pilot':
             return MaterialPageRoute(builder: (_) => const Mk300PilotScreen());
           case '/':

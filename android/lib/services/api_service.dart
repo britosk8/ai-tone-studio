@@ -100,6 +100,16 @@ class ApiService {
     return AnalysisJob.fromJson(_handleResponse(response));
   }
 
+  Future<Map<String, dynamic>> saveMk20Diagnostic(
+      Map<String, dynamic> report) async {
+    final response = await http
+        .post(Uri.parse('$_baseUrl/api/v1/mk20/diagnostics'),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({'report': report}))
+        .timeout(const Duration(seconds: 30));
+    return _handleResponse(response);
+  }
+
   Future<Map<String, dynamic>> toneStates(String pairId) =>
       _get('/api/v1/presets/$pairId/tone-states');
   Future<Map<String, dynamic>> analyzeToneStates(String pairId, String version,

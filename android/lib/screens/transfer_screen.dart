@@ -124,7 +124,7 @@ class _TransferScreenState extends State<TransferScreen> {
     if (_busy) return 'Aguarde a operação em andamento.';
     if (preset == null) return 'Escolha um preset da biblioteca.';
     if (preset.device != 'MK300') {
-      return 'Envio MK20 indisponível. Selecione um preset gerado para MK300.';
+      return 'Envio MK20 ainda indisponível. Use Testar MK20 por USB para coletar a leitura do pedal.';
     }
     if (preset.catalogVersion != '0.4.0') {
       return 'Envio bloqueado pelo preset antigo. Toque em Gerar preset atualizado ou selecione uma análise recente.';
@@ -206,6 +206,12 @@ class _TransferScreenState extends State<TransferScreen> {
         }
       });
   Future<void> _connect() => _run(() async {
+        if (_preset?.device == 'MK20') {
+          await _disconnect();
+          if (!mounted) return;
+          await Navigator.pushNamed(context, '/mk20-diagnostics');
+          return;
+        }
         if (_deviceId == null || !_confirmedModel) {
           throw StateError(
               'Selecione o dispositivo e confirme o modelo conectado.');
@@ -215,13 +221,6 @@ class _TransferScreenState extends State<TransferScreen> {
         _transport = transport;
         final info = await transport.connect();
         _mtu = (info['mtu'] as num?)?.toInt();
-        if (_preset?.device != 'MK300') {
-          if (mounted) {
-            setState(() => _status =
-                'Transporte conectado. MK20: envio bloqueado; perfil ainda sem captura de comandos. Use o guia manual.');
-          }
-          return;
-        }
         try {
           final session = Mk300TransferSession(
               transport, await Mk300TransferSession.loadCatalog(),
@@ -416,7 +415,21 @@ class _TransferScreenState extends State<TransferScreen> {
                     child: Padding(
                         padding: EdgeInsets.all(12),
                         child: Text(
-                            'MK20: a conexão pode ser investigada, mas o envio está bloqueado até comprovar o perfil de comandos. Seu formato é diferente da MK300.'))),
+                            'MK20: primeiro colete a leitura no teste USB abaixo. O formato e o catálogo diferem da MK300; envio ainda indisponível.'))),
+              if (preset.device == 'MK20')
+                OutlinedButton.icon(
+                  icon: const Icon(Icons.usb),
+                  onPressed: _busy
+                      ? null
+                      : () async {
+                          await _disconnect();
+                          if (context.mounted) {
+                            await Navigator.pushNamed(
+                                context, '/mk20-diagnostics');
+                          }
+                        },
+                  label: const Text('Testar MK20 por USB'),
+                ),
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(
                   value: _kind,
@@ -490,17 +503,23 @@ class _TransferScreenState extends State<TransferScreen> {
                   title: Text(
                       'Confirmo que o equipamento conectado é ${preset.device} e fechei o M-EFCS.')),
               FilledButton(
-                  onPressed: _busy || _deviceId == null || !_confirmedModel
+                  onPressed: _busy ||
+                          (preset.device == 'MK300' &&
+                              (_deviceId == null || !_confirmedModel))
                       ? null
                       : _connect,
-                  child: const Text('Conectar e conferir leitura')),
+                  child: Text(preset.device == 'MK20'
+                      ? 'Abrir teste de leitura MK20'
+                      : 'Conectar e conferir leitura')),
               const SizedBox(height: 12),
               TextField(
                   controller: _slot,
-                  enabled: !_busy,
+                  enabled: !_busy && preset.device == 'MK300',
                   keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                      labelText: 'Slot de destino (1–160 na MK300)'),
+                  decoration: InputDecoration(
+                      labelText: preset.device == 'MK20'
+                          ? 'Slot MK20: use o teste de leitura acima'
+                          : 'Slot de destino (1–160 na MK300)'),
                   onChanged: (_) => setState(() => _prepared = null)),
               const SizedBox(height: 12),
               FilledButton(
