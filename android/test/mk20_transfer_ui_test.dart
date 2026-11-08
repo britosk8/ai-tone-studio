@@ -69,7 +69,7 @@ void main() {
           writes++;
           if (f.space == 0) {
             expect(f.command, 0xD21);
-            expect(f.field, 61388);
+            expect(f.field, 75 * 412);
             expect(f.payload.length, 412);
             staged = f.payload;
           } else {
@@ -137,10 +137,15 @@ void main() {
         .onChanged!(true);
     await tester.pump();
     await invoke('Conectar e conferir leitura');
+    final slot =
+        find.widgetWithText(TextField, 'Slot de destino (1–150 na MK20)');
+    expect(tester.widget<TextField>(slot).enabled, isTrue);
+    await tester.enterText(slot, '76');
+    await tester.pump();
     await invoke('Ler destino e salvar backup');
     expect(writes, 0);
     await invoke('Revisar e enviar preset');
-    expect(find.textContaining('MK20 — slot 150'), findsOneWidget);
+    expect(find.textContaining('MK20 — slot 76'), findsOneWidget);
     await tester.tap(find.text('Cancelar'));
     await tester.pump(const Duration(milliseconds: 400));
     await tester

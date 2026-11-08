@@ -99,11 +99,11 @@ void main() {
         .onChanged!(true);
     await tester.pump();
     await tester.runAsync(() async {
-      tester
+      final connect = tester
           .widget<FilledButton>(
               find.widgetWithText(FilledButton, 'Conectar e conferir leitura'))
-          .onPressed!();
-      await Future<void>.delayed(const Duration(milliseconds: 100));
+          .onPressed!;
+      await (connect as dynamic)();
     });
     await tester.pumpAndSettle();
     await reveal(find.text('Ler destino e salvar backup'), 250);

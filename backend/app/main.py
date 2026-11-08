@@ -1,4 +1,5 @@
 """Aplicativo FastAPI principal do AI Tone Studio."""
+
 import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -21,7 +22,7 @@ logging.basicConfig(
 app = FastAPI(
     title="AI Tone Studio API",
     description="API para análise de áudio e geração de presets para pedaleiras M-VAVE",
-    version="1.6.0",
+    version="1.6.1",
 )
 
 app.add_middleware(
@@ -44,4 +45,4 @@ app.include_router(calibration_router)
 
 @app.get("/")
 async def root():
-    return {"service": "AI Tone Studio", "version": "1.6.0", "docs": "/docs"}
+    return {"service": "AI Tone Studio", "version": "1.6.1", "docs": "/docs"}

@@ -3,6 +3,7 @@ import os
 import logging
 import uuid
 import asyncio
+import time
 from io import BytesIO
 from pathlib import Path
 from typing import Optional
@@ -44,7 +45,7 @@ def _get_pipeline() -> ToneAnalysisPipeline:
 @router.get("/health")
 async def health():
     """Health check."""
-    return {"status": "ok", "service": "AI Tone Studio API", "version": "1.6.0"}
+    return {"status": "ok", "service": "AI Tone Studio API", "version": "1.6.1"}
 
 
 @router.get("/devices")
@@ -205,8 +206,21 @@ async def _run_analysis_job(
         _jobs[job_id]["progress_percent"] = 10
 
         pipeline = _get_pipeline()
+        last_saved = 0.0
+
         def progress(percent, message):
-            _jobs[job_id].update(progress_percent=max(percent,_jobs[job_id].get("progress_percent",0)), progress=message)
+            nonlocal last_saved
+            _jobs[job_id].update(
+                progress_percent=min(
+                    99, max(percent, _jobs[job_id].get("progress_percent", 0))
+                ),
+                progress=message,
+            )
+            now = time.monotonic()
+            if now - last_saved >= 1:
+                save_record("job", job_id, _jobs[job_id])
+                last_saved = now
+
         analysis, preset_pair = await pipeline.process(
             audio_path=audio_path,
             rhythm_device=rhythm_device,

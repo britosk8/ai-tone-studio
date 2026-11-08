@@ -218,7 +218,8 @@ void main() {
     expect(s.lastReport!['error'], isNotNull);
     await s.close();
   });
-  test('slot 76, cancelamento, backup alterado e slot modificado não gravam',
+  test(
+      'slot inválido, cancelamento, backup alterado e slot modificado não gravam',
       () async {
     final pedal = Pedal(), s = session(Pedal());
     await s.close();
@@ -226,7 +227,7 @@ void main() {
     await live.probe();
     final preset = PresetData.fromJson(presetJson());
     await expectLater(
-        live.prepare(preset, 'QA', 75, directory), throwsStateError);
+        live.prepare(preset, 'QA', 150, directory), throwsStateError);
     final t = await live.prepare(preset, 'QA', 149, directory);
     await expectLater(live.send(t, confirmed: false), throwsStateError);
     pedal.image[120] ^= 1;
@@ -239,6 +240,25 @@ void main() {
     expect(pedal.writes, isEmpty);
     await live.close();
   });
+  for (final slot in [0, 75, 148]) {
+    test('envia e recupera o slot ${slot + 1} com endereço próprio', () async {
+      final pedal = Pedal(), live = session(Pedal());
+      await live.close();
+      final connection = session(pedal);
+      await connection.probe();
+      final t = await connection.prepare(
+          PresetData.fromJson(presetJson()), 'QA', slot, directory);
+      await connection.send(t, confirmed: true);
+      expect(pedal.writes.first.field, slot * 412);
+      expect(connection.lastReport!['slot'], slot + 1);
+      final recovered = await connection.recover(directory);
+      expect(recovered!.slot, slot);
+      await connection.restore(recovered, confirmed: true);
+      expect(pedal.writes[2].field, slot * 412);
+      expect(pedal.image, originalImage());
+      await connection.close();
+    });
+  }
   test(
       'catálogo antigo, nomes/IDs errados, limites forjados e escalas inválidas bloqueiam',
       () async {

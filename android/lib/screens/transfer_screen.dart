@@ -145,9 +145,9 @@ class _TransferScreenState extends State<TransferScreen> {
     if (slot == null ||
         slot < 1 ||
         slot > 160 ||
-        (preset.device == 'MK20' && slot != 150)) {
+        (preset.device == 'MK20' && slot > 150)) {
       return preset.device == 'MK20'
-          ? 'Envio MK20: destino no slot 150.'
+          ? 'Informe um slot entre 1 e 150 na MK20.'
           : 'Informe um slot entre 1 e 160.';
     }
     try {
@@ -252,7 +252,7 @@ class _TransferScreenState extends State<TransferScreen> {
           }
           if (mounted) {
             setState(() => _status =
-                '${_preset?.device}: layout e leitura conferidos. Preset ativo: $current.${_preset?.device == 'MK300' ? ' Firmware informado: $_firmware.' : ' Envio completo para o slot 150.'}${_mtu != null ? ' MTU BLE: $_mtu.' : ''}');
+                '${_preset?.device}: layout e leitura conferidos. Preset ativo: $current.${_preset?.device == 'MK300' ? ' Firmware informado: $_firmware.' : ' Envio completo disponível nos slots 1 a 150.'}${_mtu != null ? ' MTU BLE: $_mtu.' : ''}');
           }
         } catch (_) {
           await _disconnect();
@@ -288,9 +288,9 @@ class _TransferScreenState extends State<TransferScreen> {
         if (value == null ||
             value < 1 ||
             value > 160 ||
-            (preset.device == 'MK20' && value != 150)) {
+            (preset.device == 'MK20' && value > 150)) {
           throw ArgumentError(preset.device == 'MK20'
-              ? 'MK20: use o slot 150.'
+              ? 'MK20: escolha um slot entre 1 e 150.'
               : 'Escolha slot de 1 a 160.');
         }
         final directory = await getApplicationDocumentsDirectory();
@@ -380,7 +380,7 @@ class _TransferScreenState extends State<TransferScreen> {
             builder: (ctx) => AlertDialog(
                     title: const Text('Restaurar original da MK20?'),
                     content: Text(
-                        'Slot 150: restaurar "${Mk300Protocol.name(backup.original)}". O preset atual só será substituído se corresponder ao envio salvo.'),
+                        'Slot ${backup.slot + 1}: restaurar "${Mk300Protocol.name(backup.original)}". O preset atual só será substituído se corresponder ao envio salvo.'),
                     actions: [
                       TextButton(
                           onPressed: () => Navigator.pop(ctx, false),
@@ -399,7 +399,7 @@ class _TransferScreenState extends State<TransferScreen> {
           setState(() {
             _prepared = null;
             _status =
-                'Original do slot 150 restaurado e confirmado por leitura.';
+                'Original do slot ${backup.slot + 1} restaurado e confirmado por leitura.';
           });
         }
       });
@@ -504,7 +504,7 @@ class _TransferScreenState extends State<TransferScreen> {
                     child: Padding(
                         padding: EdgeInsets.all(12),
                         child: Text(
-                            'MK20: envio por USB para o slot 150, com backup e confirmação por leitura.'))),
+                            'MK20: envio por USB para os slots 1 a 150, com backup e confirmação por leitura.'))),
               const SizedBox(height: 12),
               const ListTile(
                   contentPadding: EdgeInsets.zero,
@@ -568,11 +568,11 @@ class _TransferScreenState extends State<TransferScreen> {
               const SizedBox(height: 12),
               TextField(
                   controller: _slot,
-                  enabled: !_busy && preset.device == 'MK300',
+                  enabled: !_busy,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                       labelText: preset.device == 'MK20'
-                          ? 'Destino MK20: slot 150'
+                          ? 'Slot de destino (1–150 na MK20)'
                           : 'Slot de destino (1–160 na MK300)'),
                   onChanged: (_) => setState(() => _prepared = null)),
               const SizedBox(height: 12),
@@ -588,7 +588,8 @@ class _TransferScreenState extends State<TransferScreen> {
               if (_session is Mk20TransferSession && _recovery != null)
                 OutlinedButton(
                     onPressed: _busy ? null : _restoreMk20,
-                    child: const Text('Restaurar backup MK20 do slot 150')),
+                    child: Text(
+                        'Restaurar backup MK20 do slot ${_recovery!.slot + 1}')),
               if (_prepared != null) ...[
                 TextButton(
                     onPressed: _busy ? null : _shareBackup,

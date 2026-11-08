@@ -53,6 +53,35 @@ class GuitarToneEngine:
                     25,
                     "Separando guitarra, voz, baixo, bateria e demais instrumentos... Isso pode levar vários minutos.",
                 )
+                if isinstance(self.provider, DemucsGuitarProvider):
+
+                    def separated(event):
+                        stage = event.get("stage")
+                        done, total = event.get("completed"), event.get("total")
+                        if (
+                            stage == "separating"
+                            and type(done) is int
+                            and type(total) is int
+                            and 0 <= done <= total
+                            and total > 0
+                        ):
+                            progress(
+                                25 + int(40 * done / total),
+                                f"Separando instrumentos: {done}/{total} blocos ({int(100 * done / total)}% desta etapa)",
+                            )
+                        elif stage == "loading":
+                            progress(25, "Carregando modelo de separação por IA...")
+                        elif stage == "waiting":
+                            progress(
+                                25,
+                                "Aguardando liberação do processamento de instrumentos...",
+                            )
+                        elif stage == "saving":
+                            progress(
+                                65, "Salvando e conferindo os instrumentos separados..."
+                            )
+
+                    self.provider.progress = separated
                 separation = self.provider.separate_guitar(prepared)
                 target = separation.guitar_stem
         progress(70, "Medindo espectro, dinâmica e ataque da guitarra...")

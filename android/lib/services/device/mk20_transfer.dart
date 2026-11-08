@@ -9,7 +9,7 @@ import 'mk20_diagnostics.dart';
 import 'mk300_protocol.dart';
 import 'preset_transfer.dart';
 
-/// MK20 AM4 only. Slot 150 is the first complete-preset hardware pilot.
+/// MK20 AM4 only. Bank addresses are zero based; each MK20 preset occupies 412 bytes.
 /// Never uses the MK300 bank-write command or its 448-byte layout.
 class Mk20TransferSession implements PedalTransferSession {
   static const size = 412, targetSlot = 149;
@@ -111,8 +111,8 @@ class Mk20TransferSession implements PedalTransferSession {
         return Mk300Protocol.name(active);
       });
   static Uint8List bankWrite(int slot, List<int> image) {
-    if (slot != targetSlot) {
-      throw ArgumentError('Teste MK20 disponível somente no slot 150.');
+    if (slot < 0 || slot >= 150) {
+      throw ArgumentError('Slot MK20 deve estar entre 1 e 150.');
     }
     Mk20Diagnostics.decode(image);
     return Mk300Protocol.build(9, 0x41 + 8 * size, slot * size, size, 0, image);
@@ -223,21 +223,21 @@ class Mk20TransferSession implements PedalTransferSession {
   Future<PreparedTransfer> prepare(
           PresetData preset, String name, int slot, Directory directory) =>
       _exclusive(() async {
-        if (!verified || slot != targetSlot) {
-          throw StateError('Conecte a MK20 e escolha o slot 150.');
+        if (!verified || slot < 0 || slot >= 150) {
+          throw StateError('Conecte a MK20 e escolha um slot entre 1 e 150.');
         }
         final original = await _read(slot);
         final image = buildImage(preset, name, original);
         await directory.create(recursive: true);
         final file = File(
-            '${directory.path}/mk20-slot-150-${DateTime.now().microsecondsSinceEpoch}.json');
+            '${directory.path}/mk20-slot-${slot + 1}-${DateTime.now().microsecondsSinceEpoch}.json');
         await file.writeAsString(
             jsonEncode({
               'format': 'ai-tone-mk20-full-backup',
               'version': 1,
               'device': 'MK20',
               'device_connection': deviceLabel,
-              'slot': 150,
+              'slot': slot + 1,
               'created_at': DateTime.now().toUtc().toIso8601String(),
               'original_name': Mk300Protocol.name(original),
               'image_base64': base64Encode(original),
@@ -261,7 +261,9 @@ class Mk20TransferSession implements PedalTransferSession {
     if (backup['format'] != 'ai-tone-mk20-full-backup' ||
         backup['version'] != 1 ||
         backup['device'] != 'MK20' ||
-        backup['slot'] != 150 ||
+        backup['slot'] is! int ||
+        (backup['slot'] as int) < 1 ||
+        (backup['slot'] as int) > 150 ||
         !Mk300Protocol.same(base64Decode(backup['image_base64']), original) ||
         !Mk300Protocol.same(base64Decode(backup['target_base64']), image)) {
       throw StateError('Backup MK20 inválido ou alterado.');
@@ -277,7 +279,7 @@ class Mk20TransferSession implements PedalTransferSession {
         if (!await pointer.exists()) return null;
         final filename =
             jsonDecode(await pointer.readAsString())['filename'] as String;
-        if (!RegExp(r'^mk20-slot-150-[0-9]+\.json$').hasMatch(filename)) {
+        if (!RegExp(r'^mk20-slot-[0-9]+-[0-9]+\.json$').hasMatch(filename)) {
           throw StateError('Referência de backup inválida.');
         }
         final path = '${directory.path}/$filename',
@@ -286,7 +288,7 @@ class Mk20TransferSession implements PedalTransferSession {
         final original = base64Decode(backup['image_base64']),
             image = base64Decode(backup['target_base64']);
         await _backup(path, original, image);
-        return PreparedTransfer(_identity, targetSlot,
+        return PreparedTransfer(_identity, (backup['slot'] as int) - 1,
             Mk300Protocol.name(image), path, original, image)
           ..attempted = backup['send_attempted'] == true;
       });
@@ -315,7 +317,7 @@ class Mk20TransferSession implements PedalTransferSession {
                 'version': 1,
                 'device': 'MK20',
                 'transport': 'usb',
-                'slot': 150,
+                'slot': t.slot + 1,
                 'operation': restore ? 'restore' : 'send',
                 'captured_at': DateTime.now().toUtc().toIso8601String(),
                 'backup': backup,
@@ -337,10 +339,13 @@ class Mk20TransferSession implements PedalTransferSession {
     if (!confirmed ||
         !verified ||
         !identical(t.session, _identity) ||
-        t.slot != targetSlot) {
+        (t.slot < 0 || t.slot >= 150)) {
       throw StateError('Operação MK20 sem confirmação ou de outra sessão.');
     }
     final backup = await _backup(t.backupPath, t.original, t.image);
+    if (backup['slot'] != t.slot + 1) {
+      throw StateError('Slot não corresponde ao backup.');
+    }
     final current = await _read(t.slot);
     if (restore && Mk300Protocol.same(current, t.original)) return;
     final flag = restore ? 'restore_attempted' : 'send_attempted';
@@ -349,7 +354,8 @@ class Mk20TransferSession implements PedalTransferSession {
           'Esta gravação já foi tentada. Confira o pedal; não repetir automaticamente.');
     }
     if (!Mk300Protocol.same(current, restore ? t.image : t.original)) {
-      throw StateError('Slot 150 mudou desde o backup. Operação cancelada.');
+      throw StateError(
+          'Slot ${t.slot + 1} mudou desde o backup. Operação cancelada.');
     }
     final target = restore ? t.original : t.image;
     // Rebuild from the archived preset, preventing mutable in-memory payload changes.

@@ -11,6 +11,7 @@ import subprocess
 import tempfile
 import threading
 from ...core.storage import data_directory
+from .worker_runner import run_worker
 
 _LOCK = threading.Lock()
 ROOT = Path(__file__).resolve().parents[4]
@@ -28,6 +29,8 @@ class IGuitarSeparationProvider(Protocol):
 
 
 class DemucsGuitarProvider:
+    progress = staticmethod(lambda event: None)
+
     def separate_guitar(self, audio_path: Path) -> SeparationResult:
         identity = {
             "provider": "demucs-4.0.1",
@@ -38,6 +41,7 @@ class DemucsGuitarProvider:
         key = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()
         parent = data_directory() / "separations"
         target = parent / key
+        self.progress({"stage": "waiting"})
         with _LOCK:  # Limita uso CPU/RAM e evita publicar cache incompleto.
             manifest = target / "manifest.json"
             if manifest.exists():
@@ -72,12 +76,11 @@ class DemucsGuitarProvider:
                     "TORCH_HOME", str(ROOT / "repertorio/laboratorio/cache/torch")
                 )
                 worker = Path(__file__).with_name("separation_worker.py")
-                subprocess.run(
+                run_worker(
                     [str(python), str(worker), str(audio_path), str(temporary)],
-                    check=True,
-                    capture_output=True,
-                    timeout=3600,
                     env=env,
+                    progress=self.progress,
+                    timeout=3600,
                 )
                 names = ["drums", "bass", "other", "vocals", "piano", "guitar"]
                 if not all((temporary / f"{name}.wav").is_file() for name in names):

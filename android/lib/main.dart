@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'screens/home_screen.dart';
 import 'screens/archived_presets_screen.dart';
 import 'services/preset_archive.dart';
+import 'services/library_reset.dart';
 import 'screens/mk20_diagnostics_screen.dart';
 import 'screens/mk20_name_pilot_screen.dart';
 import 'screens/upload_screen.dart';
@@ -24,6 +25,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final api = ApiService();
   await api.loadSettings();
+  final reset = await LibraryReset.applyOnce();
   final store = PresetStore();
   await store.load();
   try {
@@ -35,6 +37,10 @@ Future<void> main() async {
   } catch (_) {
     store.libraryNotice =
         'Não foi possível concluir o arquivamento. Os dados salvos foram preservados.';
+  }
+  if (reset) {
+    store.libraryNotice =
+        'Biblioteca limpa para gerar do zero. Backups do pedal preservados.';
   }
   runApp(
     MultiProvider(

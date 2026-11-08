@@ -16,6 +16,7 @@ class AnalysisScreen extends StatefulWidget {
 
 class _AnalysisScreenState extends State<AnalysisScreen> {
   Timer? _timer;
+  final _elapsed = Stopwatch()..start();
   AnalysisJob? _job;
   String _statusLabel = 'Iniciando análise...';
   bool _done = false;
@@ -137,6 +138,16 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                         color: AppTheme.textSecondary, fontSize: 12)),
               ],
               if (!_done) ...[
+                const SizedBox(height: 12),
+                Text(
+                    'Tempo nesta tela: ${_elapsed.elapsed.inMinutes}min ${_elapsed.elapsed.inSeconds % 60}s',
+                    style: const TextStyle(color: AppTheme.textSecondary)),
+                const SizedBox(height: 8),
+                const Text(
+                    'O percentual geral acompanha as etapas. A separação mostra os blocos concluídos; carregar o modelo e salvar os arquivos também pode levar alguns instantes.',
+                    textAlign: TextAlign.center,
+                    style:
+                        TextStyle(color: AppTheme.textSecondary, fontSize: 12)),
                 const SizedBox(height: 32),
                 const _StepList(),
               ],
@@ -258,7 +269,8 @@ class _StepList extends StatelessWidget {
 
   static const steps = [
     (Icons.audio_file, 'Carregamento do áudio'),
-    (Icons.equalizer, 'Análise espectral'),
+    (Icons.graphic_eq, 'Separação de instrumentos por IA'),
+    (Icons.equalizer, 'Análise da guitarra'),
     (Icons.graphic_eq, 'Estimativa de timbre'),
     (Icons.tune, 'Geração de presets'),
   ];

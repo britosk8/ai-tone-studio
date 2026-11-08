@@ -197,3 +197,32 @@ def test_invalid_cabinet_value(value):
     data["effect_chain"][3]["parameters"]["High Cut"] = value
     with pytest.raises(ValueError):
         build_image(data, "QA", image())
+
+
+@pytest.mark.parametrize("slot", [1, 76, 149, 150])
+@pytest.mark.parametrize("restore", [False, True])
+def test_selected_slot_controls_every_bank_address(slot, restore):
+    data = report(restore)
+    data["slot"] = data["backup"]["slot"] = slot
+    for entry in data["trace"]:
+        raw = base64.b64decode(entry["bytes_base64"])
+        if raw == c.ACK:
+            continue
+        frame = c.parse(raw)
+        if frame.space == 0:
+            entry["bytes_base64"] = base64.b64encode(
+                c.build(
+                    frame.cls,
+                    frame.cmd,
+                    (slot - 1) * 412,
+                    frame.length,
+                    0,
+                    frame.payload,
+                )
+            ).decode()
+    result = validate(data)
+    assert result["slot"] == slot
+    assert result["status"] == ("restore_confirmed" if restore else "send_confirmed")
+    data["backup"]["slot"] = 76 if slot != 76 else 150
+    with pytest.raises(ValueError):
+        validate(data)

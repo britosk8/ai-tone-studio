@@ -103,7 +103,10 @@ class ToneAnalysisPipeline:
                 source_kind,
                 excerpt_start,
                 excerpt_duration,
-                report,
+                lambda percent, message: report(
+                    10 + int(percent * (0.45 if lead_start is not None else 0.95)),
+                    "Base: " + message,
+                ),
                 (cached_sources or {}).get("rhythm"),
                 preferred_channel=(cached_sources or {})
                 .get("rhythm", {})
@@ -119,7 +122,9 @@ class ToneAnalysisPipeline:
                     source_kind,
                     lead_start,
                     lead_duration,
-                    report,
+                    lambda percent, message: report(
+                        45 + int(percent * 0.50), "Solo: " + message
+                    ),
                     (cached_sources or {}).get("lead"),
                     preferred_channel=(cached_sources or {})
                     .get("lead", {})

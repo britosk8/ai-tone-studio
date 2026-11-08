@@ -147,7 +147,7 @@ def test_separation_cache_is_reused_and_corruption_is_reported(tmp_path, monkeyp
         for name in ["drums", "bass", "other", "vocals", "piano", "guitar"]:
             (output / f"{name}.wav").write_bytes(wave())
 
-    monkeypatch.setattr(module.subprocess, "run", worker)
+    monkeypatch.setattr(module, "run_worker", worker)
     provider = DemucsGuitarProvider()
     first = provider.separate_guitar(source)
     second = provider.separate_guitar(source)

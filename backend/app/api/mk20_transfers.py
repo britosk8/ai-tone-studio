@@ -19,7 +19,8 @@ def validate(report):
         or report.get("version") != 1
         or report.get("device") != "MK20"
         or report.get("transport") != "usb"
-        or report.get("slot") != 150
+        or type(report.get("slot")) is not int
+        or not 1 <= report["slot"] <= 150
         or report.get("operation") not in {"send", "restore"}
     ):
         raise ValueError("Formato de envio MK20 inválido")
@@ -30,7 +31,8 @@ def validate(report):
     if (
         backup.get("format") != "ai-tone-mk20-full-backup"
         or backup.get("version") != 1
-        or backup.get("slot") != 150
+        or type(backup.get("slot")) is not int
+        or backup["slot"] != report["slot"]
         or backup.get("device") != "MK20"
     ):
         raise ValueError("Backup MK20 inválido")
@@ -74,9 +76,9 @@ def validate(report):
                     frame.cmd != 0x41
                     or frame.length != 412
                     or frame.payload
-                    or (frame.space, frame.field) != (0, 149 * 412)
+                    or (frame.space, frame.field) != (0, (report["slot"] - 1) * 412)
                 ):
-                    raise ValueError("Consulta fora do piloto MK20")
+                    raise ValueError("Consulta fora do slot de destino MK20")
                 pending_read = True
             elif frame.cls == 9:
                 writes += 1
@@ -86,7 +88,7 @@ def validate(report):
                     frame.field,
                     frame.length,
                     frame.payload,
-                ) == (0xD21, 0, 149 * 412, 412, target):
+                ) == (0xD21, 0, (report["slot"] - 1) * 412, 412, target):
                     stage = "bank_ack"
                 elif stage == "commit" and (
                     frame.cmd,
@@ -105,7 +107,7 @@ def validate(report):
             and frame.cls == 13
             and frame.cmd in {0x41, 0x101, 0xD21}
             and frame.space == 0
-            and frame.field == 149 * 412
+            and frame.field == (report["slot"] - 1) * 412
             and frame.length == 412
             and len(frame.payload) == 412
         ):
@@ -123,7 +125,7 @@ def validate(report):
             if confirmed
             else "unconfirmed" if writes else "not_attempted"
         ),
-        "slot": 150,
+        "slot": report["slot"],
         "name": name,
         "writes": writes,
         "controls": controls(image),
