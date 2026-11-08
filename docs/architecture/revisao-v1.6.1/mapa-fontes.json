@@ -1,0 +1,2319 @@
+{
+  "code_commit": "b5f036568a965cfe791ff2272480ea98352efe88",
+  "files": [
+    {
+      "path": "backend/app/api/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "symbols": []
+    },
+    {
+      "path": "backend/app/api/calibration.py",
+      "sha256": "dcae52a19cc2b9e59cbd4aa1caf898ea746c2f5049171d859c05f58313177ade",
+      "symbols": [
+        {
+          "name": "Evaluation",
+          "line": 15,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "evaluate",
+          "line": 34,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "evaluations",
+          "line": 94,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "baseline",
+          "line": 120,
+          "kind": "AsyncFunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/api/mk20_diagnostics.py",
+      "sha256": "8dab0b3bcd37eedae50b456395f01caa1aab995d0573762e5f152853eb34aaf7",
+      "symbols": [
+        {
+          "name": "decode_image",
+          "line": 18,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "decode64",
+          "line": 37,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "validate_report",
+          "line": 49,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "DiagnosticBody",
+          "line": 155,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "receive",
+          "line": 160,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "reviewed",
+          "line": 178,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "index",
+          "line": 199,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "retrieve",
+          "line": 215,
+          "kind": "AsyncFunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/api/mk20_name_pilot.py",
+      "sha256": "3d529cf6dcb52737a44f4fbf9be3e7662ac9946ee8b37d8f84009530ca46ed06",
+      "symbols": [
+        {
+          "name": "validate",
+          "line": 19,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "Body",
+          "line": 166,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "receive",
+          "line": 171,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "index",
+          "line": 189,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "retrieve",
+          "line": 203,
+          "kind": "AsyncFunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/api/mk20_transfers.py",
+      "sha256": "033b1eea151ff0fc13d33049745cffc1bf149702d720448b72a4115de603165e",
+      "symbols": [
+        {
+          "name": "validate",
+          "line": 16,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "Body",
+          "line": 137,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "receive",
+          "line": 142,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "index",
+          "line": 157,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "retrieve",
+          "line": 167,
+          "kind": "AsyncFunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/api/pedal_references.py",
+      "sha256": "bd28ca5a2285db184934496b901c267129d1513c0dd3dc33196571e89059a571",
+      "symbols": [
+        {
+          "name": "ReferenceSync",
+          "line": 19,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "decode_reference",
+          "line": 24,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_key",
+          "line": 70,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "configuration_rows",
+          "line": 77,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "sync_reference",
+          "line": 110,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "get_reference",
+          "line": 145,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "references",
+          "line": 153,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "add",
+          "line": 86,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "value",
+          "line": 88,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/api/recordings.py",
+      "sha256": "4cedc68c697814c4db09a62f29eecb03a0f11c2ed4eede295e5474466222a2d0",
+      "symbols": [
+        {
+          "name": "get_record",
+          "line": 12,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "recordings",
+          "line": 24,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "recording",
+          "line": 32,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "audio",
+          "line": 37,
+          "kind": "AsyncFunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/api/reference_library.py",
+      "sha256": "bd0b417d28cac1d635fb4a07b27203217d2441d1fc9404642675c8aecf7c6de4",
+      "symbols": [
+        {
+          "name": "Region",
+          "line": 23,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "SavedAnalysis",
+          "line": 29,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "references",
+          "line": 40,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "reference",
+          "line": 45,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "listen",
+          "line": 53,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "update_reference",
+          "line": 88,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "analyze_saved",
+          "line": 103,
+          "kind": "AsyncFunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/api/routes.py",
+      "sha256": "e978035965c5286b11e300af28e06e966593ba8200ff3e76e3e5ba4a051569a3",
+      "symbols": [
+        {
+          "name": "_get_pipeline",
+          "line": 41,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "health",
+          "line": 46,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "list_devices",
+          "line": 52,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "analyze_audio",
+          "line": 70,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "_run_analysis_job",
+          "line": 161,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "get_job_status",
+          "line": 301,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "_ensure_pair",
+          "line": 314,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_comparison_profile",
+          "line": 323,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_serialize_preset",
+          "line": 362,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "get_preset_pair",
+          "line": 395,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "download_stem",
+          "line": 409,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "get_candidates",
+          "line": 430,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "export_preset_json",
+          "line": 441,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "export_preset_guide",
+          "line": 452,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "regenerate_preset",
+          "line": 464,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "compare_tone",
+          "line": 472,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "capture_error",
+          "line": 501,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "save_upload",
+          "line": 510,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "progress",
+          "line": 211,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/api/tone_states.py",
+      "sha256": "9c8e2130819174aab3b673c09823008904e20fd008f8e1d6a3efead36b3b4aac",
+      "symbols": [
+        {
+          "name": "AnalyzeStates",
+          "line": 26,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "ListeningRegion",
+          "line": 33,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "GenerateState",
+          "line": 38,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "analyze_states",
+          "line": 47,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "detect_states",
+          "line": 85,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "states",
+          "line": 100,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "generate_variant",
+          "line": 109,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "generate",
+          "line": 313,
+          "kind": "AsyncFunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/core/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "symbols": []
+    },
+    {
+      "path": "backend/app/core/audio_preview.py",
+      "sha256": "6ce8e9952f2797b1276883c303eb1dda7f94ba9c6ed4ed0951d651b4a073b889",
+      "symbols": [
+        {
+          "name": "preview",
+          "line": 11,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/core/calibration_baseline.py",
+      "sha256": "a2891af52e5f2f3f5ef41199c29b4610034f3e1d6443861ca3e3abd90cbe65f1",
+      "symbols": [
+        {
+          "name": "approved_infest",
+          "line": 21,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/core/library_reset.py",
+      "sha256": "45ae3c84ede0b087ce1ffe1b10456da70c42d75658eced4e15182b91ac84dff9",
+      "symbols": [
+        {
+          "name": "reset_library",
+          "line": 21,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/core/pipeline.py",
+      "sha256": "50f746023c3903f802f1b1233f04e034933d286d08577367897747f3b43e7ba4",
+      "symbols": [
+        {
+          "name": "ToneAnalysisPipeline",
+          "line": 21,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "__init__",
+          "line": 27,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "process",
+          "line": 32,
+          "kind": "AsyncFunctionDef"
+        },
+        {
+          "name": "_run",
+          "line": 77,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/core/recordings.py",
+      "sha256": "242c26a02e089dc265c016389c3ac38b53dc115c7cc2e3bfbfd37b6627979dfb",
+      "symbols": [
+        {
+          "name": "archive_recording",
+          "line": 14,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "finish_recording",
+          "line": 51,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "list_recordings",
+          "line": 68,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/core/reference_library.py",
+      "sha256": "07cd70a167b06dda987abfe626814a838ae0eec183757ac483aa30e7c7bf74ca",
+      "symbols": [
+        {
+          "name": "saved_source",
+          "line": 15,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "reference_info",
+          "line": 53,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "select_region",
+          "line": 93,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "library",
+          "line": 161,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/core/storage.py",
+      "sha256": "97779eb6660c53a884f1d1131fa473e70097aa289723c09b3bb49aa93e50ec05",
+      "symbols": [
+        {
+          "name": "_connect",
+          "line": 10,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "save_record",
+          "line": 22,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "load_record",
+          "line": 28,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "list_records",
+          "line": 34,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "data_directory",
+          "line": 41,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/main.py",
+      "sha256": "1f8e25d6ea454aabeaa8315dd2379b6875f3fc8f194b70571d29b9f52bdcacee",
+      "symbols": [
+        {
+          "name": "root",
+          "line": 47,
+          "kind": "AsyncFunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/models/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "symbols": []
+    },
+    {
+      "path": "backend/app/models/audio.py",
+      "sha256": "a5849c7bd310b4a870ebed37d350fe717fb98db0807e78407ad18aabdcd1a5e4",
+      "symbols": [
+        {
+          "name": "GainCharacter",
+          "line": 9,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "MusicSection",
+          "line": 18,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "ConfidenceLevel",
+          "line": 28,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "SpectralProfile",
+          "line": 35,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "DynamicsProfile",
+          "line": 46,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "EffectPresenceEstimate",
+          "line": 56,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "GuitarRegion",
+          "line": 80,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "AudioAnalysisResult",
+          "line": 91,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "MusicTrack",
+          "line": 124,
+          "kind": "ClassDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/models/devices.py",
+      "sha256": "6f161202040e7f9b92e4f59bb15f5368d2c50e94c0c7c44816a5094b5f64a267",
+      "symbols": [
+        {
+          "name": "DeviceModel",
+          "line": 7,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "PresetRole",
+          "line": 13,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "EffectType",
+          "line": 21,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "EffectParameter",
+          "line": 36,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "EffectModel",
+          "line": 46,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "DeviceCapabilities",
+          "line": 54,
+          "kind": "ClassDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/models/preset.py",
+      "sha256": "dff763b748dfd1400022d3a04eea45a475f9bd432de1b0d567c1abdb5e6f5ba5",
+      "symbols": [
+        {
+          "name": "ParameterValue",
+          "line": 12,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "EffectBlock",
+          "line": 23,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "PresetEffectChain",
+          "line": 39,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "PresetVersion",
+          "line": 52,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "Preset",
+          "line": 61,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "PresetPair",
+          "line": 145,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "validate_slots_unique",
+          "line": 45,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "to_device_json",
+          "line": 94,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "to_readable_guide",
+          "line": 114,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/models/transfer.py",
+      "sha256": "be4335f217ce5bd4412ada0d5085552b234910a851771ee3bd099f79ed6caa26",
+      "symbols": [
+        {
+          "name": "TransportType",
+          "line": 11,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "TransferStatus",
+          "line": 18,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "DeviceInfo",
+          "line": 29,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "PresetBackup",
+          "line": 40,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "TransferRequest",
+          "line": 49,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "TransferResult",
+          "line": 59,
+          "kind": "ClassDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/services/audio_analysis/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "symbols": []
+    },
+    {
+      "path": "backend/app/services/audio_analysis/analyzer.py",
+      "sha256": "8859b220ce9d563e0f9d98e438df19d65140a185d1e58390e4e7bfa2cc84c6ad",
+      "symbols": [
+        {
+          "name": "AudioAnalyzer",
+          "line": 29,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "__init__",
+          "line": 53,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "analyze",
+          "line": 67,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_reference_profile",
+          "line": 133,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_analyze_spectral",
+          "line": 142,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_analyze_dynamics",
+          "line": 177,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_estimate_effects",
+          "line": 205,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_estimate_distortion",
+          "line": 246,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_estimate_reverb",
+          "line": 279,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_estimate_delay",
+          "line": 303,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_estimate_chorus",
+          "line": 327,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_estimate_bpm",
+          "line": 331,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_compute_overall_confidence",
+          "line": 347,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/services/audio_analysis/source_separator.py",
+      "sha256": "9c850d37627b75d94f8d6d2a8f6977b0be9493f2f7585cc11d66f1d16a8d7a3e",
+      "symbols": [
+        {
+          "name": "SourceSeparator",
+          "line": 19,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "__init__",
+          "line": 34,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "is_available",
+          "line": 38,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "separate",
+          "line": 41,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "load_stem_audio",
+          "line": 97,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/services/audio_analysis/tone_comparison.py",
+      "sha256": "1a375c18b998fd96bcf5b83f01be36b87f1197c5b435b8b8e4209acf06234ada",
+      "symbols": [
+        {
+          "name": "fingerprint",
+          "line": 11,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "measure",
+          "line": 30,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "compare",
+          "line": 38,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/services/device_catalog/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "symbols": []
+    },
+    {
+      "path": "backend/app/services/device_catalog/loader.py",
+      "sha256": "2bb616ea937494366cee554a3586275cf92705fec21da63bea294491f6eabaae",
+      "symbols": [
+        {
+          "name": "CatalogLoader",
+          "line": 54,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "__init__",
+          "line": 60,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_load_all",
+          "line": 71,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "is_supported",
+          "line": 87,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "get_catalog_version",
+          "line": 96,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "get_amp_model",
+          "line": 100,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_get_amp_params",
+          "line": 132,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "get_drive_model",
+          "line": 141,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "get_cabinet_model",
+          "line": 186,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "get_effect_model",
+          "line": 222,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "validate_preset_params",
+          "line": 286,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/services/preset_generation/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "symbols": []
+    },
+    {
+      "path": "backend/app/services/preset_generation/compiler.py",
+      "sha256": "1cb8246d581683ab95935b407a5acce57fac2f9ab0f1cdd273734f5c5d069726",
+      "symbols": [
+        {
+          "name": "PresetCompiler",
+          "line": 24,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "__init__",
+          "line": 36,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "compile_pair",
+          "line": 39,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_compile_rhythm_preset",
+          "line": 73,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_compile_lead_preset",
+          "line": 209,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_map_noise_gate_rhythm",
+          "line": 361,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_map_noise_gate_lead",
+          "line": 367,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_map_compressor",
+          "line": 371,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_map_drive_rhythm",
+          "line": 384,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_map_drive_lead",
+          "line": 392,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_map_amp_rhythm",
+          "line": 399,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_map_amp_lead",
+          "line": 415,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_map_delay_lead",
+          "line": 431,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_map_reverb_minimal",
+          "line": 448,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_map_reverb_lead",
+          "line": 451,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_build_parameters",
+          "line": 461,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_build_analysis_summary",
+          "line": 502,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_build_rhythm_summary",
+          "line": 514,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_build_lead_summary",
+          "line": 522,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/services/song_research/__init__.py",
+      "sha256": "2512970f000ac0cc6d2903a468063820aa75e44ebd830fa917a19d2eec797070",
+      "symbols": []
+    },
+    {
+      "path": "backend/app/services/song_research/research.py",
+      "sha256": "d567842bdc30b87f2287a9ee15b7ae8a37bb126a27314268783a9988825f161d",
+      "symbols": [
+        {
+          "name": "normalize",
+          "line": 38,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "allowed",
+          "line": 51,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "TextParser",
+          "line": 74,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "PublicSearchProvider",
+          "line": 93,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "SongResearch",
+          "line": 133,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "__init__",
+          "line": 75,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "handle_starttag",
+          "line": 80,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "handle_endtag",
+          "line": 84,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "handle_data",
+          "line": 88,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "fetch",
+          "line": 96,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "search",
+          "line": 120,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "__init__",
+          "line": 134,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "research",
+          "line": 137,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/services/tone_engine/__init__.py",
+      "sha256": "4c719595f02b822e385defaa3da1e83cf2520faae4e256a54a733d5c77bc157f",
+      "symbols": []
+    },
+    {
+      "path": "backend/app/services/tone_engine/candidates.py",
+      "sha256": "c881589970d96f8bc61517d796a31a8b73fc35e519bf1753a6bb740c07f0fa4e",
+      "symbols": [
+        {
+          "name": "PresetCandidateGenerator",
+          "line": 7,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "__init__",
+          "line": 8,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "generate",
+          "line": 11,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/services/tone_engine/descriptor.py",
+      "sha256": "62070e08b2b4cd3753e259102a62529a6f2da371d049adb1dc4e572d96fec341",
+      "symbols": [
+        {
+          "name": "describe",
+          "line": 6,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "energy",
+          "line": 9,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/services/tone_engine/engine.py",
+      "sha256": "1c1e06e0cf78130ca7f8d9d0f7aee10acf92d78975f4f3870a288eb6afb02eea",
+      "symbols": [
+        {
+          "name": "GuitarToneEngine",
+          "line": 13,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "__init__",
+          "line": 16,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "analyze",
+          "line": 20,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "refine",
+          "line": 164,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "separated",
+          "line": 58,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/services/tone_engine/evidence_mapping.py",
+      "sha256": "df7cb6b24fd28b07f63d1594480a7a574a52a05576c5e3498a22067bc861a0c5",
+      "symbols": [
+        {
+          "name": "choose_model",
+          "line": 18,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "apply_state_mapping",
+          "line": 76,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/services/tone_engine/features.py",
+      "sha256": "1a63257c230114538d2b009089dcf2c8d6c7a0ff0f09d254597247015c5077e0",
+      "symbols": [
+        {
+          "name": "GuitarToneFeatureExtractor",
+          "line": 19,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "extract",
+          "line": 20,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/services/tone_engine/preprocess.py",
+      "sha256": "00664ca94aeffaea762b5c4d82637396f4489552bcdd4fcd3a2bda0b254411f2",
+      "symbols": [
+        {
+          "name": "AudioPreprocessor",
+          "line": 7,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "prepare",
+          "line": 10,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/services/tone_engine/reference_quality.py",
+      "sha256": "39d836ecdc3615b13f2d3655c52450e7d8de9dc4d712b22e06e3ec563ed9a26f",
+      "symbols": [
+        {
+          "name": "assessed_collection",
+          "line": 14,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "ensure_usable_excerpt",
+          "line": 50,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/services/tone_engine/segmentation.py",
+      "sha256": "559b1d29d938dd9b01dfe3d672fa579290eabff4f1a6f63c778fe41e6432956c",
+      "symbols": [
+        {
+          "name": "character_for",
+          "line": 22,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "cluster_windows",
+          "line": 26,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "ToneStateAnalyzer",
+          "line": 108,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "analyze",
+          "line": 109,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/services/tone_engine/separation.py",
+      "sha256": "53e157254db2b3a69c6ca1fb1dcac6a3412fd1922665bf0ad3da1532e54f0756",
+      "symbols": [
+        {
+          "name": "SeparationResult",
+          "line": 21,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "IGuitarSeparationProvider",
+          "line": 27,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "DemucsGuitarProvider",
+          "line": 31,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "crop_saved_stems",
+          "line": 117,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "separate_guitar",
+          "line": 28,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "separate_guitar",
+          "line": 34,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/services/tone_engine/separation_worker.py",
+      "sha256": "9365660d3fa291a8996e98653834c9acb978086b07f5cf7ccf20d454f12c5de8",
+      "symbols": [
+        {
+          "name": "main",
+          "line": 15,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/services/tone_engine/validation.py",
+      "sha256": "437cad25436b12a81c90f153b1a4431d288a6653308dcc3d1df3f3bcd803c7c6",
+      "symbols": [
+        {
+          "name": "models_for",
+          "line": 8,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "validate_preset",
+          "line": 45,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/services/tone_engine/worker_progress.py",
+      "sha256": "b822ea0daeb85aa39bc4573e38f60881b6146751c6f9c1d54529d1b8c14818c3",
+      "symbols": [
+        {
+          "name": "emit",
+          "line": 6,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "ChunkProgress",
+          "line": 10,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "__init__",
+          "line": 11,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "__call__",
+          "line": 16,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/services/tone_engine/worker_runner.py",
+      "sha256": "3fd1b253a0eeeb005613a9f0708267eb12a59f9f9ef1f4caf6cb7edd0c91a031",
+      "symbols": [
+        {
+          "name": "run_worker",
+          "line": 11,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "read",
+          "line": 23,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/transport/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "symbols": []
+    },
+    {
+      "path": "backend/app/transport/preset_builder.py",
+      "sha256": "689ba68feb19e3b47795ad61cdca611c0941445a60bba3eb201bc3fd4694576d",
+      "symbols": [
+        {
+          "name": "preset_to_struct",
+          "line": 69,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "struct_to_preset_dict",
+          "line": 123,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/transport/protocol_mk20.py",
+      "sha256": "2324ce3ccafb1ed0de3b4049cabeeed997af2d19fbaa4819d53d63b8bce75a17",
+      "symbols": [
+        {
+          "name": "catalog",
+          "line": 23,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "controls",
+          "line": 29,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "build_image",
+          "line": 58,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/transport/protocol_mk300.py",
+      "sha256": "bafe63b2acd12b8e44b53b6398303ae1b88f3c48545c8afa5112fd35aa1225f7",
+      "symbols": [
+        {
+          "name": "knob_offset",
+          "line": 71,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "model_offset",
+          "line": 76,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "onoff_offset",
+          "line": 81,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "ChecksumError",
+          "line": 86,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "build_read_frame",
+          "line": 93,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "build_write_u8_frame",
+          "line": 97,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "build_write_u16_frame",
+          "line": 101,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "build_load_preset_frame",
+          "line": 105,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "build_commit_frame",
+          "line": 111,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "PresetStruct",
+          "line": 116,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "is_ack_frame",
+          "line": 211,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "__post_init__",
+          "line": 127,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "to_bytes",
+          "line": 139,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "from_bytes",
+          "line": 179,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "backend/app/transport/sysex_codec.py",
+      "sha256": "c88be5b53f0a3cc35a868d393214816bfa4704e6c125c87ec11702fd54b44c9d",
+      "symbols": [
+        {
+          "name": "pack7",
+          "line": 42,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "unpack7",
+          "line": 59,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_u32_7",
+          "line": 74,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_from_u32_7",
+          "line": 78,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "checksum",
+          "line": 82,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "Frame",
+          "line": 91,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "build",
+          "line": 104,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "parse",
+          "line": 112,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "is_ack",
+          "line": 132,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "read",
+          "line": 138,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "write_u8",
+          "line": 142,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "write_u16",
+          "line": 146,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "load_preset",
+          "line": 150,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "write_preset_image",
+          "line": 155,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "cmd_bytes",
+          "line": 100,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/main.dart",
+      "sha256": "552b916efab8b30a278e024d7e64a019d63830fbc0cc086c40657a96f16f9d55",
+      "symbols": [
+        {
+          "name": "AiToneStudioApp",
+          "line": 56,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/models/preset_pair.dart",
+      "sha256": "95131cd58b49f1b1e6d5dd1f7777644242845c5646c870eda18b64ea8d06678c",
+      "symbols": [
+        {
+          "name": "ParameterSpec",
+          "line": 1,
+          "kind": "class"
+        },
+        {
+          "name": "EffectBlock",
+          "line": 28,
+          "kind": "class"
+        },
+        {
+          "name": "PresetData",
+          "line": 105,
+          "kind": "class"
+        },
+        {
+          "name": "SpectralProfile",
+          "line": 198,
+          "kind": "class"
+        },
+        {
+          "name": "AudioAnalysis",
+          "line": 227,
+          "kind": "class"
+        },
+        {
+          "name": "PresetPair",
+          "line": 277,
+          "kind": "class"
+        },
+        {
+          "name": "AnalysisJob",
+          "line": 352,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/screens/analysis_screen.dart",
+      "sha256": "3d6866e5ebc9de65ae0f6df0d4c68bb0815213aad5528e6e67707bf427bfbb72",
+      "symbols": [
+        {
+          "name": "AnalysisScreen",
+          "line": 9,
+          "kind": "class"
+        },
+        {
+          "name": "_AnalysisScreenState",
+          "line": 17,
+          "kind": "class"
+        },
+        {
+          "name": "_AnimatedWaveform",
+          "line": 181,
+          "kind": "class"
+        },
+        {
+          "name": "_AnimatedWaveformState",
+          "line": 188,
+          "kind": "class"
+        },
+        {
+          "name": "_ProgressBar",
+          "line": 241,
+          "kind": "class"
+        },
+        {
+          "name": "_StepList",
+          "line": 267,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/screens/archived_presets_screen.dart",
+      "sha256": "9133bb503a59f2d106c2a3571ef6c9d78c1544a78ce343f0c92667dfddf07b2f",
+      "symbols": [
+        {
+          "name": "ArchivedPresetsScreen",
+          "line": 7,
+          "kind": "class"
+        },
+        {
+          "name": "_ArchivedPresetsScreenState",
+          "line": 13,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/screens/home_screen.dart",
+      "sha256": "2610ea21d1c12d7e4325e4acb39c622e3c60b851d83ca180b767d592b1f09d34",
+      "symbols": [
+        {
+          "name": "HomeScreen",
+          "line": 14,
+          "kind": "class"
+        },
+        {
+          "name": "_HomeScreenState",
+          "line": 21,
+          "kind": "class"
+        },
+        {
+          "name": "_BackendStatusBar",
+          "line": 167,
+          "kind": "class"
+        },
+        {
+          "name": "_EmptyState",
+          "line": 210,
+          "kind": "class"
+        },
+        {
+          "name": "_PairList",
+          "line": 251,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/screens/mk20_diagnostics_screen.dart",
+      "sha256": "2580064ed83ca07f68ed9503c5bfc70a4f9c75dcfaf88e7d34a72123921602d0",
+      "symbols": [
+        {
+          "name": "Mk20DiagnosticsScreen",
+          "line": 11,
+          "kind": "class"
+        },
+        {
+          "name": "_Mk20DiagnosticsScreenState",
+          "line": 17,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/screens/mk20_name_pilot_screen.dart",
+      "sha256": "58cc4bc65617ddfdce634c054f7b0efe1b7a1d0b895729fce7f7922f4a097881",
+      "symbols": [
+        {
+          "name": "Mk20NamePilotScreen",
+          "line": 12,
+          "kind": "class"
+        },
+        {
+          "name": "_Mk20NamePilotScreenState",
+          "line": 19,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/screens/mk300_pilot_screen.dart",
+      "sha256": "03d08f1e2493b4e976eee52c41eccad06779f5c3fe1e520f7eaa982e8b1e7510",
+      "symbols": [
+        {
+          "name": "Mk300PilotScreen",
+          "line": 7,
+          "kind": "class"
+        },
+        {
+          "name": "_Mk300PilotScreenState",
+          "line": 13,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/screens/pedal_reference_screen.dart",
+      "sha256": "015b5215f4bfe22d7b2452d1b043ffaa744550b4f2be2ea847cc090f5fc8ab32",
+      "symbols": [
+        {
+          "name": "PedalReferenceScreen",
+          "line": 10,
+          "kind": "class"
+        },
+        {
+          "name": "_PedalReferenceScreenState",
+          "line": 17,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/screens/preset_editor_screen.dart",
+      "sha256": "c9c9aa708147d12b4fa1be46198105e5efdc51b6f5a5b1c157c5cf4cc138c75e",
+      "symbols": [
+        {
+          "name": "PresetEditorScreen",
+          "line": 6,
+          "kind": "class"
+        },
+        {
+          "name": "_PresetEditorScreenState",
+          "line": 17,
+          "kind": "class"
+        },
+        {
+          "name": "_DeviceHeader",
+          "line": 123,
+          "kind": "class"
+        },
+        {
+          "name": "_EffectEditor",
+          "line": 160,
+          "kind": "class"
+        },
+        {
+          "name": "_ParamSlider",
+          "line": 260,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/screens/preset_list_screen.dart",
+      "sha256": "2b366ddb129d4e12dd5dcc779603dc721c4839ff54406748895e8f105fd97f51",
+      "symbols": [
+        {
+          "name": "PresetListScreen",
+          "line": 16,
+          "kind": "class"
+        },
+        {
+          "name": "_PresetListScreenState",
+          "line": 24,
+          "kind": "class"
+        },
+        {
+          "name": "_AnalysisSummaryCard",
+          "line": 246,
+          "kind": "class"
+        },
+        {
+          "name": "_InfoChip",
+          "line": 339,
+          "kind": "class"
+        },
+        {
+          "name": "_PresetCard",
+          "line": 374,
+          "kind": "class"
+        },
+        {
+          "name": "_EffectRow",
+          "line": 482,
+          "kind": "class"
+        },
+        {
+          "name": "_ExportCard",
+          "line": 540,
+          "kind": "class"
+        },
+        {
+          "name": "_ExportCardState",
+          "line": 548,
+          "kind": "class"
+        },
+        {
+          "name": "_GuideScreen",
+          "line": 634,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/screens/reference_preview_screen.dart",
+      "sha256": "385120ffbbee8f798d7b8a47c7073e9c0a04d48d16ccb44f3c08ec507b0493ad",
+      "symbols": [
+        {
+          "name": "ReferencePreviewScreen",
+          "line": 11,
+          "kind": "class"
+        },
+        {
+          "name": "_ReferencePreviewScreenState",
+          "line": 27,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/screens/settings_screen.dart",
+      "sha256": "bbcb046afe3d09d75b2a2b178340bc6f1d7ccc626da809c95bbadbe80af4140e",
+      "symbols": [
+        {
+          "name": "SettingsScreen",
+          "line": 7,
+          "kind": "class"
+        },
+        {
+          "name": "_SettingsScreenState",
+          "line": 14,
+          "kind": "class"
+        },
+        {
+          "name": "_SectionDivider",
+          "line": 176,
+          "kind": "class"
+        },
+        {
+          "name": "_InfoRow",
+          "line": 194,
+          "kind": "class"
+        },
+        {
+          "name": "_LimitationItem",
+          "line": 218,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/screens/tone_comparison_screen.dart",
+      "sha256": "2edfe2d20dbd70f01f81becc922d14f9d86f8e3d8d5531fafd592043df97f5ac",
+      "symbols": [
+        {
+          "name": "ToneComparisonScreen",
+          "line": 13,
+          "kind": "class"
+        },
+        {
+          "name": "_ToneComparisonScreenState",
+          "line": 26,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/screens/tone_result_screen.dart",
+      "sha256": "d3864f03dfe00b05d8b2ced7b267b89c1d3a85b202272eb56e64f7664403efdc",
+      "symbols": [
+        {
+          "name": "ToneResultScreen",
+          "line": 10,
+          "kind": "class"
+        },
+        {
+          "name": "_ToneResultScreenState",
+          "line": 24,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/screens/transfer_screen.dart",
+      "sha256": "c0f65b520247c942a1165a2dd171aeb55e1a3273035e5a9968a1f6055a87b9b3",
+      "symbols": [
+        {
+          "name": "TransferScreen",
+          "line": 16,
+          "kind": "class"
+        },
+        {
+          "name": "_TransferScreenState",
+          "line": 24,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/screens/upload_screen.dart",
+      "sha256": "8847c3873bc31c2c9a411aed333fbea87134dacc8ce2c1ee3d03c36842f9ca9d",
+      "symbols": [
+        {
+          "name": "UploadScreen",
+          "line": 9,
+          "kind": "class"
+        },
+        {
+          "name": "_UploadScreenState",
+          "line": 23,
+          "kind": "class"
+        },
+        {
+          "name": "_SectionHeader",
+          "line": 453,
+          "kind": "class"
+        },
+        {
+          "name": "_FileSelector",
+          "line": 467,
+          "kind": "class"
+        },
+        {
+          "name": "_DeviceSelector",
+          "line": 526,
+          "kind": "class"
+        },
+        {
+          "name": "_TransferNote",
+          "line": 559,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/services/api_service.dart",
+      "sha256": "0de9c2a2c219d4394b7bce61241fdaf574ae6ac7ca02c42573bcde03e79d891f",
+      "symbols": [
+        {
+          "name": "ApiException",
+          "line": 9,
+          "kind": "class"
+        },
+        {
+          "name": "ApiService",
+          "line": 21,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/services/capture_level.dart",
+      "sha256": "e2cdbeddf2a481c0c1851f1b7c76fab4bfa4975bf84b6413d51cd79d39102e4c",
+      "symbols": []
+    },
+    {
+      "path": "android/lib/services/device/device_transport.dart",
+      "sha256": "3a732bbc22c6d42d1c849535144156b2dc824b49f4f72af1c8bdb88a3210d07e",
+      "symbols": [
+        {
+          "name": "DeviceTransport",
+          "line": 5,
+          "kind": "class"
+        },
+        {
+          "name": "NativeDeviceTransport",
+          "line": 11,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/services/device/mk20_diagnostics.dart",
+      "sha256": "7630f70873e3ff80c6cf9e72f5f31314ff88c9304c2255c55001ad348e18a091",
+      "symbols": [
+        {
+          "name": "Mk20Diagnostics",
+          "line": 9,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/services/device/mk20_name_pilot.dart",
+      "sha256": "ebcb222f0000b99264a498aefa6df926c2bab0c6383b54966acc05f12ebe6600",
+      "symbols": [
+        {
+          "name": "Mk20NamePilot",
+          "line": 11,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/services/device/mk20_transfer.dart",
+      "sha256": "c439ac24f97c857cf5984e46f31cc1732d2ccee4b60375fe3c98bf90686ea49d",
+      "symbols": [
+        {
+          "name": "Mk20TransferSession",
+          "line": 14,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/services/device/mk300_protocol.dart",
+      "sha256": "20c63fa920b58f589d414496d7ea731ef069303791aef08bc1568bd734aed616",
+      "symbols": [
+        {
+          "name": "PedalFrame",
+          "line": 4,
+          "kind": "class"
+        },
+        {
+          "name": "Mk300Protocol",
+          "line": 11,
+          "kind": "class"
+        },
+        {
+          "name": "PedalFramer",
+          "line": 132,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/services/device/preset_transfer.dart",
+      "sha256": "8bfad024ca0ed2a7fe8c93158cba42be33f445951b329ad1a7e2ad168cdab76e",
+      "symbols": [
+        {
+          "name": "PreparedTransfer",
+          "line": 10,
+          "kind": "class"
+        },
+        {
+          "name": "PedalTransferSession",
+          "line": 20,
+          "kind": "class"
+        },
+        {
+          "name": "Mk300TransferSession",
+          "line": 29,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/services/library_reset.dart",
+      "sha256": "ae0bc37dc36bdeb38fb1d58d63a4efb100738a4fd891b0a790405d6727db9f6b",
+      "symbols": [
+        {
+          "name": "LibraryReset",
+          "line": 5,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/services/mk300_pilot.dart",
+      "sha256": "d51f6730100628bf66aafba3d2f8fa253af6219b8f62965853a192e5bbb6224a",
+      "symbols": [
+        {
+          "name": "Mk300Pilot",
+          "line": 7,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/services/pedal_reference.dart",
+      "sha256": "543bae9a6a47156d000c3ab58d86ad2fe06fcfc7b346f59298f32128fa13cf99",
+      "symbols": [
+        {
+          "name": "PedalReference",
+          "line": 7,
+          "kind": "class"
+        },
+        {
+          "name": "PedalReferenceRepository",
+          "line": 106,
+          "kind": "class"
+        },
+        {
+          "name": "ConfigurationDifference",
+          "line": 132,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/services/preset_archive.dart",
+      "sha256": "09de38bfbe2709de8fbc3a5a8b8a841de97c16c10cc76f92346bda39fd6f5349",
+      "symbols": [
+        {
+          "name": "PresetArchive",
+          "line": 8,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/services/preset_import.dart",
+      "sha256": "a69430158336ab15d0296760da9e80e8d3b16e76bf5d03b5c9311f489178b3ea",
+      "symbols": [
+        {
+          "name": "PresetImport",
+          "line": 6,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/services/preset_store.dart",
+      "sha256": "fbbd0c6f25f0919339db299775f29c5af97bb6e7c9498d27e24fb8a3ae784701",
+      "symbols": [
+        {
+          "name": "PresetStore",
+          "line": 7,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/services/tone_adjustments.dart",
+      "sha256": "62be625e08c429a4452be52750bd8ed15cbe3d472efa498c2aeb03b15eea2bad",
+      "symbols": []
+    },
+    {
+      "path": "android/lib/services/tone_recording.dart",
+      "sha256": "6adf0772efcd6ea02dcb7221614e0cc0693f0d406b0cfde43ad8e111ecae02c1",
+      "symbols": [
+        {
+          "name": "ToneRecording",
+          "line": 4,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/theme/app_theme.dart",
+      "sha256": "2d2c423445a6dcad43fa55edf50338742ba90115d6fdbf0c83f9ca045951a380",
+      "symbols": [
+        {
+          "name": "AppTheme",
+          "line": 3,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/widgets/calibration_test_card.dart",
+      "sha256": "1cea4edaf8e7717f200c47359e80d541943651b3f74d63afb9d71ef44a5e0343",
+      "symbols": [
+        {
+          "name": "CalibrationTestCard",
+          "line": 6,
+          "kind": "class"
+        },
+        {
+          "name": "_CalibrationTestCardState",
+          "line": 14,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/widgets/confidence_badge.dart",
+      "sha256": "ca2cbf2640bd38bdb61d8733c021cba77a383f7782dac4d78ac6250f5311a21d",
+      "symbols": [
+        {
+          "name": "ConfidenceBadge",
+          "line": 4,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/widgets/delete_preset_pair.dart",
+      "sha256": "78c4a994f14015b9d7f504bfb1d558dc1b1655588d1a9f5a26aa557a3e5e7837",
+      "symbols": []
+    },
+    {
+      "path": "android/lib/widgets/spectral_chart.dart",
+      "sha256": "ff070e13e43b105ff966d0973dd91e4b9f966bb46ed71e64befc1c24dfa77cab",
+      "symbols": [
+        {
+          "name": "SpectralChart",
+          "line": 5,
+          "kind": "class"
+        },
+        {
+          "name": "_Bar",
+          "line": 40,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/lib/widgets/tone_states_panel.dart",
+      "sha256": "89e833656b6e8f11a031bfdb275eafd1715fdcd15cbc693fc285d15da320eebb",
+      "symbols": [
+        {
+          "name": "ToneStatesPanel",
+          "line": 8,
+          "kind": "class"
+        },
+        {
+          "name": "_ToneStatesPanelState",
+          "line": 24,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/android/app/src/main/kotlin/com/aitone/studio/AudioPreviewBridge.kt",
+      "sha256": "fd23523165b80f9643b8d008026825a19a42cbb2a449918b754668933bd66d8d",
+      "symbols": [
+        {
+          "name": "AudioPreviewBridge",
+          "line": 13,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/android/app/src/main/kotlin/com/aitone/studio/MainActivity.kt",
+      "sha256": "bab0cb50226408d8d3580f2d4726f30e30c47f30504ce84bfa0550658113508f",
+      "symbols": [
+        {
+          "name": "MainActivity",
+          "line": 4,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/android/app/src/main/kotlin/com/aitone/studio/PedalDeviceBridge.kt",
+      "sha256": "a96732c08bd4f88c89045a4de673f87c866bdc87c929277a28714dad46292e76",
+      "symbols": [
+        {
+          "name": "PedalDeviceBridge",
+          "line": 15,
+          "kind": "class"
+        }
+      ]
+    },
+    {
+      "path": "android/android/app/src/main/kotlin/com/aitone/studio/ToneRecordingBridge.kt",
+      "sha256": "95f7656e1fea5fad29cd8779a4cdb079a2e65699425b7dd6423a7442f77d62a3",
+      "symbols": [
+        {
+          "name": "ToneRecordingBridge",
+          "line": 17,
+          "kind": "class"
+        }
+      ]
+    }
+  ]
+}

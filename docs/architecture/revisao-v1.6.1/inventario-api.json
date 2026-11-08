@@ -1,0 +1,378 @@
+{
+  "version": "1.6.1",
+  "count": 38,
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/api/v1/health",
+      "summary": "Health",
+      "operation_id": "health_api_v1_health_get",
+      "responses": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/devices",
+      "summary": "List Devices",
+      "operation_id": "list_devices_api_v1_devices_get",
+      "responses": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/analyze",
+      "summary": "Analyze Audio",
+      "operation_id": "analyze_audio_api_v1_analyze_post",
+      "responses": [
+        "200",
+        "422"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/jobs/{job_id}",
+      "summary": "Get Job Status",
+      "operation_id": "get_job_status_api_v1_jobs__job_id__get",
+      "responses": [
+        "200",
+        "422"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/presets/{pair_id}",
+      "summary": "Get Preset Pair",
+      "operation_id": "get_preset_pair_api_v1_presets__pair_id__get",
+      "responses": [
+        "200",
+        "422"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/presets/{pair_id}/stems/{role}/{instrument}",
+      "summary": "Download Stem",
+      "operation_id": "download_stem_api_v1_presets__pair_id__stems__role___instrument__get",
+      "responses": [
+        "200",
+        "422"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/presets/{pair_id}/candidates/{role}",
+      "summary": "Get Candidates",
+      "operation_id": "get_candidates_api_v1_presets__pair_id__candidates__role__get",
+      "responses": [
+        "200",
+        "422"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/presets/{pair_id}/export/json",
+      "summary": "Export Preset Json",
+      "operation_id": "export_preset_json_api_v1_presets__pair_id__export_json_get",
+      "responses": [
+        "200",
+        "422"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/presets/{pair_id}/export/guide",
+      "summary": "Export Preset Guide",
+      "operation_id": "export_preset_guide_api_v1_presets__pair_id__export_guide_get",
+      "responses": [
+        "200",
+        "422"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/presets/{pair_id}/regenerate/{role}",
+      "summary": "Regenerate Preset",
+      "operation_id": "regenerate_preset_api_v1_presets__pair_id__regenerate__role__post",
+      "responses": [
+        "200",
+        "422"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/compare-tone",
+      "summary": "Compare Tone",
+      "operation_id": "compare_tone_api_v1_compare_tone_post",
+      "responses": [
+        "200",
+        "422"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/presets/{pair_id}/pedal-reference/{role}",
+      "summary": "Sync Reference",
+      "operation_id": "sync_reference_api_v1_presets__pair_id__pedal_reference__role__put",
+      "responses": [
+        "200",
+        "422"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/presets/{pair_id}/pedal-reference/{role}",
+      "summary": "Get Reference",
+      "operation_id": "get_reference_api_v1_presets__pair_id__pedal_reference__role__get",
+      "responses": [
+        "200",
+        "422"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/pedal-references",
+      "summary": "References",
+      "operation_id": "references_api_v1_pedal_references_get",
+      "responses": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/recordings",
+      "summary": "Recordings",
+      "operation_id": "recordings_api_v1_recordings_get",
+      "responses": [
+        "200",
+        "422"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/recordings/{recording_id}",
+      "summary": "Recording",
+      "operation_id": "recording_api_v1_recordings__recording_id__get",
+      "responses": [
+        "200",
+        "422"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/recordings/{recording_id}/audio",
+      "summary": "Audio",
+      "operation_id": "audio_api_v1_recordings__recording_id__audio_get",
+      "responses": [
+        "200",
+        "422"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/reference-library",
+      "summary": "References",
+      "operation_id": "references_api_v1_reference_library_get",
+      "responses": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/presets/{pair_id}/reference/{role}",
+      "summary": "Reference",
+      "operation_id": "reference_api_v1_presets__pair_id__reference__role__get",
+      "responses": [
+        "200",
+        "422"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/presets/{pair_id}/reference/{role}",
+      "summary": "Update Reference",
+      "operation_id": "update_reference_api_v1_presets__pair_id__reference__role__put",
+      "responses": [
+        "200",
+        "422"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/presets/{pair_id}/reference/{role}/preview",
+      "summary": "Listen",
+      "operation_id": "listen_api_v1_presets__pair_id__reference__role__preview_get",
+      "responses": [
+        "200",
+        "422"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/analyze-saved",
+      "summary": "Analyze Saved",
+      "operation_id": "analyze_saved_api_v1_analyze_saved_post",
+      "responses": [
+        "200",
+        "422"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/presets/{pair_id}/tone-states/analyze",
+      "summary": "Detect States",
+      "operation_id": "detect_states_api_v1_presets__pair_id__tone_states_analyze_post",
+      "responses": [
+        "200",
+        "422"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/presets/{pair_id}/tone-states",
+      "summary": "States",
+      "operation_id": "states_api_v1_presets__pair_id__tone_states_get",
+      "responses": [
+        "200",
+        "422"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/presets/{pair_id}/tone-states/{state_id}/generate",
+      "summary": "Generate",
+      "operation_id": "generate_api_v1_presets__pair_id__tone_states__state_id__generate_post",
+      "responses": [
+        "200",
+        "422"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/mk20/diagnostics",
+      "summary": "Index",
+      "operation_id": "index_api_v1_mk20_diagnostics_get",
+      "responses": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/mk20/diagnostics",
+      "summary": "Receive",
+      "operation_id": "receive_api_v1_mk20_diagnostics_post",
+      "responses": [
+        "200",
+        "422"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/mk20/diagnostics/{report_id}",
+      "summary": "Retrieve",
+      "operation_id": "retrieve_api_v1_mk20_diagnostics__report_id__get",
+      "responses": [
+        "200",
+        "422"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/mk20/name-pilots",
+      "summary": "Index",
+      "operation_id": "index_api_v1_mk20_name_pilots_get",
+      "responses": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/mk20/name-pilots",
+      "summary": "Receive",
+      "operation_id": "receive_api_v1_mk20_name_pilots_post",
+      "responses": [
+        "200",
+        "422"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/mk20/name-pilots/{record_id}",
+      "summary": "Retrieve",
+      "operation_id": "retrieve_api_v1_mk20_name_pilots__record_id__get",
+      "responses": [
+        "200",
+        "422"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/mk20/transfers",
+      "summary": "Index",
+      "operation_id": "index_api_v1_mk20_transfers_get",
+      "responses": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/mk20/transfers",
+      "summary": "Receive",
+      "operation_id": "receive_api_v1_mk20_transfers_post",
+      "responses": [
+        "200",
+        "422"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/mk20/transfers/{report_id}",
+      "summary": "Retrieve",
+      "operation_id": "retrieve_api_v1_mk20_transfers__report_id__get",
+      "responses": [
+        "200",
+        "422"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/recordings/{recording_id}/evaluation",
+      "summary": "Evaluate",
+      "operation_id": "evaluate_api_v1_recordings__recording_id__evaluation_post",
+      "responses": [
+        "200",
+        "422"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/calibration-tests",
+      "summary": "Evaluations",
+      "operation_id": "evaluations_api_v1_calibration_tests_get",
+      "responses": [
+        "200",
+        "422"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/presets/{pair_id}/calibration-baseline",
+      "summary": "Baseline",
+      "operation_id": "baseline_api_v1_presets__pair_id__calibration_baseline_post",
+      "responses": [
+        "200",
+        "422"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/",
+      "summary": "Root",
+      "operation_id": "root__get",
+      "responses": [
+        "200"
+      ]
+    }
+  ]
+}

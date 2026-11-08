@@ -1,5 +1,7 @@
 # Evolução em develop — geração automática MK300/MK20
 
+[Documentação técnica e lógica consolidada da V1.6.1](docs/architecture/revisao-v1.6.1/README.md): PDF, HTML offline, fontes editáveis e inventários de código/API. Descreve as regras atuais e separa a evolução proposta do motor.
+
 Android/API **1.6.1**: [limpeza da biblioteca, seleção dos slots MK20 e progresso por blocos reais da separação](docs/LIMPEZA_SLOTS_PROGRESSO_V1_6_1.md). [APK atualizado](releases/ai-tone-studio-v1.6.1-develop.apk). A limpeza local acontece uma vez ao abrir esta atualização; backups dos pedais são preservados.
 
 Android/API **1.6.0**: [escuta da guitarra separada, seleção de trecho/canal, registro dos testes de calibração e backend como serviço do usuário](docs/ESCUTA_E_CALIBRACAO_V1_6_0.md). [APK atualizado](releases/ai-tone-studio-v1.6.0-develop.apk). A captura do preset aprovado de Infest prepara a calibração; fidelidade acústica ainda precisa ser avaliada.

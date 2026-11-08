@@ -1,0 +1,130 @@
+{
+  "mk20": {
+    "path": "catalogs/mk20/catalog.json",
+    "metadata": {
+      "device": "M-VAVE MK20",
+      "catalog_version": "0.4.0",
+      "verification_status": "VERIFIED",
+      "last_updated": "2026-10-29",
+      "sources": [
+        "MK-20 Owner's Manual PDF (https://manualf.oss-cn-hongkong.aliyuncs.com/manual/Combined-Effect-Pedals/MK-20.pdf)",
+        "MK-20 Preset Guide PDF (https://community.m-vave.com/bbs/api/software?file=MK20_en.pdf)",
+        "https://resource.m-vave.com/software/app/M-EFCS.apk"
+      ],
+      "warnings": [
+        "USB full-image pilot targets slot 150 only; acoustic matching remains heuristic.",
+        "Factory AM4 models only; custom NAM/IR slots require confirmation.",
+        "FX and additional temporal algorithms are not enabled for transfer in this reviewed subset."
+      ],
+      "resource_sha256": "6fb43175c4cab658cacf0d529a2a0cfc7690cf03461b530bf0256cc9b353cff6"
+    },
+    "android_asset_json_equal": true,
+    "sha256": "9cab102141aa4010a579c2f0b9cc48479b8e7b20994764568c418ec5d638d165",
+    "blocks": {
+      "GATE": {
+        "model_count": 1,
+        "block_id": 1
+      },
+      "EQ": {
+        "model_count": 1,
+        "block_id": 5
+      },
+      "MOD": {
+        "model_count": 1,
+        "block_id": 6
+      },
+      "DLY": {
+        "model_count": 1,
+        "block_id": 7
+      },
+      "REV": {
+        "model_count": 1,
+        "block_id": 8
+      },
+      "VOL": {
+        "model_count": 1,
+        "block_id": 9
+      },
+      "DS": {
+        "model_count": 40,
+        "block_id": 2
+      },
+      "AMP": {
+        "model_count": 90,
+        "block_id": 3
+      },
+      "CAB": {
+        "model_count": 100,
+        "block_id": 4
+      }
+    }
+  },
+  "mk300": {
+    "path": "catalogs/mk300/catalog.json",
+    "metadata": {
+      "device": "M-VAVE MK300",
+      "catalog_version": "0.4.0",
+      "last_updated": "2026-10-09",
+      "verification_status": "COMMUNITY",
+      "sources": [
+        "https://github.com/jpfaria/mvave (MIT, protocolo reverse-engineered do M-EFCS)",
+        "M-EFCS firmware V73 (setembro 2026)",
+        "Protocolo SysEx completamente documentado no repositório",
+        "jpfaria/mvave commit 7363c896202508c57218fa68fb941d943fa40cd1 — captured MK300 V73 indices and knobs"
+      ],
+      "warnings": [
+        "Catálogo de índices e knobs capturado em MK300 V73. V75 exige validação de leitura e teste físico.",
+        "Limites numéricos herdados/heurísticos não representam nova medição física.",
+        "Modelos de fábrica podem ter sido substituídos por imports NAM/IR pelo usuário."
+      ]
+    },
+    "android_asset_json_equal": false,
+    "sha256": "8d8832e6b20dc937bbe0bb5daff89f1ea6e819e4bbe010563b2aa786bf9be78e",
+    "blocks": {
+      "WAH": {
+        "model_count": 6,
+        "block_id": 0
+      },
+      "FX": {
+        "model_count": 16,
+        "block_id": 1
+      },
+      "GATE": {
+        "model_count": 8,
+        "block_id": 2
+      },
+      "DS": {
+        "model_count": 40,
+        "block_id": 3
+      },
+      "AMP": {
+        "model_count": 120,
+        "block_id": 4
+      },
+      "CAB": {
+        "model_count": 100,
+        "block_id": 5
+      },
+      "EQ": {
+        "model_count": 3,
+        "block_id": 6
+      },
+      "MOD": {
+        "model_count": 20,
+        "block_id": 7
+      },
+      "DLY": {
+        "model_count": 27,
+        "block_id": 8
+      },
+      "REV": {
+        "model_count": 18,
+        "block_id": 9
+      },
+      "VOL": {
+        "model_count": 1,
+        "block_id": 10
+      }
+    }
+  }
+}

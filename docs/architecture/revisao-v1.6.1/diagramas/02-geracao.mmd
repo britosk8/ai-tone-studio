@@ -1,0 +1,18 @@
+flowchart TB
+  music["Importar música<br/>Título, aparelho e região"]
+  separate["Separar instrumentos<br/>Stem guitar salvo"]
+  features["Analisar a guitarra<br/>Features e descritores"]
+  initial["Geração inicial<br/>Categorias + fórmulas"]
+  seed["Preset persistido<br/>Base e solo"]
+  listen["Ouvir / escolher trecho<br/>Referência por papel"]
+  save["Salvar referência<br/>Não altera o preset"]
+  regenerate["Gerar do áudio salvo<br/>Ou variante por estado"]
+  result["Novo resultado / variante<br/>Revisar antes de enviar"]
+  music -->|"mixagem"| separate
+  separate -->|"guitarra"| features
+  features -->|"caráter"| initial
+  initial -->|"salva par"| seed
+  seed -->|"reutiliza stem"| listen
+  listen -->|"PUT referência"| save
+  save -->|"ação de geração"| regenerate
+  regenerate -->|"reanalisa e mapeia"| result

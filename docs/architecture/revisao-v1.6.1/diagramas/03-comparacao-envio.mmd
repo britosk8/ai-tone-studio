@@ -1,0 +1,18 @@
+flowchart TB
+  record["Gravar guitarra<br/>Entrada USB processada"]
+  compare["Comparar referência<br/>Bandas e dinâmica"]
+  review["Revisar sugestões<br/>EQ conservador"]
+  apply["Aplicar no preset local<br/>Validar valores anteriores"]
+  prepare["Ler destino e salvar backup<br/>Modelo, nome e slot"]
+  confirm["Confirmar substituição<br/>Original + destino explícitos"]
+  write["Banco + commit + ACKs<br/>Sem repetir escrita"]
+  read["Leitura completa<br/>Comparar imagem gravada"]
+  success["Envio confirmado<br/>Não comprova timbre fiel"]
+  record -->|"WAV + preset"| compare
+  compare -->|"diferenças"| review
+  review -->|"usuário revisa"| apply
+  apply -->|"abrir envio"| prepare
+  prepare -->|"backup válido"| confirm
+  confirm -->|"confirmação"| write
+  write -->|"aguarda flash"| read
+  read -->|"bytes iguais"| success

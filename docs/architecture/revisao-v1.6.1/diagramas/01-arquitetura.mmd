@@ -1,0 +1,18 @@
+flowchart TB
+  ui["Android / Flutter<br/>Telas, biblioteca e revisão"]
+  api["API FastAPI<br/>Validação, jobs e referências"]
+  engine["Motor no notebook<br/>Demucs + análise + regras"]
+  local["Armazenamento Android<br/>Preferências e backups"]
+  store["SQLite + arquivos<br/>Originais, stems e gravações"]
+  catalog["Catálogos por aparelho<br/>IDs, categorias e limites"]
+  bridge["Kotlin nativo<br/>MIDI, captura e reprodução"]
+  pedal["MK20 / MK300<br/>Preset e áudio processado"]
+  research["Pesquisa documental<br/>Fontes externas e fichas"]
+  ui -->|"HTTP / áudio"| api
+  api -->|"orquestra"| engine
+  ui -->|"persiste"| local
+  api -->|"lê / salva"| store
+  engine -->|"consulta"| catalog
+  ui -->|"channels"| bridge
+  bridge -->|"USB / áudio"| pedal
+  research -->|"pistas por estado"| engine
