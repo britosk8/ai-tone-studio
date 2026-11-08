@@ -30,7 +30,13 @@ class AnalyzeStates(BaseModel):
     song_title: str | None = Field(None, max_length=180)
 
 
+class ListeningRegion(BaseModel):
+    start_seconds: float = Field(ge=0, le=7200)
+    duration_seconds: float = Field(ge=3, le=30)
+
+
 class GenerateState(BaseModel):
+    region: ListeningRegion | None = None
     role: Literal["rhythm", "lead"]
     device: DeviceModel = DeviceModel.MK300
     character: Literal["clean", "crunch", "distorted"] | None = None
@@ -131,6 +137,18 @@ def generate_variant(pair_id, state_id, body):
         raise ValueError("Pesquisa mudou; atualize os estados antes de gerar")
     if body.research_revision and body.research_revision != research.get("revision"):
         raise ValueError("As fontes mudaram; atualize a tela antes de gerar")
+    region = dict(state["representative"])
+    if body.region is not None:
+        selected = body.region.model_dump()
+        intervals = state.get("intervals") or [state["representative"]]
+        if not any(
+            i["start_seconds"] <= selected["start_seconds"]
+            and selected["start_seconds"] + selected["duration_seconds"]
+            <= i["start_seconds"] + i["duration_seconds"] + 0.01
+            for i in intervals
+        ):
+            raise ValueError("Escolha o trecho dentro dos intervalos deste timbre")
+        region = selected
     character = body.character or state["character"]
     identity = {
         "version": "state-preset-v1",
@@ -147,6 +165,8 @@ def generate_variant(pair_id, state_id, body):
         from ..services.device_catalog.loader import CatalogLoader
 
         identity["catalog_version"] = CatalogLoader().get_catalog_version(body.device)
+    if region != state["representative"]:
+        identity["selected_region"] = region
     unique = json.dumps(identity, sort_keys=True)
     variant_id = str(uuid.uuid5(uuid.NAMESPACE_URL, unique))
     existing = load_record("pair", variant_id)
@@ -154,7 +174,6 @@ def generate_variant(pair_id, state_id, body):
         return {"pair_id": variant_id, "role": body.role, "reused": True}
     pipeline = ToneAnalysisPipeline()
     engine = GuitarToneEngine(pipeline.compiler)
-    region = state["representative"]
     with tempfile.TemporaryDirectory(prefix="tone-state-") as directory:
         analysis = engine.analyze(
             Path("unused"),
@@ -166,6 +185,23 @@ def generate_variant(pair_id, state_id, body):
             source,
             preferred_channel=state["channel"],
         )
+        # A shorter user-selected crop may be weak even inside a strong grouped interval.
+        level = analysis.engine_diagnostics.get("features", {}).get("rms_dbfs")
+        levels = [
+            s.get("features", {}).get("rms_dbfs")
+            for s in state_map["states"]
+            if s.get("channel", 0) == state.get("channel", 0)
+        ]
+        levels = [v for v in levels if isinstance(v, (int, float))]
+        if (
+            isinstance(level, (int, float))
+            and levels
+            and level < -40
+            and max(levels) - level > 18
+        ):
+            raise ValueError(
+                "A guitarra está muito fraca no trecho escolhido. Ouça e selecione outra passagem deste timbre."
+            )
         # A classificação proposta pode ser corrigida pelo usuário sem editar knobs.
         from ..models.audio import GainCharacter
 

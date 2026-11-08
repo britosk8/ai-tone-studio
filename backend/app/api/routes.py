@@ -44,7 +44,7 @@ def _get_pipeline() -> ToneAnalysisPipeline:
 @router.get("/health")
 async def health():
     """Health check."""
-    return {"status": "ok", "service": "AI Tone Studio API", "version": "1.5.6"}
+    return {"status": "ok", "service": "AI Tone Studio API", "version": "1.6.0"}
 
 
 @router.get("/devices")
@@ -318,6 +318,12 @@ def _comparison_profile(pair_id: str, preset: dict):
             info=reference_info(candidate_id,preset.get('role'))
             if info['needs_region']:
                 raise HTTPException(400,{'code':'reference_region_required','message':'Salve uma vez o trecho da guitarra base ou solo já separado antes de comparar.'})
+            from ..core.reference_library import saved_source
+            from ..services.tone_engine.reference_quality import ensure_usable_excerpt
+            try:
+                ensure_usable_excerpt(saved_source(candidate_id,preset.get('role')),info['start_seconds'],info['duration_seconds'],info.get('analysis_channel'))
+            except ValueError as error:
+                raise HTTPException(400,{'code':'reference_region_required','message':str(error)}) from error
             selected=load_record('comparison_reference',json.dumps([candidate_id,preset.get('role')])) or {}
             if info['selection_saved'] and any(selected.get(key)!=info.get(key) for key in ['cache_id','start_seconds','duration_seconds']):
                 select_region(candidate_id,preset.get('role'),info['start_seconds'],info['duration_seconds'],register=False)
@@ -525,6 +531,9 @@ async def compare_tone(
                 'start_seconds': reference_start, 'duration_seconds': recorded['duration_seconds']})
         if source=='saved_track_profile':result['limitations'].append('Comparação com o perfil geral da música, não com o mesmo trecho. Selecione o áudio original e o início do trecho para uma referência mais útil.')
         if source=='saved_excerpt_profile':result['limitations'].append('Comparação com o perfil do trecho original salvo para esta função. Toque a mesma passagem; selecione novamente o áudio original se mudar de trecho.')
+        context_pair = pair_id if source == 'selected_excerpt' else reference_pair_id
+        binding = load_record('comparison_reference', json.dumps([context_pair,preset.get('role')])) or {}
+        result['reference_context'] = {k:binding[k] for k in ['cache_id','start_seconds','duration_seconds','channel','original_sha256','original_file_sha256','binding_method'] if k in binding}
         result['recording_id'] = recording_id
         result['recording_saved'] = True
         result['recording_audio_url'] = f'/api/v1/recordings/{recording_id}/audio'

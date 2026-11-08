@@ -4,6 +4,7 @@ import '../models/preset_pair.dart';
 import '../services/preset_store.dart';
 import '../services/tone_adjustments.dart';
 import '../services/capture_level.dart';
+import '../widgets/calibration_test_card.dart';
 
 /// Revisão explícita; só persiste ao usuário aceitar e nunca grava automaticamente no pedal.
 class ToneResultScreen extends StatefulWidget {
@@ -25,20 +26,23 @@ class _ToneResultScreenState extends State<ToneResultScreen> {
   String? _error;
   late final List<Map<String, dynamic>> _suggestions;
   late final Set<int> _selected;
+  bool get _baseline =>
+      widget.preset.generationMetadata['calibration_baseline'] == true;
   bool get _clipped => widget.report['quality'] == 'clipped';
   @override
   void initState() {
     super.initState();
-    _suggestions = (widget.report['suggestions'] as List? ?? [])
-        .map((s) => Map<String, dynamic>.from(s as Map))
-        .toList();
+    _suggestions =
+        (_baseline ? <dynamic>[] : widget.report['suggestions'] as List? ?? [])
+            .map((s) => Map<String, dynamic>.from(s as Map))
+            .toList();
     _selected = {for (var i = 0; i < _suggestions.length; i++) i};
   }
 
   String _number(dynamic value) =>
       value is num ? value.toStringAsFixed(value % 1 == 0 ? 0 : 1) : '—';
   Future<void> _save({bool send = false}) async {
-    if (_busy || _clipped || _selected.isEmpty) return;
+    if (_baseline || _busy || _clipped || _selected.isEmpty) return;
     setState(() {
       _busy = true;
       _error = null;
@@ -75,6 +79,7 @@ class _ToneResultScreenState extends State<ToneResultScreen> {
   }
 
   Future<void> _reduceLevel() async {
+    if (_baseline) return;
     if (_busy || _levelAdjusted) return;
     setState(() {
       _busy = true;
@@ -109,6 +114,7 @@ class _ToneResultScreenState extends State<ToneResultScreen> {
   }
 
   Future<void> _send() async {
+    if (_baseline) return;
     await Navigator.pushNamed(context, '/transfer',
         arguments: {'pair_id': widget.pairId, 'role': widget.role});
   }
@@ -123,24 +129,28 @@ class _ToneResultScreenState extends State<ToneResultScreen> {
     ].every((k) => differences[k] is num && (differences[k] as num).isFinite);
     final hasDifferences =
         differences.values.whereType<num>().any((v) => v.abs() >= 3);
-    final heading = _clipped
-        ? 'Gravação saturada — grave novamente'
-        : _suggestions.isNotEmpty
-            ? 'Ajustes recomendados para o preset'
-            : hasDifferences
-                ? 'Há diferenças, mas sem ajuste automático disponível'
-                : measuredBands
-                    ? 'EQ sem ajustes recomendados'
-                    : 'Sem ajustes automáticos recomendados';
-    final explanation = _clipped
-        ? 'O sinal chegou saturado (clipping). Essa captura não permite avaliar o timbre com segurança. Reduza o nível antes da captura e grave novamente. Você pode testar o volume global pelo app; se a USB tiver um controle independente, será preciso conferir esse ajuste na pedaleira. Reduzir o volume depois de gravar não recupera o sinal.'
-        : _suggestions.isNotEmpty
-            ? 'Revise as mudanças abaixo. Elas atualizam este preset da biblioteca; depois você pode enviá-lo ao pedal.'
-            : hasDifferences
-                ? 'As diferenças medidas não puderam ser convertidas em mudanças neste amplificador, por limites ou controles indisponíveis. Confira o trecho de referência e revise o preset manualmente.'
-                : !measuredBands
-                    ? 'A comparação não retornou mudanças automáticas nem medições completas. Revise a referência e faça uma nova comparação.'
-                    : 'Graves, médios e agudos estão dentro do limiar de 3 dB desta comparação. Não há mudança de EQ recomendada. Isso não confirma que ganho, efeitos ou timbre sejam iguais ao original.';
+    final heading = _baseline && !_clipped
+        ? 'Teste da referência aprovada'
+        : _clipped
+            ? 'Gravação saturada — grave novamente'
+            : _suggestions.isNotEmpty
+                ? 'Ajustes recomendados para o preset'
+                : hasDifferences
+                    ? 'Há diferenças, mas sem ajuste automático disponível'
+                    : measuredBands
+                        ? 'EQ sem ajustes recomendados'
+                        : 'Sem ajustes automáticos recomendados';
+    final explanation = _baseline && !_clipped
+        ? 'Registre sua avaliação abaixo para comparar o ponto de partida aprovado com as próximas gerações. Este modo não modifica o preset de referência.'
+        : _clipped
+            ? 'O sinal chegou saturado (clipping). Essa captura não permite avaliar o timbre com segurança. Reduza o nível antes da captura e grave novamente. Você pode testar o volume global pelo app; se a USB tiver um controle independente, será preciso conferir esse ajuste na pedaleira. Reduzir o volume depois de gravar não recupera o sinal.'
+            : _suggestions.isNotEmpty
+                ? 'Revise as mudanças abaixo. Elas atualizam este preset da biblioteca; depois você pode enviá-lo ao pedal.'
+                : hasDifferences
+                    ? 'As diferenças medidas não puderam ser convertidas em mudanças neste amplificador, por limites ou controles indisponíveis. Confira o trecho de referência e revise o preset manualmente.'
+                    : !measuredBands
+                        ? 'A comparação não retornou mudanças automáticas nem medições completas. Revise a referência e faça uma nova comparação.'
+                        : 'Graves, médios e agudos estão dentro do limiar de 3 dB desta comparação. Não há mudança de EQ recomendada. Isso não confirma que ganho, efeitos ou timbre sejam iguais ao original.';
     final capture = widget.report['recording'] as Map? ?? {};
     return PopScope(
         canPop: !_busy,
@@ -183,7 +193,8 @@ class _ToneResultScreenState extends State<ToneResultScreen> {
                             Text(
                                 'Amostras próximas ao limite: ${((capture['clipped_fraction'] as num) * 100).toStringAsFixed(1)}%'),
                         ]))),
-            if (_clipped &&
+            if (!_baseline &&
+                _clipped &&
                 widget.preset.device == 'MK300' &&
                 (widget.preset.presetVolume ?? 0) > 1) ...[
               Text(
@@ -201,6 +212,10 @@ class _ToneResultScreenState extends State<ToneResultScreen> {
             ],
             if (!_clipped) ...[
               Text(widget.report['summary'] as String? ?? ''),
+              if (widget.report['recording_id'] is String)
+                CalibrationTestCard(
+                    recordingId: widget.report['recording_id'] as String,
+                    role: widget.role),
               if (differences.isNotEmpty) ...[
                 const SizedBox(height: 16),
                 const Text('Diferenças medidas em relação à referência',
@@ -261,7 +276,7 @@ class _ToneResultScreenState extends State<ToneResultScreen> {
                     onPressed: _busy ? null : _send,
                     child: const Text('Enviar preset ajustado ao pedal')),
               ],
-              if (_suggestions.isEmpty)
+              if (_suggestions.isEmpty && !_baseline)
                 OutlinedButton(
                     onPressed: _busy ? null : _send,
                     child: const Text('Enviar preset atual sem alterações')),

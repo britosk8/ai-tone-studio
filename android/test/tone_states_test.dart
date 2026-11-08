@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,15 +13,27 @@ class StateApi extends ApiService {
   int analyses = 0, pairFetches = 0;
   bool weakFirst = false;
   String? generatedRole, generatedCharacter;
+  Map<String, dynamic>? generatedRegion;
   @override
   Future<Map<String, dynamic>> generateToneState(String pairId, String stateId,
       String role, String device, String character, String? researchId,
-      {String? researchRevision}) async {
+      {String? researchRevision, Map<String, dynamic>? region}) async {
+    generatedRegion = region;
     generatedRole = role;
     generatedCharacter = character;
     return {'pair_id': 'pair-001', 'role': role, 'reused': true};
   }
 
+  @override
+  Future<Map<String, dynamic>> referenceInfo(
+          String pairId, String role) async =>
+      {
+        'cache_start_seconds': 0,
+        'available_duration': 240,
+        'start_seconds': 0,
+        'duration_seconds': 20,
+        'channels': 2
+      };
   @override
   Future<PresetPair> getPresets(String id) async {
     pairFetches++;
@@ -198,5 +211,54 @@ void main() {
     expect(base.last.onPressed, isNotNull);
     expect(solo.last.onPressed, isNotNull);
     expect(api.generatedRole, isNull);
+  });
+  testWidgets('Trecho confirmado na escuta é enviado à geração do estado',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1000, 2200));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    const playback = MethodChannel('ai_tone/preview');
+    tester.binding.defaultBinaryMessenger
+        .setMockMethodCallHandler(playback, (_) async => null);
+    addTearDown(() => tester.binding.defaultBinaryMessenger
+        .setMockMethodCallHandler(playback, null));
+    SharedPreferences.setMockInitialValues({});
+    final api = StateApi(), store = PresetStore();
+    await store.save(PresetPair.fromJson(fixture()));
+    await tester.pumpWidget(MultiProvider(
+        providers: [
+          Provider<ApiService>.value(value: api),
+          ChangeNotifierProvider<PresetStore>.value(value: store)
+        ],
+        child: MaterialApp(
+            home: Scaffold(
+                body: SingleChildScrollView(
+                    child: ToneStatesPanel(
+                        pairId: 'song',
+                        rhythmDevice: 'MK20',
+                        leadDevice: 'MK300',
+                        onGenerated: (_, __) async {}))))));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Timbres ao longo da música'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Ouvir e escolher trecho').first);
+    await tester.pumpAndSettle();
+    tester.widgetList<Slider>(find.byType(Slider)).elementAt(1).onChanged!(6);
+    await tester.pump();
+    tester.widgetList<Slider>(find.byType(Slider)).first.onChanged!(200);
+    await tester.pump();
+    await tester.runAsync(() async {
+      final dynamic confirm = tester
+          .widget<OutlinedButton>(
+              find.widgetWithText(OutlinedButton, 'Usar este trecho'))
+          .onPressed!;
+      await confirm();
+    });
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Gerar base deste timbre').first);
+    await tester.pumpAndSettle();
+    expect(api.generatedRegion!['start_seconds'], 200);
+    expect(api.generatedRegion!['duration_seconds'], 6);
+    expect(api.generatedCharacter, 'clean');
+    expect(tester.takeException(), isNull);
   });
 }

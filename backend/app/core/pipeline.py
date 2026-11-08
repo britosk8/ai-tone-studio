@@ -1,4 +1,5 @@
 """Pipeline principal de análise e geração de presets."""
+
 import asyncio
 import logging
 import shutil
@@ -54,7 +55,21 @@ class ToneAnalysisPipeline:
         work_dir = Path(tempfile.mkdtemp(prefix="toneai_"))
         try:
             return await asyncio.to_thread(
-                self._run, audio_path, rhythm_device, lead_device, artist, song_title, work_dir, source_kind, excerpt_start, excerpt_duration, engine_mode, lead_start, lead_duration, progress, cached_sources
+                self._run,
+                audio_path,
+                rhythm_device,
+                lead_device,
+                artist,
+                song_title,
+                work_dir,
+                source_kind,
+                excerpt_start,
+                excerpt_duration,
+                engine_mode,
+                lead_start,
+                lead_duration,
+                progress,
+                cached_sources,
             )
         finally:
             shutil.rmtree(work_dir, ignore_errors=True)
@@ -79,31 +94,70 @@ class ToneAnalysisPipeline:
 
         if engine_mode == "guitar_v2":
             from ..services.tone_engine.engine import GuitarToneEngine
+
             engine = GuitarToneEngine(self.compiler)
             report = progress or (lambda percent, message: None)
-            analysis = engine.analyze(audio_path,work_dir,source_kind,excerpt_start,excerpt_duration,report,(cached_sources or {}).get("rhythm"))
+            analysis = engine.analyze(
+                audio_path,
+                work_dir,
+                source_kind,
+                excerpt_start,
+                excerpt_duration,
+                report,
+                (cached_sources or {}).get("rhythm"),
+                preferred_channel=(cached_sources or {})
+                .get("rhythm", {})
+                .get("analysis_channel"),
+            )
             lead_analysis = analysis
             if lead_start is not None:
-                lead_dir = work_dir / 'lead'
+                lead_dir = work_dir / "lead"
                 lead_dir.mkdir()
-                lead_analysis = engine.analyze(audio_path,lead_dir,source_kind,lead_start,lead_duration,report,(cached_sources or {}).get("lead"))
-            report(85, 'Gerando e validando presets no catálogo da pedaleira...')
-            pair = self.compiler.compile_pair(analysis,rhythm_device,lead_device,artist,song_title)
+                lead_analysis = engine.analyze(
+                    audio_path,
+                    lead_dir,
+                    source_kind,
+                    lead_start,
+                    lead_duration,
+                    report,
+                    (cached_sources or {}).get("lead"),
+                    preferred_channel=(cached_sources or {})
+                    .get("lead", {})
+                    .get("analysis_channel"),
+                )
+            report(85, "Gerando e validando presets no catálogo da pedaleira...")
+            pair = self.compiler.compile_pair(
+                analysis, rhythm_device, lead_device, artist, song_title
+            )
             if lead_analysis is not analysis:
-                pair.lead_preset = self.compiler._compile_lead_preset(lead_analysis,lead_device,artist,song_title)
-            engine.refine(pair.rhythm_preset,analysis)
-            engine.refine(pair.lead_preset,lead_analysis)
-            analysis.engine_diagnostics['lead'] = lead_analysis.engine_diagnostics.copy() if lead_analysis is not analysis else {'same_region':True}
+                pair.lead_preset = self.compiler._compile_lead_preset(
+                    lead_analysis, lead_device, artist, song_title
+                )
+            engine.refine(pair.rhythm_preset, analysis)
+            engine.refine(pair.lead_preset, lead_analysis)
+            analysis.engine_diagnostics["lead"] = (
+                lead_analysis.engine_diagnostics.copy()
+                if lead_analysis is not analysis
+                else {"same_region": True}
+            )
             from ..services.tone_engine.candidates import PresetCandidateGenerator
+
             generator = PresetCandidateGenerator(self.compiler)
-            rhythm_candidates = generator.generate(pair.rhythm_preset,analysis)
-            lead_candidates = generator.generate(pair.lead_preset,lead_analysis)
-            analysis.engine_diagnostics['candidates'] = {
-                'rhythm': [p.model_dump(mode='json') for p in rhythm_candidates],
-                'lead': [p.model_dump(mode='json') for p in lead_candidates],
-                'ranking': 'catalog_family_order_not_acoustic_similarity'}
-            analysis.engine_diagnostics['reference_profiles'] = {'rhythm':analysis.reference_profile,'lead':lead_analysis.reference_profile}
-            pair.analysis_summary = 'Guitarra analisada com motor v2 heurístico. ' + ' '.join(analysis.limitations)
+            rhythm_candidates = generator.generate(pair.rhythm_preset, analysis)
+            lead_candidates = generator.generate(pair.lead_preset, lead_analysis)
+            analysis.engine_diagnostics["candidates"] = {
+                "rhythm": [p.model_dump(mode="json") for p in rhythm_candidates],
+                "lead": [p.model_dump(mode="json") for p in lead_candidates],
+                "ranking": "catalog_family_order_not_acoustic_similarity",
+            }
+            analysis.engine_diagnostics["reference_profiles"] = {
+                "rhythm": analysis.reference_profile,
+                "lead": lead_analysis.reference_profile,
+            }
+            pair.analysis_summary = (
+                "Guitarra analisada com motor v2 heurístico. "
+                + " ".join(analysis.limitations)
+            )
             return analysis, pair
 
         if source_kind not in {"mix", "isolated"}:
@@ -111,10 +165,18 @@ class ToneAnalysisPipeline:
         if excerpt_duration is not None:
             import librosa
             import soundfile as sf
-            y, sr = librosa.load(str(audio_path), sr=22050, mono=True,
-                                 offset=excerpt_start, duration=excerpt_duration)
+
+            y, sr = librosa.load(
+                str(audio_path),
+                sr=22050,
+                mono=True,
+                offset=excerpt_start,
+                duration=excerpt_duration,
+            )
             if len(y) < 3 * sr:
-                raise ValueError("O trecho selecionado precisa conter pelo menos 3 segundos de áudio")
+                raise ValueError(
+                    "O trecho selecionado precisa conter pelo menos 3 segundos de áudio"
+                )
             audio_path = work_dir / "selected_excerpt.wav"
             sf.write(audio_path, y, sr, subtype="FLOAT")
 
@@ -128,7 +190,9 @@ class ToneAnalysisPipeline:
                 if guitar_audio is not None:
                     logger.info("Separação de fontes bem-sucedida")
                 else:
-                    logger.warning("Falha ao carregar stem — prosseguindo com mix completo")
+                    logger.warning(
+                        "Falha ao carregar stem — prosseguindo com mix completo"
+                    )
             else:
                 logger.warning("Separação falhou — prosseguindo com mix completo")
         else:
@@ -136,10 +200,14 @@ class ToneAnalysisPipeline:
 
         # Etapa 2: Análise de áudio
         logger.info("Iniciando análise espectral…")
-        analyzer = AudioAnalyzer(source_separated_audio=guitar_audio, source_kind=source_kind)
+        analyzer = AudioAnalyzer(
+            source_separated_audio=guitar_audio, source_kind=source_kind
+        )
         analysis = analyzer.analyze(audio_path)
         if excerpt_duration is not None:
-            analysis.limitations.append(f"Referência analisada: trecho de {excerpt_start:g}s a {excerpt_start + analysis.duration_seconds:g}s. Base e solo partem deste mesmo trecho.")
+            analysis.limitations.append(
+                f"Referência analisada: trecho de {excerpt_start:g}s a {excerpt_start + analysis.duration_seconds:g}s. Base e solo partem deste mesmo trecho."
+            )
         logger.info(f"Análise concluída: confiança={analysis.overall_confidence.value}")
 
         # Etapa 3: Geração de presets

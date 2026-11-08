@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../services/api_service.dart';
 import '../services/preset_store.dart';
+import '../screens/reference_preview_screen.dart';
 
 class ToneStatesPanel extends StatefulWidget {
   final String pairId, rhythmDevice, leadDevice;
@@ -36,6 +37,7 @@ class _ToneStatesPanelState extends State<ToneStatesPanel> {
   bool _busy = false;
   final _characters = <String, String>{};
   final _devices = <String, String>{};
+  final _regions = <String, Map<String, dynamic>>{};
   @override
   void initState() {
     super.initState();
@@ -81,6 +83,41 @@ class _ToneStatesPanelState extends State<ToneStatesPanel> {
     }
   }
 
+  Future<void> _listen(Map state) async {
+    try {
+      final role = state['source_role'] as String? ?? 'rhythm';
+      final info =
+          await context.read<ApiService>().referenceInfo(widget.pairId, role);
+      if (!mounted) return;
+      final selected = await Navigator.push<Map<String, dynamic>>(
+          context,
+          MaterialPageRoute(
+              builder: (_) => ReferencePreviewScreen(
+                  pairId: widget.pairId,
+                  role: role,
+                  info: {
+                    ...info,
+                    ...Map<String, dynamic>.from(
+                        _regions[state['id']] ?? state['representative'] as Map)
+                  },
+                  fixedChannel: (state['channel'] as num?)?.toInt() ?? 0,
+                  intervals: (state['intervals'] as List?)
+                          ?.map((v) => Map<String, dynamic>.from(v as Map))
+                          .toList() ??
+                      [
+                        Map<String, dynamic>.from(
+                            state['representative'] as Map)
+                      ])));
+      if (mounted && selected != null) {
+        setState(() => _regions[state['id'] as String] = selected);
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _error = 'Não foi possível abrir a guitarra salva: $e');
+      }
+    }
+  }
+
   Future<void> _generate(Map state, String role) async {
     setState(() {
       _busy = true;
@@ -96,7 +133,8 @@ class _ToneStatesPanelState extends State<ToneStatesPanel> {
           _devices[state['id']] ?? widget.rhythmDevice,
           _characters[state['id']] ?? state['character'] as String,
           research?['id'] as String?,
-          researchRevision: research?['revision'] as String?);
+          researchRevision: research?['revision'] as String?,
+          region: _regions[state['id']]);
       if (!mounted) return;
       final store = context.read<PresetStore>();
       await store.load();
@@ -119,7 +157,12 @@ class _ToneStatesPanelState extends State<ToneStatesPanel> {
   Widget build(BuildContext context) {
     final maps = (_data?['maps'] as List? ?? []);
     final states = [
-      for (final map in maps) ...((map as Map)['states'] as List? ?? [])
+      for (final map in maps)
+        for (final state in (map as Map)['states'] as List? ?? [])
+          {
+            ...Map<String, dynamic>.from(state as Map),
+            'source_role': map['source_role'] ?? 'rhythm'
+          }
     ];
     final research = _data?['research'] as Map?;
     return Card(
@@ -194,7 +237,8 @@ class _ToneStatesPanelState extends State<ToneStatesPanel> {
                       const Divider(),
                       Builder(builder: (context) {
                         final state = raw as Map;
-                        final region = state['representative'] as Map;
+                        final region = _regions[state['id']] ??
+                            state['representative'] as Map;
                         final quality = state['reference_quality'] as Map?;
                         final eligible = quality?['eligible'] != false;
                         return Column(
@@ -213,6 +257,11 @@ class _ToneStatesPanelState extends State<ToneStatesPanel> {
                                       fontWeight: FontWeight.bold)),
                               Text(
                                   'Referência: ${region['start_seconds']} s — duração ${region['duration_seconds']} s. Confiança baixa; confira a proposta.'),
+                              OutlinedButton.icon(
+                                  onPressed:
+                                      _busy ? null : () => _listen(state),
+                                  icon: const Icon(Icons.headphones),
+                                  label: const Text('Ouvir e escolher trecho')),
                               DropdownButtonFormField<String>(
                                   isExpanded: true,
                                   value: _characters[state['id']] ??

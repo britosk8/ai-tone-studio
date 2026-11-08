@@ -40,6 +40,31 @@ class ApiService {
         .toList();
   }
 
+  Future<Map<String, dynamic>> downloadReferencePreview(
+      String pairId, String role, double start, double duration,
+      {int? channel, double listenGainDb = 0}) async {
+    final uri =
+        Uri.parse('$_baseUrl/api/v1/presets/$pairId/reference/$role/preview')
+            .replace(queryParameters: {
+      'start_seconds': '$start',
+      'duration_seconds': '$duration',
+      'listen_gain_db': '$listenGainDb',
+      if (channel != null) 'channel': '$channel'
+    });
+    final response = await http.get(uri).timeout(const Duration(seconds: 45));
+    if (response.statusCode != 200) _handleResponse(response);
+    if (response.bodyBytes.length > 8000000 ||
+        response.bodyBytes.length < 44 ||
+        String.fromCharCodes(response.bodyBytes.take(4)) != 'RIFF') {
+      throw StateError('Prévia de áudio inválida.');
+    }
+    return {
+      'bytes': response.bodyBytes,
+      'gain_db':
+          double.tryParse(response.headers['x-preview-gain-db'] ?? '0') ?? 0
+    };
+  }
+
   Future<List<int>> downloadGuitarStem(String pairId, String role) async {
     final response = await http
         .get(Uri.parse('$_baseUrl/api/v1/presets/$pairId/stems/$role/guitar'))
@@ -48,6 +73,26 @@ class ApiService {
       _handleResponse(response);
     }
     return response.bodyBytes;
+  }
+
+  Future<PresetData> approvedCalibrationPreset(String pairId) async {
+    final response = await http
+        .post(
+            Uri.parse('$_baseUrl/api/v1/presets/$pairId/calibration-baseline'))
+        .timeout(const Duration(seconds: 30));
+    final data = _handleResponse(response);
+    return PresetData.fromJson(
+        Map<String, dynamic>.from(data['preset'] as Map));
+  }
+
+  Future<Map<String, dynamic>> saveRecordingEvaluation(
+      String id, Map<String, dynamic> evaluation) async {
+    final response = await http
+        .post(Uri.parse('$_baseUrl/api/v1/recordings/$id/evaluation'),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(evaluation))
+        .timeout(const Duration(seconds: 30));
+    return _handleResponse(response);
   }
 
   Future<List<Map<String, dynamic>>> referenceLibrary() async {
@@ -60,12 +105,16 @@ class ApiService {
   Future<Map<String, dynamic>> referenceInfo(String pairId, String role) =>
       _get('/api/v1/presets/$pairId/reference/$role');
   Future<Map<String, dynamic>> setReferenceRegion(
-      String pairId, String role, double start, double duration) async {
+      String pairId, String role, double start, double duration,
+      {int? channel}) async {
     final response = await http
         .put(Uri.parse('$_baseUrl/api/v1/presets/$pairId/reference/$role'),
             headers: {'Content-Type': 'application/json'},
-            body: jsonEncode(
-                {'start_seconds': start, 'duration_seconds': duration}))
+            body: jsonEncode({
+              'start_seconds': start,
+              'duration_seconds': duration,
+              if (channel != null) 'channel': channel
+            }))
         .timeout(const Duration(seconds: 60));
     return _handleResponse(response);
   }
@@ -77,7 +126,9 @@ class ApiService {
       required double rhythmStart,
       required double rhythmDuration,
       required double leadStart,
-      required double leadDuration}) async {
+      required double leadDuration,
+      int? rhythmChannel,
+      int? leadChannel}) async {
     final response = await http
         .post(Uri.parse('$_baseUrl/api/v1/analyze-saved'),
             headers: {'Content-Type': 'application/json'},
@@ -89,11 +140,13 @@ class ApiService {
               'lead_device': leadDevice,
               'rhythm_region': {
                 'start_seconds': rhythmStart,
-                'duration_seconds': rhythmDuration
+                'duration_seconds': rhythmDuration,
+                if (rhythmChannel != null) 'channel': rhythmChannel
               },
               'lead_region': {
                 'start_seconds': leadStart,
-                'duration_seconds': leadDuration
+                'duration_seconds': leadDuration,
+                if (leadChannel != null) 'channel': leadChannel
               }
             }))
         .timeout(const Duration(seconds: 60));
@@ -149,7 +202,7 @@ class ApiService {
 
   Future<Map<String, dynamic>> generateToneState(String pairId, String stateId,
       String role, String device, String character, String? researchId,
-      {String? researchRevision}) async {
+      {String? researchRevision, Map<String, dynamic>? region}) async {
     final response = await http
         .post(
             Uri.parse(
@@ -160,7 +213,12 @@ class ApiService {
               'device': device,
               'character': character,
               'research_id': researchId,
-              'research_revision': researchRevision
+              'research_revision': researchRevision,
+              if (region != null)
+                'region': {
+                  'start_seconds': region['start_seconds'],
+                  'duration_seconds': region['duration_seconds']
+                }
             }))
         .timeout(const Duration(seconds: 120));
     return _handleResponse(response);

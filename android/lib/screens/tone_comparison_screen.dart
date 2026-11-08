@@ -8,12 +8,17 @@ import '../services/api_service.dart';
 import '../services/preset_store.dart';
 import '../services/tone_recording.dart';
 import 'tone_result_screen.dart';
+import 'reference_preview_screen.dart';
 
 class ToneComparisonScreen extends StatefulWidget {
   final String pairId;
   final String initialRole;
+  final PresetData? calibrationPreset;
   const ToneComparisonScreen(
-      {super.key, required this.pairId, this.initialRole = 'lead'});
+      {super.key,
+      required this.pairId,
+      this.initialRole = 'lead',
+      this.calibrationPreset});
   @override
   State<ToneComparisonScreen> createState() => _ToneComparisonScreenState();
 }
@@ -42,11 +47,14 @@ class _ToneComparisonScreenState extends State<ToneComparisonScreen>
   bool get _v2Reference =>
       (_preset?.generationMetadata['generator'] as String? ?? '')
           .startsWith('guitar-v');
-  PresetData? get _preset => _role == 'lead' ? _pair?.lead : _pair?.rhythm;
+  PresetData? get _preset =>
+      widget.calibrationPreset ??
+      (_role == 'lead' ? _pair?.lead : _pair?.rhythm);
   @override
   void initState() {
     super.initState();
-    _role = widget.initialRole == 'rhythm' ? 'rhythm' : 'lead';
+    _role = widget.calibrationPreset?.role ??
+        (widget.initialRole == 'rhythm' ? 'rhythm' : 'lead');
     WidgetsBinding.instance.addObserver(this);
     _load();
   }
@@ -89,19 +97,18 @@ class _ToneComparisonScreenState extends State<ToneComparisonScreen>
   Future<void> _selectRegion() async {
     final saved = _savedReference;
     if (saved == null) return;
-    final selected = await showDialog<Map<String, double>>(
-        context: context,
-        builder: (context) => _SavedRegionDialog(
-            role: _role,
-            start: '${saved['start_seconds']}',
-            duration:
-                '${saved['needs_region'] == true ? 20 : saved['duration_seconds']}'));
+    final selected = await Navigator.push<Map<String, dynamic>>(
+        context,
+        MaterialPageRoute(
+            builder: (_) => ReferencePreviewScreen(
+                pairId: widget.pairId, role: _role, info: saved)));
     if (selected == null || !mounted) return;
-    final begin = selected['start']!, seconds = selected['duration']!;
+    final begin = (selected['start_seconds'] as num).toDouble(),
+        seconds = (selected['duration_seconds'] as num).toDouble();
     await _run(() async {
-      final info = await context
-          .read<ApiService>()
-          .setReferenceRegion(widget.pairId, _role, begin, seconds);
+      final info = await context.read<ApiService>().setReferenceRegion(
+          widget.pairId, _role, begin, seconds,
+          channel: selected['channel'] as int?);
       if (mounted) {
         setState(() {
           _savedReference = info;
@@ -112,6 +119,21 @@ class _ToneComparisonScreenState extends State<ToneComparisonScreen>
       }
     });
   }
+
+  Future<void> _openBaseline() => _run(() async {
+        final preset = await context
+            .read<ApiService>()
+            .approvedCalibrationPreset(widget.pairId);
+        if (!mounted) return;
+        setState(() => _busy = false);
+        await Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => ToneComparisonScreen(
+                    pairId: widget.pairId,
+                    initialRole: 'rhythm',
+                    calibrationPreset: preset)));
+      });
 
   Future<void> _refreshInputs() async {
     try {
@@ -392,32 +414,42 @@ class _ToneComparisonScreenState extends State<ToneComparisonScreen>
                       ? _preset!.songTitle
                       : _preset!.name,
                   style: Theme.of(context).textTheme.titleLarge),
-              DropdownButtonFormField<String>(
-                  value: _role,
-                  decoration: const InputDecoration(
-                      labelText: 'Preset que você está tocando'),
-                  items: [
-                    DropdownMenuItem(
-                        value: 'rhythm',
-                        child: Text('Base — ${_pair!.rhythm.device}')),
-                    DropdownMenuItem(
-                        value: 'lead',
-                        child: Text('Solo — ${_pair!.lead.device}'))
-                  ],
-                  onChanged: _busy || _recording
-                      ? null
-                      : (v) => _run(() async {
-                            await _clearCapture();
-                            if (!mounted) return;
-                            setState(() {
-                              _role = v!;
-                              _savedReference = null;
-                              _reference = null;
-                              _status =
-                                  'Grave novamente com o preset selecionado.';
-                            });
-                            await _loadReference();
-                          })),
+              if (widget.calibrationPreset != null)
+                const Text(
+                    'Referência aprovada: PAPA INFEST — MK20, slot 76. Selecione esse preset no pedal e use a Konig Stratocaster. Este teste não altera o preset.'),
+              if (widget.calibrationPreset == null &&
+                  _preset!.device == 'MK20' &&
+                  _preset!.songTitle.trim().toLowerCase() == 'infest')
+                OutlinedButton(
+                    onPressed: _busy || _recording ? null : _openBaseline,
+                    child: const Text('Gravar referência aprovada de Infest')),
+              if (widget.calibrationPreset == null)
+                DropdownButtonFormField<String>(
+                    value: _role,
+                    decoration: const InputDecoration(
+                        labelText: 'Preset que você está tocando'),
+                    items: [
+                      DropdownMenuItem(
+                          value: 'rhythm',
+                          child: Text('Base — ${_pair!.rhythm.device}')),
+                      DropdownMenuItem(
+                          value: 'lead',
+                          child: Text('Solo — ${_pair!.lead.device}'))
+                    ],
+                    onChanged: _busy || _recording
+                        ? null
+                        : (v) => _run(() async {
+                              await _clearCapture();
+                              if (!mounted) return;
+                              setState(() {
+                                _role = v!;
+                                _savedReference = null;
+                                _reference = null;
+                                _status =
+                                    'Grave novamente com o preset selecionado.';
+                              });
+                              await _loadReference();
+                            })),
               const SizedBox(height: 12),
               const Text(
                   'Toque 3–30 segundos da mesma passagem da referência. Grave somente sua guitarra, sem a música de fundo. Confira que a USB envia o som processado pelo preset, não o sinal DI seco.'),
@@ -508,7 +540,8 @@ class _ToneComparisonScreenState extends State<ToneComparisonScreen>
                     : 'Guitarra já separada e salva no backend. Sua gravação será comparada com este trecho, sem selecionar arquivo novamente.'),
                 OutlinedButton(
                     onPressed: _busy || _recording ? null : _selectRegion,
-                    child: const Text('Ajustar trecho da guitarra salva')),
+                    child:
+                        const Text('Ouvir e ajustar trecho da guitarra salva')),
               ] else ...[
                 Text(_v2Reference
                     ? 'Buscando a guitarra separada salva no backend...'
@@ -560,75 +593,4 @@ class _ToneComparisonScreenState extends State<ToneComparisonScreen>
           ]),
         ));
   }
-}
-
-class _SavedRegionDialog extends StatefulWidget {
-  final String role, start, duration;
-  const _SavedRegionDialog(
-      {required this.role, required this.start, required this.duration});
-  @override
-  State<_SavedRegionDialog> createState() => _SavedRegionDialogState();
-}
-
-class _SavedRegionDialogState extends State<_SavedRegionDialog> {
-  late final _start = TextEditingController(text: widget.start);
-  late final _duration = TextEditingController(text: widget.duration);
-  String? _error;
-  @override
-  void dispose() {
-    _start.dispose();
-    _duration.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) => AlertDialog(
-          title: Text(widget.role == 'lead'
-              ? 'Trecho da guitarra solo'
-              : 'Trecho da guitarra base'),
-          content: Column(mainAxisSize: MainAxisSize.min, children: [
-            const Text(
-                'A guitarra já está separada. Este trecho ficará salvo para esta parte nas próximas comparações.'),
-            TextField(
-                controller: _start,
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
-                decoration: const InputDecoration(
-                    labelText: 'Início na música (segundos)')),
-            TextField(
-                controller: _duration,
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
-                decoration: const InputDecoration(
-                    labelText: 'Duração (3–120 segundos)')),
-            if (_error != null)
-              Text(_error!,
-                  style: TextStyle(color: Theme.of(context).colorScheme.error))
-          ]),
-          actions: [
-            TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cancelar')),
-            FilledButton(
-                onPressed: () {
-                  final start =
-                          double.tryParse(_start.text.replaceAll(',', '.')),
-                      duration =
-                          double.tryParse(_duration.text.replaceAll(',', '.'));
-                  if (start == null ||
-                      duration == null ||
-                      !start.isFinite ||
-                      !duration.isFinite ||
-                      start < 0 ||
-                      duration < 3 ||
-                      duration > 120) {
-                    setState(() => _error =
-                        'Informe um início válido e duração entre 3 e 120 s.');
-                    return;
-                  }
-                  Navigator.pop(
-                      context, {'start': start, 'duration': duration});
-                },
-                child: const Text('Salvar trecho'))
-          ]);
 }

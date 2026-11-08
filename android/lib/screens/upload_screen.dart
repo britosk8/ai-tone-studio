@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'reference_preview_screen.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:provider/provider.dart';
 import '../services/api_service.dart';
@@ -39,6 +40,7 @@ class _UploadScreenState extends State<UploadScreen> {
   List<Map<String, dynamic>> _songs = [];
   String? _savedPairId;
   bool _useSaved = false;
+  int? _rhythmChannel, _leadChannel;
 
   @override
   void initState() {
@@ -64,6 +66,8 @@ class _UploadScreenState extends State<UploadScreen> {
     final base = roles['rhythm'] as Map, solo = roles['lead'] as Map;
     setState(() {
       _savedPairId = id;
+      _rhythmChannel = (base['analysis_channel'] as num?)?.toInt();
+      _leadChannel = (solo['analysis_channel'] as num?)?.toInt();
       _useSaved = true;
       _useExcerpt = true;
       _differentLead = true;
@@ -74,6 +78,36 @@ class _UploadScreenState extends State<UploadScreen> {
       _leadDuration.text =
           '${solo['needs_region'] == true ? 20 : solo['duration_seconds']}';
       _error = null;
+    });
+  }
+
+  Future<void> _listenSaved(String role) async {
+    final id = _savedPairId;
+    if (id == null) return;
+    final song = _songs.firstWhere((s) => s['pair_id'] == id);
+    final original =
+        Map<String, dynamic>.from((song['roles'] as Map)[role] as Map);
+    final start = role == 'rhythm' ? _excerptStart : _leadStart,
+        duration = role == 'rhythm' ? _excerptDuration : _leadDuration;
+    final selected = await Navigator.push<Map<String, dynamic>>(
+        context,
+        MaterialPageRoute(
+            builder: (_) =>
+                ReferencePreviewScreen(pairId: id, role: role, info: {
+                  ...original,
+                  'start_seconds':
+                      double.tryParse(start.text) ?? original['start_seconds'],
+                  'duration_seconds': double.tryParse(duration.text) ?? 20
+                })));
+    if (!mounted || selected == null) return;
+    setState(() {
+      start.text = '${selected['start_seconds']}';
+      duration.text = '${selected['duration_seconds']}';
+      if (role == 'rhythm') {
+        _rhythmChannel = selected['channel'] as int?;
+      } else {
+        _leadChannel = selected['channel'] as int?;
+      }
     });
   }
 
@@ -175,7 +209,9 @@ class _UploadScreenState extends State<UploadScreen> {
               rhythmStart: start!,
               rhythmDuration: duration!,
               leadStart: leadStart!,
-              leadDuration: leadDuration!)
+              leadDuration: leadDuration!,
+              rhythmChannel: _rhythmChannel,
+              leadChannel: _leadChannel)
           : await api.submitAnalysis(
               audioFile: _selectedFile!,
               rhythmDevice: _rhythmDevice,
@@ -298,6 +334,11 @@ class _UploadScreenState extends State<UploadScreen> {
                   ? null
                   : (v) => setState(() => _useExcerpt = v),
             ),
+            if (_useSaved)
+              OutlinedButton.icon(
+                  onPressed: _uploading ? null : () => _listenSaved('rhythm'),
+                  icon: const Icon(Icons.headphones),
+                  label: const Text('Ouvir e escolher guitarra base')),
             if (_useExcerpt) ...[
               TextField(
                   controller: _excerptStart,
@@ -323,6 +364,11 @@ class _UploadScreenState extends State<UploadScreen> {
                   ? null
                   : (v) => setState(() => _differentLead = v),
             ),
+            if (_useSaved)
+              OutlinedButton.icon(
+                  onPressed: _uploading ? null : () => _listenSaved('lead'),
+                  icon: const Icon(Icons.headphones),
+                  label: const Text('Ouvir e escolher guitarra solo')),
             if (_differentLead) ...[
               TextField(
                   controller: _leadStart,

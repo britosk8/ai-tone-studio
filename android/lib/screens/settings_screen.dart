@@ -146,7 +146,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 24),
           const _SectionDivider('Sobre o aplicativo'),
           const SizedBox(height: 12),
-          const _InfoRow('Versão', '1.5.6'),
+          const _InfoRow('Versão', '1.6.0'),
           const _InfoRow('Separação por IA', 'Demucs htdemucs_6s'),
           const _InfoRow('Protocolo SysEx', 'Baseado em jpfaria/mvave (MIT)'),
           const SizedBox(height: 32),

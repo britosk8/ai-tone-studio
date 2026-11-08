@@ -5,7 +5,8 @@ import hashlib
 import json
 import uuid
 from typing import Optional
-from fastapi import APIRouter, HTTPException, BackgroundTasks
+from fastapi import APIRouter, HTTPException, BackgroundTasks, Query
+from fastapi.responses import Response
 from pydantic import BaseModel, Field
 from ..core.storage import data_directory, load_record, save_record
 from ..core.reference_library import (
@@ -22,6 +23,7 @@ router = APIRouter(prefix="/api/v1")
 class Region(BaseModel):
     start_seconds: float = Field(ge=0, le=7200)
     duration_seconds: float = Field(ge=3, le=120)
+    channel: int | None = Field(default=None, ge=-1, le=1)
 
 
 class SavedAnalysis(BaseModel):
@@ -47,11 +49,51 @@ async def reference(pair_id: str, role: str):
         raise HTTPException(404, str(exc)) from exc
 
 
+@router.get("/presets/{pair_id}/reference/{role}/preview")
+async def listen(
+    pair_id: str,
+    role: str,
+    start_seconds: float = Query(ge=0, le=7200),
+    duration_seconds: float = Query(ge=3, le=30),
+    channel: int | None = Query(default=None, ge=-1, le=1),
+    listen_gain_db: float = Query(default=0, ge=-18, le=18),
+):
+    from ..core.audio_preview import preview
+
+    try:
+        audio, info = await asyncio.to_thread(
+            preview,
+            pair_id,
+            role,
+            start_seconds,
+            duration_seconds,
+            channel,
+            listen_gain_db,
+        )
+        return Response(
+            audio,
+            media_type="audio/wav",
+            headers={
+                "Cache-Control": "no-store",
+                "X-Preview-Channel": str(info["channel"]),
+                "X-Preview-Gain-Db": str(info["listen_gain_db"]),
+                "X-Original-Rms-Dbfs": str(info["original_rms_dbfs"]),
+            },
+        )
+    except (ValueError, OSError, KeyError) as exc:
+        raise HTTPException(400, str(exc)) from exc
+
+
 @router.put("/presets/{pair_id}/reference/{role}")
 async def update_reference(pair_id: str, role: str, region: Region):
     try:
         return await asyncio.to_thread(
-            select_region, pair_id, role, region.start_seconds, region.duration_seconds
+            select_region,
+            pair_id,
+            role,
+            region.start_seconds,
+            region.duration_seconds,
+            channel=region.channel,
         )
     except (ValueError, OSError, KeyError) as exc:
         raise HTTPException(400, str(exc)) from exc
@@ -61,8 +103,8 @@ async def update_reference(pair_id: str, role: str, region: Region):
 async def analyze_saved(body: SavedAnalysis, background_tasks: BackgroundTasks):
     from .routes import _jobs, _run_analysis_job
 
-    if body.reference_version not in {"unknown","studio","live","acoustic"}:
-        raise HTTPException(400,"Versão inválida")
+    if body.reference_version not in {"unknown", "studio", "live", "acoustic"}:
+        raise HTTPException(400, "Versão inválida")
     if DeviceModel.UNKNOWN in {body.rhythm_device, body.lead_device}:
         raise HTTPException(400, "Dispositivo inválido")
     try:
@@ -74,7 +116,7 @@ async def analyze_saved(body: SavedAnalysis, background_tasks: BackgroundTasks):
             ("lead", body.lead_region),
         ]:
             chosen = (
-                requested.model_dump()
+                requested.model_dump(exclude_none=True)
                 if requested
                 else {k: infos[role][k] for k in ["start_seconds", "duration_seconds"]}
             )
@@ -90,6 +132,16 @@ async def analyze_saved(body: SavedAnalysis, background_tasks: BackgroundTasks):
                 > source["cache_start_seconds"] + source["available_duration"] + 0.01
             ):
                 raise ValueError("Trecho fora da referência disponível")
+            channel = chosen.get("channel", infos[role].get("analysis_channel"))
+            if channel is not None:
+                if not -1 <= channel < source["channels"]:
+                    raise ValueError("Canal de guitarra inválido")
+                sources[role]["analysis_channel"] = channel if channel >= 0 else None
+            from ..services.tone_engine.reference_quality import ensure_usable_excerpt
+
+            ensure_usable_excerpt(
+                source, start, duration, sources[role].get("analysis_channel")
+            )
             regions[role] = chosen
         sha = sources["rhythm"]["original_sha256"]
         if not sha or len(sha) != 64 or any(c not in "0123456789abcdef" for c in sha):
@@ -112,8 +164,8 @@ async def analyze_saved(body: SavedAnalysis, background_tasks: BackgroundTasks):
     identity = {
         "version": "saved-guitar-v1",
         "sha": sha,
-        "analyze_states":body.analyze_states,
-        "reference_version":body.reference_version,
+        "analyze_states": body.analyze_states,
+        "reference_version": body.reference_version,
         "devices": [body.rhythm_device.value, body.lead_device.value],
         "regions": regions,
         "caches": {r: s["cache_id"] for r, s in sources.items()},

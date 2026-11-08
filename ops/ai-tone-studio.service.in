@@ -1,0 +1,19 @@
+[Unit]
+Description=AI Tone Studio local backend
+After=network-online.target
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+Type=simple
+WorkingDirectory=@ROOT@/backend
+Environment="TONE_DATA_DIR=@ROOT@/backend/data"
+Environment="CATALOGS_DIR=@ROOT@/catalogs"
+Environment=PYTHONUNBUFFERED=1
+ExecStart="@ROOT@/backend/.venv/bin/uvicorn" app.main:app --host 0.0.0.0 --port 8000
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=120
+
+[Install]
+WantedBy=default.target

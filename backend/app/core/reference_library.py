@@ -35,12 +35,14 @@ def saved_source(pair_id, role):
         raise ValueError("Integridade da guitarra separada não confirmada")
     region = details.get("region", {})
     start = float(region.get("start_seconds", 0))
-    duration = sf.info(guitar).duration
+    audio_info = sf.info(guitar)
+    duration = audio_info.duration
     return {
         "cache_id": cache,
-        "analysis_channel":details.get("analysis_channel"),
+        "analysis_channel": details.get("analysis_channel"),
         "cache_start_seconds": start,
         "available_duration": duration,
+        "channels": audio_info.channels,
         "original_sha256": diagnostics.get("original_sha256"),
         "guitar_path": guitar,
         "source_file_name": pair["pair"]["rhythm_preset"].get("source_file_name"),
@@ -80,12 +82,15 @@ def reference_info(pair_id, role):
             "duration_seconds": duration,
             "needs_region": duration > 120,
             "selection_saved": bool(selection),
+            "analysis_channel": selection.get(
+                "channel", source.get("analysis_channel")
+            ),
         }.items()
         if k != "guitar_path"
     }
 
 
-def select_region(pair_id, role, start, duration, *, register=True):
+def select_region(pair_id, role, start, duration, *, register=True, channel=None):
     import math
 
     source = saved_source(pair_id, role)
@@ -104,8 +109,28 @@ def select_region(pair_id, role, start, duration, *, register=True):
         sr = audio.samplerate
         audio.seek(round(relative * sr))
         samples = audio.read(round(duration * sr), dtype="float32", always_2d=True)
-    preferred=source.get("analysis_channel")
-    channel = preferred if isinstance(preferred,int) and 0<=preferred<samples.shape[1] else int(np.argmax(np.mean(samples.astype(float) ** 2, axis=0)))
+    if channel is not None and (
+        type(channel) is not int or not -1 <= channel < samples.shape[1]
+    ):
+        raise ValueError("Canal de guitarra inválido")
+    prior = load_record("comparison_reference", json.dumps([pair_id, role])) or {}
+    preferred = (
+        None
+        if channel == -1
+        else (
+            channel
+            if channel is not None
+            else prior.get("channel", source.get("analysis_channel"))
+        )
+    )
+    channel = (
+        preferred
+        if isinstance(preferred, int) and 0 <= preferred < samples.shape[1]
+        else int(np.argmax(np.mean(samples.astype(float) ** 2, axis=0)))
+    )
+    from ..services.tone_engine.reference_quality import ensure_usable_excerpt
+
+    ensure_usable_excerpt(source, start, duration, channel)
     mono = samples[:, channel]
     analysis_audio = librosa.resample(mono, orig_sr=sr, target_sr=22050)
     if float(np.sqrt(np.mean(analysis_audio.astype(float) ** 2))) < 0.001:
